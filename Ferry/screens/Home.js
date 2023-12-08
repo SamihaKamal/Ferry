@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import PostTile from '../components/Post';
 
 export default function Home() {
+  // Fake data!!! To be replaced with the database yah
   const cheese = [
     {name: "welpy", caption: "Cheese louise"},
     {name: "Thelpy", caption: "I am addicted to genshin"},
