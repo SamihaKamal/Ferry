@@ -13,14 +13,20 @@ export default function Login({ navigation }) {
     try {
       const HandleLogin = async() => {
         // Navigates to main pages through App.js
-        const response = await fetch('http://192.168.0.59:8000/api/login/')
+        const response = await fetch('http://192.168.0.59:8000/api/login/',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({email : email})
+        })
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         const data = await response.json()
-        setCheese(data.Users)
+        setCheese(data)
       }
       
       HandleLogin()
@@ -29,7 +35,7 @@ export default function Login({ navigation }) {
     }
 
     
-  }, [])
+  }, [email])
 
   
 
