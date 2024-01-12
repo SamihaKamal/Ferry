@@ -11,6 +11,10 @@ export default function Login({ navigation }) {
 
   useEffect(() =>{
     try {
+      const userData= {
+        email: email,
+        password: password,
+      }
       const HandleLogin = async() => {
         // Navigates to main pages through App.js
         const response = await fetch('http://192.168.0.59:8000/api/login/',{
@@ -18,29 +22,29 @@ export default function Login({ navigation }) {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({email : email})
+          body: JSON.stringify(userData)
         })
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
+      
         const data = await response.json()
         setCheese(data)
-      }
-      
+      } 
       HandleLogin()
     } catch (error) {
       console.error('Fetch error:', error);
-    }
+    }   
+  }, [email, password])
 
-    
-  }, [email])
 
-  
 
   const Cheese = () => {
+    if (cheese.message == "User exists"){
+      navigation.navigate('MainPages')
+    }else{
+      console.log("byebye")
+    }
     console.log(cheese)
+    
+      
   }
 
   const SendToRegister = () => {

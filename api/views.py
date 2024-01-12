@@ -14,12 +14,13 @@ def login(request):
         
     if request.method == 'POST':
         data = json.loads(request.body)
-        userName = data.get('email','')
+        userEmail = data.get('email')
+        userPassword = data.get('password')
         try:
             for i in users:
-                if i.email == userName:
-                    return JsonResponse({'message': 'Name exists'})
+                if i.email == userEmail and i.password == userPassword:
+                    return JsonResponse({'message': 'User exists'}, status=200)
                 else:
-                    return JsonResponse({'error': 'user does not exist'})
+                    return JsonResponse({'error': 'Incorrect email or password'}, status=401)
         except:
-            return JsonResponse({'error', 'User does not exist'})
+            return JsonResponse({'error', 'User does not exist'}, status=400)
