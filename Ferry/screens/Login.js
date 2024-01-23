@@ -35,7 +35,7 @@ export default function Login({ navigation }) {
     }else{
       console.log("byebye")
     }
-    console.log(cheese)
+    console.log(data)
     
 }
 
