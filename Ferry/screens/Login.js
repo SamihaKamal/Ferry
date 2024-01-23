@@ -10,31 +10,34 @@ export default function Login({ navigation }) {
   const [cheese, setCheese] = useState([]);
 
   useEffect(() =>{
-    try {
-      const userData= {
-        email: email,
-        password: password,
-      }
-      const HandleLogin = async() => {
-        // Navigates to main pages through App.js
-        const response = await fetch('http://192.168.0.59:8000/api/login/',{
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(userData)
-        })
-      
-        const data = await response.json()
-        setCheese(data)
-      } 
-      HandleLogin()
-    } catch (error) {
-      console.error('Fetch error:', error);
-    }   
-  }, [email, password])
+      HandleLogin() 
+  }, [])
 
-
+  async function HandleLogin() {
+    // Navigates to main pages through App.jrs
+    const userData= {
+      email: email,
+      password: password,
+    }
+    const response = await fetch('http://192.168.0.59:8000/api/login/',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    })
+  
+    const data = await response.json()
+    setCheese(data)
+    
+    if (data.message == "User exists"){
+      navigation.navigate('MainPages')
+    }else{
+      console.log("byebye")
+    }
+    console.log(cheese)
+    
+}
 
   const Cheese = () => {
     if (cheese.message == "User exists"){
@@ -56,7 +59,7 @@ export default function Login({ navigation }) {
       <Text>Login here!!</Text>
       <TextInput placeholder='Email' value={email} onChangeText={setEmail} />
       <TextInput placeholder='Password' value={password} onChangeText={setPassword} secureTextEntry={true}/>
-      <Button title="Login" onPress={Cheese}/>
+      <Button title="Login" onPress={HandleLogin}/>
       <Text>Dont have a login? Register here!!</Text>
       <Button title="Register" onPress={SendToRegister} />
       <StatusBar style="auto" />

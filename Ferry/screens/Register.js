@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
@@ -7,12 +7,37 @@ export default function Register({ navigation }) {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [cheese, setCheese] = useState([]);
 
+  useEffect(() =>{
+      HandleRegister()
+  }, [])
 
   async function HandleRegister() {
       // Navigates to main pages through App.jrs
-      const request = await fetch()
-      navigation.navigate('MainPages')
+      const data = {
+        email: email,
+        password: password,
+        name: name,
+      }
+      const request = await fetch('http://192.168.0.59:8000/api/register/',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+
+      const response = await request.json()
+      setCheese(response)
+      
+      if (response.message == "User registered, please login"){
+        navigation.navigate('MainPages')
+      }else{
+        console.log("byebye")
+      }
+      console.log(cheese)
+      
   }
 
   const SendToLogin = () => {
