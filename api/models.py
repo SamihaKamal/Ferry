@@ -23,7 +23,7 @@ class Comments(models.Model):
 #POSTS AND REVIEWS
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    review_body = models.models.models.TextField(("review text"))
+    review_body = models.TextField(("review text"))
     # Add images here
     comments = models.ForeignKey(Comments, on_delete=models.CASCADE, null=True)
     likes_counter = models.IntegerField(("likes"))
@@ -32,7 +32,7 @@ class Review(models.Model):
     
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    caption = models.models.models.TextField(("caption"))
+    caption = models.TextField(("caption"))
     # Add images here
     comments = models.ForeignKey(Comments, on_delete=models.CASCADE, null=True)
     likes_counter = models.IntegerField(("likes"))
@@ -55,17 +55,17 @@ class Tag(models.Model):
     
 #CHAT AND MESSAGES
 class Chat(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    to_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, related_name='from_user', on_delete=models.SET_NULL, null=True)
+    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.SET_NULL, null=True)
     
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.SET_NULL, null=True)
     comment_body = models.CharField(("comment body"), max_length=250)
-    to_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    from_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    to_user = models.ForeignKey(User, related_name='message_to_user', on_delete=models.SET_NULL, null=True)
+    from_user = models.ForeignKey(User, related_name='message_from_user', on_delete=models.SET_NULL, null=True)
     date = models.DateTimeField(("date"))
 
 #COUNTRY PAGE
 class Country(models.Model):
-    name = models.CharField(("country name"), max_lenth=50)
+    name = models.CharField(("country name"), max_length=50)
     country_tag = models.CharField(("country tag"), max_length=50, null=True)
