@@ -5,19 +5,12 @@ from django.db import models
 #USERS
 class User(models.Model):
     name = models.CharField("name", max_length=100)
+    #Add profile image here
     email = models.EmailField("email", unique=True)
     password = models.CharField("password", max_length=100)
     
     def __str__(self) -> str:
         return self.name
-
-#COMMENTS
-class Comments(models.Model):
-    users = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    comment_body = models.TextField(("comment text"))
-    date = models.DateField(("date"))
-    likes_counter = models.IntegerField(("likes"))
-    replying_to = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
     
 
 #POSTS AND REVIEWS
@@ -25,7 +18,6 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     review_body = models.models.models.TextField(("review text"))
     # Add images here
-    comments = models.ForeignKey(Comments, on_delete=models.CASCADE, null=True)
     likes_counter = models.IntegerField(("likes"))
     country_tag = models.CharField(("country tag"), max_length=50, null=False)
     
@@ -34,9 +26,18 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     caption = models.models.models.TextField(("caption"))
     # Add images here
-    comments = models.ForeignKey(Comments, on_delete=models.CASCADE, null=True)
     likes_counter = models.IntegerField(("likes"))
     country_tag = models.CharField(("country tag"), max_length=50, null=True)
+
+#COMMENTS
+class Comments(models.Model):
+    users = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
+    reviews = models.ForeignKey(Review, on_delete=models.CASCADE, null=True)
+    comment_body = models.TextField(("comment text"))
+    date = models.DateField(("date"))
+    likes_counter = models.IntegerField(("likes"))
+    replying_to = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
     
 #LISTS
 class List(models.Model):
