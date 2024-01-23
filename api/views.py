@@ -24,3 +24,21 @@ def login(request):
                     return JsonResponse({'error': 'Incorrect email or password'}, status=401)
         except:
             return JsonResponse({'error', 'User does not exist'}, status=400)
+
+def register(request):
+    users = User.objects.all()
+
+    if request.method == 'POST':
+        data = json.lodas(request.body)
+        userEmail = data.get('email')
+        userPassword = data.get('password')
+        userName = data.get('name')
+
+        try:
+            user = User(name = userName, email = userEmail, password = userPassword)
+            user.save()
+            return JsonResponse({'error', 'User registered, please login'}, status=200)
+        except: 
+            return JsonResponse({'error','User already exists, please login instead'}, status=401)
+    else:
+        return JsonResponse({'error','Wrong request method'}, status=400)
