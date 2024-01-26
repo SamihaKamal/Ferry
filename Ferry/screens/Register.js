@@ -7,14 +7,13 @@ export default function Register({ navigation }) {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [cheese, setCheese] = useState([]);
 
   useEffect(() =>{
       HandleRegister()
   }, [])
 
   async function HandleRegister() {
-      // Navigates to main pages through App.jrs
+      // Navigates to main pages through App.js
       const data = {
         email: email,
         password: password,
@@ -29,17 +28,16 @@ export default function Register({ navigation }) {
       })
 
       const response = await request.json()
-      setCheese(response)
+      
       
       if (response.message == "User registered, please login"){
         const id_request = await fetch(`http://192.168.0.59:8000/api/get+user+with+email?user_email=${email}`)
         const id_response = await id_request.json()
-        console.log(id_response)
         navigation.navigate('MainPages', {user: id_response.user_id})
       }else{
+        //error message here
         console.log("byebye")
       }
-      console.log(cheese)
       
   }
 
@@ -47,6 +45,7 @@ export default function Register({ navigation }) {
     // Navigates to login page through App.js
     navigation.navigate('Login')
   }
+
   return (
     <View>
       <Text>Register here!!</Text>

@@ -7,7 +7,6 @@ export default function Login({ navigation }) {
   const IPaddess =  '192.168.0.59';
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [cheese, setCheese] = useState([]);
 
   useEffect(() =>{
       HandleLogin() 
@@ -28,30 +27,16 @@ export default function Login({ navigation }) {
     })
   
     const data = await response.json()
-    setCheese(data)
     
     if (data.message == "User exists"){
       const id_request = await fetch(`http://192.168.0.59:8000/api/get+user+with+email?user_email=${email}`)
       const id_response = await id_request.json()
-      console.log(id_response)
       navigation.navigate('MainPages', {user: id_response.user_id})
     }else{
+      //Error message here
       console.log("byebye")
-    }
-    console.log(data)
-    
+    }  
 }
-
-  const Cheese = () => {
-    if (cheese.message == "User exists"){
-      navigation.navigate('MainPages')
-    }else{
-      console.log("byebye")
-    }
-    console.log(cheese)
-    
-      
-  }
 
   const SendToRegister = () => {
     //Navigates to register through App.js

@@ -4,13 +4,41 @@ from django.http import JsonResponse
 from .models import *
 
 # Create your views here.
+
+
+#VIEW FUNCTIONS FOR GETTING USER DATA
+#####################################################################################################################
 def login(request):
+    '''
+        Get Users and output them:
+        Users:
+            {
+                id:
+                name:
+                email:
+                password:  
+            }
+            {
+                id:
+                name:
+                email:
+                password:
+            }
+            
+        Takes in an email and a password and looks through all the Users for match
+            
+    '''
     users = User.objects.all()
-    users_data = [{'id':users.id , 'name':users.name, 'email':users.email, 'password':users.password} for users in users]
+    users_data = [{
+        'id':users.id,
+        'name':users.name, 
+        'email':users.email, 
+        'password':users.password} for users in users]
+    
     if request.method == 'GET':
         return JsonResponse({
             'Users': users_data
-        })
+        }, json_dumps_params={'indent':4})
         
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -25,7 +53,10 @@ def login(request):
             return JsonResponse({'error': 'User does not exist'}, status=400)
 
 def register(request):
-
+    '''
+        gets email, password and users name and then creates a new user with those details
+        
+    '''
     if request.method == 'POST':
         data = json.loads(request.body)
         userEmail = data.get('email', '')
@@ -43,6 +74,11 @@ def register(request):
     
 
 def get_user_id(request):
+    '''
+        Takes in user email (since thats the one thats unique) and sends back the id of the user 
+        that has that email.
+        
+    '''
     user_email = request.GET.get('user_email', None)
     if (user_email == None):    
         return JsonResponse({'error': 'Please input ?user_email= to the end of the url'}, status=401)
