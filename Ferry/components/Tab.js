@@ -34,13 +34,15 @@ const CustomAddPostButton = ({children, onPress}) => (
   </TouchableOpacity>
 );
 
-function MyTabs() {
+function MyTabs({ route }) {
+  const { user } = route.params;
+  console.log(user)
   return (
     <Tab.Navigator screenOptions={{
       tabBarShowLabel: false,
       
     }}>
-      <Tab.Screen name="Home" component={HomeScreen}
+      <Tab.Screen name="Home" component={HomeScreen} initialParams={{ user }}
       options={{
         title: 'Home',
         tabBarIcon: ({ focused, color, size }) => {
@@ -49,7 +51,7 @@ function MyTabs() {
 
         },
       }} />
-      <Tab.Screen name="Following" component={FollowingScreen} 
+      <Tab.Screen name="Following" component={FollowingScreen} initialParams={{ user }}
       options={{
         title: 'Following',
         tabBarIcon: ({ focused, color, size }) => {
@@ -57,7 +59,7 @@ function MyTabs() {
           return <Ionicons name={focused ? 'bookmark' : 'bookmark-outline'} color={iconColour} size={size} />
         }
       }}/>
-      <Tab.Screen name="Add Post" component={PostScreen} 
+      <Tab.Screen name="Add Post" component={PostScreen} initialParams={{ user }}
       options={{ 
         tabBarIcon: ({ focused, color, size }) => {
           const iconColour = focused ? 'grey' : 'white';
@@ -67,7 +69,7 @@ function MyTabs() {
           <CustomAddPostButton {...props} />
         )
       }}/>
-      <Tab.Screen name="Pages" component={PagesScreen} 
+      <Tab.Screen name="Pages" component={PagesScreen} initialParams={{ user }}
       options={{
         title: 'Pages',
         tabBarIcon: ({ focused, color, size }) => {
@@ -75,7 +77,7 @@ function MyTabs() {
           return <Ionicons name={focused ? 'earth' : 'earth-outline'} color={iconColour} size={size} />
         }
       }}/>
-      <Tab.Screen name="Chat" component={ChatScreen} 
+      <Tab.Screen name="Chat" component={ChatScreen} initialParams={{ user }}
       options={{
         title: 'Chat',
         tabBarIcon: ({ focused, color, size }) => {

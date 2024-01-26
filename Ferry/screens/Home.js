@@ -3,8 +3,9 @@ import { StatusBar } from 'expo-status-bar';
 import PostTile from '../components/Post';
 import Fav from '../assets/favicon.png';
 
-export default function Home() {
+export default function Home({ route }) {
   // Fake data!!! To be replaced with the database yah
+  const { user } = route.params;
   const cheese = [
     {name: "Plip Plop", img: Fav, caption: "Cheese louise"},
     {name: "Thelpy", img: Fav,caption: "I am addicted to genshin"},
@@ -12,7 +13,8 @@ export default function Home() {
   ];
   return (
     <View>
-      <Text>This a home screan yah TEST TO SEE ON BRANCH</Text>
+      <Text>itemId: {JSON.stringify(user)}</Text>
+      <Text>This a home screan yah TEST TO SEE ON BRANCH user</Text>
       {/* Theres different components within home:
       - Profile picture/profile menu
       - Welcome back title

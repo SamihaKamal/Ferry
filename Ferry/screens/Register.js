@@ -32,7 +32,10 @@ export default function Register({ navigation }) {
       setCheese(response)
       
       if (response.message == "User registered, please login"){
-        navigation.navigate('MainPages')
+        const id_request = await fetch(`http://192.168.0.59:8000/api/get+user+with+email?user_email=${email}`)
+        const id_response = await id_request.json()
+        console.log(id_response)
+        navigation.navigate('MainPages', {user: id_response.user_id})
       }else{
         console.log("byebye")
       }

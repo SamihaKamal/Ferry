@@ -40,3 +40,16 @@ def register(request):
             return JsonResponse({'error': 'User already exists, please login instead'}, status=401)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+
+def get_user_id(request):
+    user_email = request.GET.get('user_email', None)
+    if (user_email == None):    
+        return JsonResponse({'error': 'Please input ?user_email= to the end of the url'}, status=401)
+    else:
+        try:
+            user = User.objects.get(email = user_email)
+            return JsonResponse({'user_id': user.id}, status=200)
+        except:
+            return JsonResponse({'error': 'User doesnt exist'}, status=400)
+        
