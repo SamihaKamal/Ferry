@@ -89,3 +89,27 @@ def get_user_id(request):
         except:
             return JsonResponse({'error': 'User doesnt exist'}, status=400)
         
+        
+        
+def serialize(user):
+    return {
+        'id': user.id,
+        'name': user.name,
+        'email': user.email
+    }
+        
+def get_all_post(request):
+    posts = Post.objects.all()
+    posts_data = [{
+        'id':posts.id,
+        'user':serialize(posts.user), 
+        'caption':posts.caption, 
+        'date':posts.date,
+        'likes':posts.likes_counter,
+        'country':posts.country_tag} for posts in posts]
+    
+    if request.method == 'GET':
+        return JsonResponse({
+            'Posts': posts_data
+        }, json_dumps_params={'indent':6})
+  
