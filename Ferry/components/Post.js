@@ -20,7 +20,7 @@ const Post = ({name, caption, img}) => (
                 <Text style ={[postStyle.postText]}>{name}</Text>
                 
             </View>
-            <Image source={img}/>
+            {/* <Image source={img}/> */}
             <View>
                 {/* Caption here */}
                 <Text style={[postStyle.postCaption]}>{caption}</Text>
