@@ -10,7 +10,7 @@ import { StatusBar } from 'expo-status-bar';
 //     = Remove Comments
 //     = Like comments 
 
-const Post = ({name, caption, img}) => (
+const Post = ({name, caption, likes, country}) => (
     // Where all the posts are located
     <View style={[postStyle.postBox]}> 
         {/* Where each singular post is located */}
@@ -25,7 +25,11 @@ const Post = ({name, caption, img}) => (
                 {/* Caption here */}
                 <Text style={[postStyle.postCaption]}>{caption}</Text>
             </View>
-            
+            <View>
+                {/* This is where the likes and tags will go: */}
+                <Text style={[postStyle.postText]}>{likes}</Text>
+                <Text style={[postStyle.postText]}>{country}</Text>
+            </View>
         </View>
     </View>
 );

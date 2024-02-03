@@ -7,10 +7,10 @@ import Fav from '../assets/favicon.png';
 export default function Home({ route }) {
   // Fake data!!! To be replaced with the database yah
   const { user } = route.params;
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState([]);
 
   useEffect(() =>{
-    getPosts()
+    getPosts() 
     console.log("Check we get to this point") 
 }, [])
 
@@ -48,8 +48,8 @@ export default function Home({ route }) {
       - Posts */}
       <StatusBar style="auto" />
       <ScrollView>
-        {password.map((password, index ) => (
-          <PostTile key={index} name={password.user} caption={password.caption} img={password.likes}/>
+      {password.map((password, index ) => (
+          <PostTile key={index} name={password.user} caption={password.caption} likes={password.likes} country={password.country}/>
         ))}
       </ScrollView>
      
