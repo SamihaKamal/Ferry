@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { SearchBar } from '@rneui/themed';
 import PostTile from '../components/Post';
 import Fav from '../assets/favicon.png';
 
@@ -8,6 +9,7 @@ export default function Home({ route }) {
   // Fake data!!! To be replaced with the database yah
   const { user } = route.params;
   const [password, setPassword] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() =>{
     getPosts() 
@@ -22,6 +24,7 @@ export default function Home({ route }) {
       id: a.id,
       user: a.user.name,
       caption: a.caption,
+      image: a.image,
       likes: a.likes,
       country: a.country,
     }));
@@ -29,6 +32,10 @@ export default function Home({ route }) {
     console.log("Check we get to this point = GETPOSTS AFTER RESPONSE DATA")
     setPassword(responseData)
   }
+
+  const updateSearch = (search) => {
+    setSearch(search);
+  };
   
 
   const cheese = [
@@ -39,8 +46,15 @@ export default function Home({ route }) {
 
   return (
     <View>
+      <SearchBar 
+        placeholder='Type here....'
+        onChangeText={updateSearch}
+        value={search}
+        platform='android'
+      />
       <Text>itemId: {JSON.stringify(user)}</Text>
       <Text>This a home screan yah TEST TO SEE ON BRANCH user</Text>
+      {console.log(search)}
       {/* Theres different components within home:
       - Profile picture/profile menu
       - Welcome back title
@@ -49,7 +63,7 @@ export default function Home({ route }) {
       <StatusBar style="auto" />
       <ScrollView>
       {password.map((password, index ) => (
-          <PostTile key={index} name={password.user} caption={password.caption} likes={password.likes} country={password.country}/>
+          <PostTile key={index} name={password.user} caption={password.caption} image={password.image} likes={password.likes} country={password.country}/>
         ))}
       </ScrollView>
      

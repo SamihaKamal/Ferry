@@ -46,6 +46,11 @@ export default function Register({ navigation }) {
     navigation.navigate('Login')
   }
 
+  const TEST = () => {
+    // Navigates to login page through App.js
+    navigation.navigate('MainPages', {user: 1})
+  }
+
   return (
     <View>
       <Text>Register here!!</Text>
@@ -55,6 +60,8 @@ export default function Register({ navigation }) {
       <Button title="Register" onPress={HandleRegister}/>
       <Text>Already have a login? Login here!</Text>
       <Button title="Login" onPress={SendToLogin} />
+
+      <Button title="Eekk" onPress={TEST} />
       <StatusBar style="auto" />
     </View>
   );

@@ -18,6 +18,7 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     review_body = models.TextField(("review text"))
     # Add images here
+    image = models.ImageField(blank=True)
     date = models.DateField(("date"))
     likes_counter = models.IntegerField(("likes"))
     country_tag = models.CharField(("country tag"), max_length=50, null=False)
@@ -27,6 +28,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     caption = models.TextField(("caption"))
     # Add images here
+    image = models.ImageField(blank=True)
     date = models.DateField(("date"), null=True)
     likes_counter = models.IntegerField(("likes"))
     country_tag = models.CharField(("country tag"), max_length=50, null=True)

@@ -91,18 +91,19 @@ def get_user_id(request):
         
         
         
-def serialize(user):
+def serialize_user(user):
     return {
         'id': user.id,
         'name': user.name,
         'email': user.email
     }
-        
+
 def get_all_post(request):
     posts = Post.objects.all()
     posts_data = [{
         'id':posts.id,
-        'user':serialize(posts.user), 
+        'user':serialize_user(posts.user),
+        'image': request.build_absolute_uri(posts.image.url), 
         'caption':posts.caption, 
         'date':posts.date,
         'likes':posts.likes_counter,
