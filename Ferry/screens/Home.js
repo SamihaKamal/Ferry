@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SearchBar } from '@rneui/themed';
 import PostTile from '../components/Post';
 import Fav from '../assets/favicon.png';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function Home({ route }) {
   // Fake data!!! To be replaced with the database yah
@@ -15,6 +16,12 @@ export default function Home({ route }) {
     getPosts() 
     console.log("Check we get to this point") 
 }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => getPosts();
+    })
+  );
 
   async function getPosts() {
     const request = await fetch('http://192.168.0.59:8000/api/get+all+posts/')

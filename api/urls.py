@@ -25,4 +25,5 @@ urlpatterns = [
     path('api/register/', register),
     path('api/get+user+with+email/', get_user_id),
     path('api/get+all+posts/', get_all_post),
+    path('api/create_post/', create_post)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

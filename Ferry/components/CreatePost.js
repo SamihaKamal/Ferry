@@ -1,12 +1,53 @@
 import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function CreatePost() {
+export default function CreatePost({ route }) {
+  const { user } = route.params;
   const [caption, setCaption] = useState();
   const [image, setImage] = useState();
   const [tag, setTag] = useState();
+  const [currentTags, setCurrentTags] = useState([]);
+
+//   useEffect(() =>{
+//     savePost()
+// }, [])
+
+  async function savePost() {
+    const data = new FormData();
+    data.append('user_id', user);
+    data.append('caption', caption);
+    data.append('image', {
+      uri: image,
+      name: 'photo.jpg',
+      type: 'image/jpg',
+    })
+    currentTags.forEach((tag) => {
+      data.append('tag', tag)
+    })
+    console.log(currentTags)
+
+    const request = await fetch('http://192.168.0.59:8000/api/create_post/',{
+      method: 'POST',
+      body: data,
+    })
+
+    const response = await request.json()
+
+    console.log(response)
+    navigation.navigate('MainPages', {user: user.user_id})
+  }
+
+
+  const addTag = () => {
+    console.log(tag)
+    if (tag.trim()) { // Only add non-empty tags
+      setCurrentTags(currentTags => [...currentTags, tag]); // Add the new tag to the tags array
+      setTag(''); // Clear the tag input field
+    }
+    console.log(currentTags)
+  }
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -26,12 +67,14 @@ export default function CreatePost() {
   return (
     <View>
        <TextInput placeholder="Caption" value={caption} onChangeText={setCaption}/>
-       <TextInput placeholder="Tag" value={tag} onChangeText={setCaption}/>
+       <TextInput placeholder="Tag" value={tag} onChangeText={setTag}/>
+       <Button title="Add tag" onPress={addTag}/>
        <Button title="Click me please" onPress={pickImage}/>
        <Image 
        style={{ width: 100, height: 100}}
        source={{ uri: image }}/>
       <StatusBar style="auto" />
+      <Button title="Create post" onPress={savePost} />
     </View>
   );
 }

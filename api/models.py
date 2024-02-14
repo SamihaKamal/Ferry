@@ -36,7 +36,7 @@ class Post(models.Model):
     image = models.ImageField(blank=True)
     date = models.DateField(("date"), null=True)
     likes_counter = models.IntegerField(("likes"))
-    country_tag = models.CharField(("country tag"), max_length=50, null=True)
+    country_tag = models.CharField(("country tag"), max_length=50, null=True, blank=True)
     tags = models.ManyToManyField(Tag)
 
 #COMMENTS

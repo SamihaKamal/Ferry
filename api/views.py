@@ -90,7 +90,8 @@ def get_user_id(request):
             return JsonResponse({'error': 'User doesnt exist'}, status=400)
         
         
-        
+#VIEW FUNCTIONS FOR POSTS
+#####################################################################################################################        
 def serialize_user(user):
     return {
         'id': user.id,
@@ -113,4 +114,40 @@ def get_all_post(request):
         return JsonResponse({
             'Posts': posts_data
         }, json_dumps_params={'indent':6})
+        
+
+def create_post(request):
+    
+    if request.method == 'POST':
+        # Get all the data
+        user_id = request.POST.get('user_id', None)
+        caption = request.POST.get('caption', None)
+        tags_string = request.POST.get('tag')
+        image = request.FILES.get('image', None)
+        
+        print(image)
+        print(tags_string)
+        
+        tags = [tag.strip() for tag in tags_string.split(',')]
+        
+        #Get user from the user id
+        user = User.objects.get(id=user_id)
+        current_tags = Tag.objects.all()
+        found = False
+        
+        #Check tags, and see if they exist, if not create a new tag
+        for tag_text in tags:
+            tag, created = Tag.objects.get_or_create(tag_text=tag_text)
+                    
+        
+        try:
+            post = Post(user = user, caption = caption, image = image, likes_counter = 0, country_tag = 'Greenland')
+            post.save()
+            post.tags.add(*Tag.objects.filter(tag_text__in=tags))
+            return JsonResponse({'message': 'Post saved'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'Unable to save post {e}'}, status=401)
+    else:
+        return JsonResponse({'error': 'Incorrect request method'}, status=400)
+        
   
