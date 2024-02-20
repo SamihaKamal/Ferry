@@ -2,6 +2,7 @@ import json
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import *
+from datetime import date
 
 # Create your views here.
 
@@ -124,7 +125,9 @@ def create_post(request):
         caption = request.POST.get('caption', None)
         tags_string = request.POST.get('tag')
         image = request.FILES.get('image', None)
+        date_posted = date.today()
         
+        print(date_posted)
         print(image)
         print(tags_string)
         
@@ -139,9 +142,8 @@ def create_post(request):
         for tag_text in tags:
             tag, created = Tag.objects.get_or_create(tag_text=tag_text)
                     
-        
         try:
-            post = Post(user = user, caption = caption, image = image, likes_counter = 0, country_tag = 'Greenland')
+            post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0 )
             post.save()
             post.tags.add(*Tag.objects.filter(tag_text__in=tags))
             return JsonResponse({'message': 'Post saved'}, status=200)

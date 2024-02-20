@@ -28,7 +28,7 @@ export default function CreatePost({ route }) {
     })
     console.log(currentTags)
 
-    const request = await fetch('http://192.168.0.59:8000/api/create_post/',{
+    const request = await fetch('http://192.168.0.68:8000/api/create_post/',{
       method: 'POST',
       body: data,
     })

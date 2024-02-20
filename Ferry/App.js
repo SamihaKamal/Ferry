@@ -15,7 +15,9 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Register'>
           <Stack.Screen name="Register"component={Register} />
-          <Stack.Screen name="MainPages" component={MyTabs} />
+          <Stack.Screen name="MainPages" component={MyTabs} options={{
+            headerShown: false
+          }}/>
           <Stack.Screen name="Login" component={Login} />
         </Stack.Navigator>
       </NavigationContainer>

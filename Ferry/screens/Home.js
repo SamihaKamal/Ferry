@@ -17,14 +17,14 @@ export default function Home({ route }) {
     console.log("Check we get to this point") 
 }, [])
 
-  useFocusEffect(
-    React.useCallback(() => {
-      return () => getPosts();
-    })
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     return () => getPosts();
+  //   })
+  // );
 
   async function getPosts() {
-    const request = await fetch('http://192.168.0.59:8000/api/get+all+posts/')
+    const request = await fetch('http://192.168.0.68:8000/api/get+all+posts/')
     const response = await request.json()
 
     const responseData = response.Posts.map((a) =>({
@@ -59,8 +59,6 @@ export default function Home({ route }) {
         value={search}
         platform='android'
       />
-      <Text>itemId: {JSON.stringify(user)}</Text>
-      <Text>This a home screan yah TEST TO SEE ON BRANCH user</Text>
       {console.log(search)}
       {/* Theres different components within home:
       - Profile picture/profile menu
