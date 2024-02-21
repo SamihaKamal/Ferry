@@ -32,8 +32,10 @@ export default function Home({ route }) {
       user: a.user.name,
       caption: a.caption,
       image: a.image,
+      date: a.date,
       likes: a.likes,
       country: a.country,
+      tags: a.tags,
     }));
     console.log(responseData)
     console.log("Check we get to this point = GETPOSTS AFTER RESPONSE DATA")
@@ -68,7 +70,7 @@ export default function Home({ route }) {
       <StatusBar style="auto" />
       <ScrollView>
       {password.map((password, index ) => (
-          <PostTile key={index} name={password.user} caption={password.caption} image={password.image} likes={password.likes} country={password.country}/>
+          <PostTile key={index} name={password.user} caption={password.caption} image={password.image} date={password.date} likes={password.likes} country={password.country} tags={password.tags}/>
         ))}
       </ScrollView>
      

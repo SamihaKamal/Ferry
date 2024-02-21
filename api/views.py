@@ -109,7 +109,9 @@ def get_all_post(request):
         'caption':posts.caption, 
         'date':posts.date,
         'likes':posts.likes_counter,
-        'country':posts.country_tag} for posts in posts]
+        'country':posts.country_tag,
+        'tags': [tags.tag_text for tags in posts.tags.all()]} for posts in posts]
+        
     
     if request.method == 'GET':
         return JsonResponse({
