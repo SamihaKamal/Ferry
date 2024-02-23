@@ -6,7 +6,7 @@ import PostTile from '../components/Post';
 import Fav from '../assets/favicon.png';
 import { useFocusEffect } from '@react-navigation/native';
 
-export default function Home({ route }) {
+export default function Home({ route, navigation }) {
   // Fake data!!! To be replaced with the database yah
   const { user } = route.params;
   const [password, setPassword] = useState([]);
@@ -70,7 +70,17 @@ export default function Home({ route }) {
       <StatusBar style="auto" />
       <ScrollView>
       {password.map((password, index ) => (
-          <PostTile key={index} name={password.user} caption={password.caption} image={password.image} date={password.date} likes={password.likes} country={password.country} tags={password.tags}/>
+          <PostTile key={index}
+           id={password.id}
+            name={password.user}
+            user_id={user}
+             caption={password.caption}
+              image={password.image}
+               date={password.date}
+                likes={password.likes}
+                 country={password.country}
+                  tags={password.tags}
+                  navigation={navigation}/>
         ))}
       </ScrollView>
      

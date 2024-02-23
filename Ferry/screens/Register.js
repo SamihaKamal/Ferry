@@ -48,7 +48,7 @@ export default function Register({ navigation }) {
 
   const TEST = () => {
     // Navigates to login page through App.js
-    navigation.navigate('MainPages', {user: 1})
+    navigation.navigate('MainPages', {user: 1, navigation: navigation})
   }
 
   return (

@@ -31,7 +31,7 @@ export default function Login({ navigation }) {
     if (data.message == "User exists"){
       const id_request = await fetch(`http://192.168.0.68:8000/api/get+user+with+email/?user_email=${email}`)
       const id_response = await id_request.json()
-      navigation.navigate('MainPages', {user: id_response.user_id})
+      navigation.navigate('MainPages', {user: id_response.user_id, navigation: navigation})
     }else{
       //Error message here
       console.log("byebye")

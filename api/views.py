@@ -116,7 +116,7 @@ def get_all_post(request):
     if request.method == 'GET':
         return JsonResponse({
             'Posts': posts_data
-        }, json_dumps_params={'indent':6})
+        }, json_dumps_params={'indent':5})
         
 
 def create_post(request):
@@ -153,5 +153,53 @@ def create_post(request):
             return JsonResponse({'error': f'Unable to save post {e}'}, status=401)
     else:
         return JsonResponse({'error': 'Incorrect request method'}, status=400)
-        
+    
+def check_review_is_null(review):
+    if (review == None):
+        return 0
+    else:
+        return review.id
+    
+def get_comment_replies(comment):
+    replies = Comments.objects.all().filter(replying_to = comment.id)
+    reply_comment_array = []
+    for reply_comment in replies:
+            reply ={
+                'id': reply_comment.id,
+                'user': serialize_user(reply_comment.users),
+                'body' : reply_comment.comment_body,
+                'date' : reply_comment.date,
+                'likes': reply_comment.likes_counter,
+                'replies' : get_comment_replies(reply_comment)
+            }
+            reply_comment_array.append(reply)
+    
+    return reply_comment_array
+
+    
+def get_comments_for_post(request):
+    post_id = request.GET.get('post_id', None)
+    if (post_id == None):    
+        return JsonResponse({'error': 'Please input ?post_id= to the end of the url'}, status=401)
+    else:
+        try:
+            comments =  Comments.objects.all().filter(post = int(post_id), replying_to__isnull=True).order_by(f'-date')
+            # if (comments.reviews == None):
+            #     comments.reviews.id = 0
+                
+            comments_data = [{
+                'id':comments.id,
+                'user':serialize_user(comments.users),
+                'posts':comments.post.id,
+                'reviews':check_review_is_null(comments.reviews),
+                'content':comments.comment_body,
+                'date':comments.date,
+                'likes':comments.likes_counter,
+                'replies':get_comment_replies(comments)} for comments in comments]  
+        except Exception as e:
+            return JsonResponse({'error': f'Unable to get messages, {e}'}, status=400)
+     
+    return JsonResponse({
+            'Comments': comments_data
+        }, json_dumps_params={'indent':5})
   

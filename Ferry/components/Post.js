@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { Button } from '@rneui/base';
@@ -12,7 +12,14 @@ import { Button } from '@rneui/base';
 //     = Remove Comments
 //     = Like comments 
 
-function Post({name, caption, image, date, likes, country, tags}) {
+function Post({id, name, user_id, caption, image, date, likes, country, tags, navigation}) {
+    console.log(user_id)
+    console.log(id)
+    const OpenComments = () => {
+        //Navigates to register through App.js
+        navigation.navigate('Comment', {post: id, user: user_id})
+    }
+
     const a = !country || country.trim() === '';
     return (
         // Where all the posts are located
@@ -21,8 +28,7 @@ function Post({name, caption, image, date, likes, country, tags}) {
             <View style={[postStyle.extra]}>
                 <View style={[postStyle.postTop]}>
                     {/* Title and profile picture */}
-                    <Text style ={[postStyle.postText]}>{name}</Text>
-                    
+                    <Text style ={[postStyle.postText]}>{name}</Text> 
                 </View>
                 {console.log(image)}
                 <Image 
@@ -50,6 +56,9 @@ function Post({name, caption, image, date, likes, country, tags}) {
                     {!a && (<Text style={[postStyle.postCountry]}>{country}</Text>)}    
                     <Text style={[postStyle.postTag]}>{tags}</Text>
                 </View>
+                <TouchableOpacity style={[postStyle.commentContainer]} onPress={OpenComments}>
+                    <Text>Click here to view comments</Text>
+                </TouchableOpacity>
                 
             </View>
         </View>
@@ -58,6 +67,13 @@ function Post({name, caption, image, date, likes, country, tags}) {
 }
 
 const postStyle = StyleSheet.create({
+    commentContainer: {
+        width: 'auto',
+        padding: 20,
+        backgroundColor: '#D9D9D9',
+        alignItems: 'center',
+    },
+
     InfoContainer: {
         flexDirection: 'row', // Align items horizontally
         alignItems: 'center', // Align items vertically
@@ -74,7 +90,6 @@ const postStyle = StyleSheet.create({
     date: {
         padding: 5,
         color: "grey",
-
     },
 
     LikeButton: {
@@ -98,7 +113,6 @@ const postStyle = StyleSheet.create({
     postCountry:{
         borderRadius: 40,
         padding: 10,
-        display: 'inline-block',
         backgroundColor: 'pink',
     },
 

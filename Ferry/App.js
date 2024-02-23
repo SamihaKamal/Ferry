@@ -6,6 +6,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MyTabs from './components/Tab';
 import Register from './screens/Register';
 import Login from './screens/Login';
+import Comment from './screens/Comment';
+
 
 export default function App() {
 
@@ -19,6 +21,7 @@ export default function App() {
             headerShown: false
           }}/>
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Comment" component={Comment} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

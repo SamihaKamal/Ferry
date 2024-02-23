@@ -42,12 +42,12 @@ class Post(models.Model):
 #COMMENTS
 class Comments(models.Model):
     users = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
-    reviews = models.ForeignKey(Review, on_delete=models.CASCADE, null=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
+    reviews = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, blank=True)
     comment_body = models.TextField(("comment text"))
     date = models.DateField(("date"), null=True)
     likes_counter = models.IntegerField(("likes"))
-    replying_to = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+    replying_to = models.ForeignKey('self', null=True, on_delete=models.CASCADE, blank=True)
     
 #LISTS
 class List(models.Model):

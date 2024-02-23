@@ -5,8 +5,8 @@ export default function Chat({ route }) {
   const { user } = route.params;
   return (
     <View>
-      <Text>Chat!</Text>
+      <Text>This a the following screen</Text>
       <StatusBar style="auto" />
     </View>
-  );
-}
+  )
+};
