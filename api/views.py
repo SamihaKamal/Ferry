@@ -167,7 +167,7 @@ def get_comment_replies(comment):
             reply ={
                 'id': reply_comment.id,
                 'user': serialize_user(reply_comment.users),
-                'body' : reply_comment.comment_body,
+                'content' : reply_comment.comment_body,
                 'date' : reply_comment.date,
                 'likes': reply_comment.likes_counter,
                 'replies' : get_comment_replies(reply_comment)
