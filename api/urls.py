@@ -26,5 +26,6 @@ urlpatterns = [
     path('api/get+user+with+email/', get_user_id),
     path('api/get+all+posts/', get_all_post),
     path('api/create_post/', create_post),
-    path('api/get+comments+with+post/', get_comments_for_post)
+    path('api/get+comments+with+post/', get_comments_for_post),
+    path('api/create+comments+for+post/', create_comment_on_post)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
