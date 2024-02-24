@@ -231,4 +231,36 @@ def create_comment_on_post(request):
             return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
+    
+    
+def create_reply_comment_on_post(request):
+    
+    # s Comments(models.Model):
+    # users = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    # post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
+    # reviews = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, blank=True)
+    # comment_body = models.TextField(("comment text"))
+    # date = models.DateField(("date"), null=True)
+    # likes_counter = models.IntegerField(("likes"))
+    # replying_to = 
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        comment_id = data.get('comment_id', '')
+        user_id = data.get('user_id', '')
+        post_id = data.get('post_id', '')
+        comment_body = data.get('comment_body', '')
+        comment_date = date.today()
+
+        user = User.objects.get(id=user_id)
+        post = Post.objects.get(id=post_id)
+        reply_to_comment = Comments.objects.get(id=comment_id)
+        try:
+            comment = Comments(users=user, post=post, comment_body=comment_body, date=comment_date, likes_counter=0, replying_to=reply_to_comment)
+            comment.save()
+            return JsonResponse({'message': 'Comment saved'}, status=200)
+        except Exception as e: 
+            print(e)
+            return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
   

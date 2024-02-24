@@ -14,6 +14,10 @@ export default function Comment({ route }) {
         console.log("Check we get to this point - COMMENT VERSION") 
     }, [])
 
+    async function refreshComments(){
+      getComments();
+    }
+
     function mapReplies(replies) {
       console.log("IN MAP REPLIES")
       console.log(replies)
@@ -93,10 +97,12 @@ export default function Comment({ route }) {
           id={a.id}
            name={a.user}
            user_id={user}
+           post_id={post}
             content={a.content}
               date={a.date}
                likes={a.likes}
-                 replies={a.replies}/>
+                 replies={a.replies}
+                 refreshComments={refreshComments}/>
         ))}
       </ScrollView>
       <View style={CommentStyle.commentContainer}> 
@@ -109,7 +115,7 @@ export default function Comment({ route }) {
           placeholder="User Comment" 
           value={userComment} 
           onChangeText={setUserComment}/>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={addComment}>
             <Ionicons name='arrow-forward-circle' size={50} color="#BDD7EE"/>
           </TouchableOpacity>
       </View>
