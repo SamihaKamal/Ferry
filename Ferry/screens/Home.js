@@ -7,14 +7,12 @@ import Fav from '../assets/favicon.png';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function Home({ route, navigation }) {
-  // Fake data!!! To be replaced with the database yah
   const { user } = route.params;
   const [password, setPassword] = useState([]);
   const [search, setSearch] = useState("");
 
   useEffect(() =>{
     getPosts() 
-    console.log("Check we get to this point") 
 }, [])
 
   // useFocusEffect(
@@ -37,8 +35,7 @@ export default function Home({ route, navigation }) {
       country: a.country,
       tags: a.tags,
     }));
-    console.log(responseData)
-    console.log("Check we get to this point = GETPOSTS AFTER RESPONSE DATA")
+
     setPassword(responseData)
   }
 
@@ -46,13 +43,6 @@ export default function Home({ route, navigation }) {
     setSearch(search);
   };
   
-
-  const cheese = [
-    {name: "Plip Plop", img: Fav, caption: "Cheese louise"},
-    {name: "Thelpy", img: Fav,caption: "I am addicted to genshin"},
-    {name: "Rocky", img: Fav,caption: "This is a test to see if long pieces of text look alright ok aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa?"},
-  ];
-
   return (
     <View>
       <SearchBar 

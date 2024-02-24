@@ -3,15 +3,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { Button } from '@rneui/base';
 
-// This should have:
-// - Persons picture and name
-// - Pictures
-// - Caption
-// - Comments 
-//     = Add Comments
-//     = Remove Comments
-//     = Like comments 
-
 function Post({id, name, user_id, caption, image, date, likes, country, tags, navigation}) {
     console.log(user_id)
     console.log(id)
@@ -46,8 +37,6 @@ function Post({id, name, user_id, caption, image, date, likes, country, tags, na
                         </TouchableOpacity>
                     </View>
                 </View>
-                
-
                 <View>
                     <Text style={[postStyle.postCaption]}>{caption}</Text>
                 </View>
@@ -125,15 +114,12 @@ const postStyle = StyleSheet.create({
     postCaption: {
         fontSize: 15,
         marginLeft: 10,
-        marginRight: 10,
-        
+        marginRight: 10, 
     },
-
 
     postText: {
         marginLeft: 10,
-        fontSize: 20,
-        
+        fontSize: 20,  
     },
 
     postTop: {
@@ -145,8 +131,7 @@ const postStyle = StyleSheet.create({
     extra: {
         borderRadius: 10,
         padding: 10,
-        backgroundColor: '#F2F2F2',
-        
+        backgroundColor: '#F2F2F2', 
     },
 
     postBox: {

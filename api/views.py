@@ -101,6 +101,43 @@ def serialize_user(user):
     }
 
 def get_all_post(request):
+    '''
+        Gets all posts that exists in the form:
+        Posts: [
+            {
+                id:
+                user:{
+                    id:
+                    name:
+                    email:
+                }
+                image:
+                caption:
+                date:
+                likes:
+                country:
+                tags: [
+                    "tag1", "tag2", etc.
+                ]
+            }
+            {
+                id:
+                user:{
+                    id:
+                    name:
+                    email:
+                }
+                image:
+                caption:
+                date:
+                likes:
+                country:
+                tags: [
+                    "tag1", "tag2", etc.
+                ]
+            }
+        ]
+    '''
     posts = Post.objects.all()
     posts_data = [{
         'id':posts.id,
@@ -120,7 +157,12 @@ def get_all_post(request):
         
 
 def create_post(request):
+    '''
     
+        Creates a new post using user id, captions tags and images.
+        
+        
+    '''
     if request.method == 'POST':
         # Get all the data
         user_id = request.POST.get('user_id', None)
@@ -128,22 +170,16 @@ def create_post(request):
         tags_string = request.POST.get('tag')
         image = request.FILES.get('image', None)
         date_posted = date.today()
-        
-        print(date_posted)
-        print(image)
-        print(tags_string)
-        
+
         tags = [tag.strip() for tag in tags_string.split(',')]
         
         #Get user from the user id
         user = User.objects.get(id=user_id)
-        current_tags = Tag.objects.all()
-        found = False
-        
+             
         #Check tags, and see if they exist, if not create a new tag
         for tag_text in tags:
             tag, created = Tag.objects.get_or_create(tag_text=tag_text)
-                    
+                        
         try:
             post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0 )
             post.save()
@@ -161,6 +197,12 @@ def check_review_is_null(review):
         return review.id
     
 def get_comment_replies(comment):
+    '''
+    
+        Used to get comment replies before sending them back to main comment.
+        
+        
+    '''
     replies = Comments.objects.all().filter(replying_to = comment.id)
     reply_comment_array = []
     for reply_comment in replies:
@@ -178,15 +220,47 @@ def get_comment_replies(comment):
 
     
 def get_comments_for_post(request):
+    '''
+        Getting all comments from specified post in the form:
+        Comments: [
+            {
+                id:
+                user: {
+                    id:
+                    name:
+                    email:
+                }
+                posts:
+                reviews:
+                content:
+                date:
+                likes:
+                replies: [
+                    {
+                       id:
+                        user: {
+                            id:
+                            name:
+                            email:
+                        }
+                        posts:
+                        reviews:
+                        content:
+                        date:
+                        likes:
+                        replies: [] 
+                    }
+                ]
+            }
+        ]
+    
+    '''
     post_id = request.GET.get('post_id', None)
     if (post_id == None):    
         return JsonResponse({'error': 'Please input ?post_id= to the end of the url'}, status=401)
     else:
         try:
             comments =  Comments.objects.all().filter(post = int(post_id), replying_to__isnull=True).order_by(f'-date')
-            # if (comments.reviews == None):
-            #     comments.reviews.id = 0
-                
             comments_data = [{
                 'id':comments.id,
                 'user':serialize_user(comments.users),
@@ -204,15 +278,11 @@ def get_comments_for_post(request):
         }, json_dumps_params={'indent':5})
     
 def create_comment_on_post(request):
+    '''
+        
+        Creating a comment with userId, postId, body of comment and date.
     
-    # s Comments(models.Model):
-    # users = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    # post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
-    # reviews = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, blank=True)
-    # comment_body = models.TextField(("comment text"))
-    # date = models.DateField(("date"), null=True)
-    # likes_counter = models.IntegerField(("likes"))
-    # replying_to = 
+    '''
     if request.method == 'POST':
         data = json.loads(request.body)
         user_id = data.get('user_id', '')
@@ -234,15 +304,11 @@ def create_comment_on_post(request):
     
     
 def create_reply_comment_on_post(request):
+    '''
     
-    # s Comments(models.Model):
-    # users = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    # post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
-    # reviews = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, blank=True)
-    # comment_body = models.TextField(("comment text"))
-    # date = models.DateField(("date"), null=True)
-    # likes_counter = models.IntegerField(("likes"))
-    # replying_to = 
+        Creating a reply comment but adding the reply comment id too.
+    
+    '''
     if request.method == 'POST':
         data = json.loads(request.body)
         comment_id = data.get('comment_id', '')

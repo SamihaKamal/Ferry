@@ -19,7 +19,6 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
         setReplyID(comment_id)
     };
     
-
     async function addComment(){
         const data = {
             comment_id: replyID,
@@ -35,10 +34,8 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
                 },
                 body: JSON.stringify(data)
             })
-            console.log("Do we get here mate222222?")
+           
             const response = await request.json()
-            console.log("Do we get here mate?")
-            console.log("Response status:", response.status);
             if (response){
                 setUserComment('');
                 refreshComments();
@@ -46,9 +43,7 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
             else{
                 console.log("Uh oh theres an error!")
             }
-            console.log("Lemme seee...")
-            console.log(response)
-            }
+        }
         catch (error){
             console.log("Something went wrong: ", error.message)
         }

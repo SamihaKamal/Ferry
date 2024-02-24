@@ -10,10 +10,6 @@ export default function CreatePost({ route }) {
   const [tag, setTag] = useState();
   const [currentTags, setCurrentTags] = useState([]);
 
-//   useEffect(() =>{
-//     savePost()
-// }, [])
-
   async function savePost() {
     const data = new FormData();
     data.append('user_id', user);
@@ -26,7 +22,6 @@ export default function CreatePost({ route }) {
     currentTags.forEach((tag) => {
       data.append('tag', tag)
     })
-    console.log(currentTags)
 
     const request = await fetch('http://192.168.0.68:8000/api/create_post/',{
       method: 'POST',
@@ -34,19 +29,16 @@ export default function CreatePost({ route }) {
     })
 
     const response = await request.json()
-
-    console.log(response)
-    navigation.navigate('MainPages', {user: user.user_id})
+    if (response) {
+      navigation.navigate('MainPages', {user: user.user_id})
+    }
   }
 
-
   const addTag = () => {
-    console.log(tag)
     if (tag.trim()) { // Only add non-empty tags
       setCurrentTags(currentTags => [...currentTags, tag]); // Add the new tag to the tags array
       setTag(''); // Clear the tag input field
-    }
-    console.log(currentTags)
+    } 
   }
 
   const pickImage = async () => {
@@ -56,8 +48,6 @@ export default function CreatePost({ route }) {
       aspect: [4,3],
       quality: 1,
     });
-
-    console.log(result)
 
     if (!result.canceled){
       setImage(result.assets[0].uri)

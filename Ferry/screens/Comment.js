@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Button, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import CommentTile from '../components/CommentTile';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -11,7 +10,6 @@ export default function Comment({ route }) {
 
     useEffect(() =>{
         getComments() 
-        console.log("Check we get to this point - COMMENT VERSION") 
     }, [])
 
     async function refreshComments(){
@@ -19,8 +17,6 @@ export default function Comment({ route }) {
     }
 
     function mapReplies(replies) {
-      console.log("IN MAP REPLIES")
-      console.log(replies)
       if (!replies) return []
 
       return replies = replies.map((a) => ({
@@ -36,9 +32,6 @@ export default function Comment({ route }) {
     async function getComments(){
       const request = await fetch(`http://192.168.0.68:8000/api/get+comments+with+post/?post_id=${post}`)
       const response = await request.json()
-
-      
-
       const responseData = response.Comments.map((a) =>({
         id: a.id,
         user: a.user.name,
@@ -48,11 +41,7 @@ export default function Comment({ route }) {
         replies: mapReplies(a.replies),
       }));
 
-      console.log(responseData)
-      setComments(responseData)
-      console.log("UNDERNEATH IS REPLIES!!!!")
-      console.log(responseData.replies)
-
+      setComments(responseData)    
     }
 
     async function addComment(){
@@ -69,24 +58,18 @@ export default function Comment({ route }) {
           },
           body: JSON.stringify(data)
         })
-        console.log("Do we get here mate222222?")
+        
         const response = await request.json()
-        console.log("Do we get here mate?")
-        console.log("Response status:", response.status);
         if (response){
           getComments()
         }
         else{
           console.log("Uh oh theres an error!")
         }
-        console.log("Lemme seee...")
-        console.log(response)
       }
       catch (error){
         console.log("Something went wrong: ", error.message)
       }
-      
-
     }
 
   return (
@@ -141,14 +124,6 @@ const CommentStyle = StyleSheet.create({
     marginRight: 10,
     padding: 10,
     borderRadius: 5,
-  },
-
-  commentButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'transparent',
   }
+  
 })
