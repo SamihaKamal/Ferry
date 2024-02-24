@@ -4,8 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Button } from '@rneui/base';
 
 function Post({id, name, user_id, caption, image, date, likes, country, tags, navigation}) {
-    console.log(user_id)
-    console.log(id)
     const OpenComments = () => {
         //Navigates to register through App.js
         navigation.navigate('Comment', {post: id, user: user_id})
@@ -21,7 +19,6 @@ function Post({id, name, user_id, caption, image, date, likes, country, tags, na
                     {/* Title and profile picture */}
                     <Text style ={[postStyle.postText]}>{name}</Text> 
                 </View>
-                {console.log(image)}
                 <Image 
                     style={postStyle.postImage}
                     source={{ uri: image}}

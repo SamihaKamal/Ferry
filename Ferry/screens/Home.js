@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SearchBar } from '@rneui/themed';
 import PostTile from '../components/Post';
@@ -10,9 +10,11 @@ export default function Home({ route, navigation }) {
   const { user } = route.params;
   const [password, setPassword] = useState([]);
   const [search, setSearch] = useState("");
+  const [userImage, setUserImage] = useState(null);
 
   useEffect(() =>{
     getPosts() 
+    getUserProfile()
 }, [])
 
   // useFocusEffect(
@@ -20,6 +22,15 @@ export default function Home({ route, navigation }) {
   //     return () => getPosts();
   //   })
   // );
+  async function getUserProfile() {
+    const request = await fetch(`http://192.168.0.68:8000/api/get+user+image/?user_id=${user}`)
+    const response = await request.json()
+    console.log("Before if statement:", response.Image)
+    if (response){
+      setUserImage(response.Image)
+      console.log(userImage)
+    }
+  }
 
   async function getPosts() {
     const request = await fetch('http://192.168.0.68:8000/api/get+all+posts/')
@@ -42,16 +53,31 @@ export default function Home({ route, navigation }) {
   const updateSearch = (search) => {
     setSearch(search);
   };
+
+  function sendToProfile(){
+    navigation.navigate('Profile', {user: user})
+  }
   
   return (
     <View>
+      {console.log("after" , userImage)}
+
       <SearchBar 
         placeholder='Type here....'
         onChangeText={updateSearch}
         value={search}
         platform='android'
       />
-      {console.log(search)}
+      <View style={{flexDirection:'row', justifyContent: 'space-between', backgroundColor: 'pink'}}>
+        <Text style={homeStyle.welcomeText}>Welcome!</Text>
+        <TouchableOpacity style={homeStyle.TouchableOpacity} onPress={sendToProfile}>
+          <Image 
+            style={homeStyle.Image}
+            source={{ uri: userImage}}
+          />
+        </TouchableOpacity>
+        
+      </View>
       {/* Theres different components within home:
       - Profile picture/profile menu
       - Welcome back title
@@ -59,6 +85,7 @@ export default function Home({ route, navigation }) {
       - Posts */}
       <StatusBar style="auto" />
       <ScrollView>
+      
       {password.map((password, index ) => (
           <PostTile key={index}
            id={password.id}
@@ -78,3 +105,23 @@ export default function Home({ route, navigation }) {
     </View>
   );
 }
+
+const homeStyle = StyleSheet.create({
+  TouchableOpacity: {
+    marginLeft: 'auto',
+    marginRight: 10,
+  },
+
+  Image: {
+    marginLeft: 'auto',
+    width: 70,
+    height: 70,
+    aspectRatio: 1, // Maintain the aspect ratio to prevent distortion
+    borderRadius: 100,
+  },
+
+  welcomeText: {
+    marginLeft: 10,
+    fontSize: 50, 
+  }
+})

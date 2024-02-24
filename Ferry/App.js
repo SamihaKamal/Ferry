@@ -7,6 +7,7 @@ import MyTabs from './components/Tab';
 import Register from './screens/Register';
 import Login from './screens/Login';
 import Comment from './screens/Comment';
+import Profile from './screens/Profile';
 
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
           }}/>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Comment" component={Comment} />
+          <Stack.Screen name="Profile" component={Profile} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

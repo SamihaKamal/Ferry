@@ -6,6 +6,7 @@ from django.db import models
 class User(models.Model):
     name = models.CharField("name", max_length=100)
     #Add profile image here
+    image = models.ImageField(blank=True)
     email = models.EmailField("email", unique=True)
     password = models.CharField("password", max_length=100)
     

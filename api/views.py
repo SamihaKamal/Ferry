@@ -1,8 +1,10 @@
 import json
 from django.shortcuts import render
+from django.conf import settings
 from django.http import JsonResponse
 from .models import *
 from datetime import date
+import os
 
 # Create your views here.
 
@@ -33,6 +35,7 @@ def login(request):
     users_data = [{
         'id':users.id,
         'name':users.name, 
+        'image': request.build_absolute_uri(users.image.url), 
         'email':users.email, 
         'password':users.password} for users in users]
     
@@ -58,6 +61,8 @@ def register(request):
         gets email, password and users name and then creates a new user with those details
         
     '''
+
+    
     if request.method == 'POST':
         data = json.loads(request.body)
         userEmail = data.get('email', '')
@@ -65,7 +70,7 @@ def register(request):
         userName = data.get('name', '')
 
         try:
-            user = User(name = userName, email = userEmail, password = userPassword)
+            user = User(name = userName, image='default-user.png', email = userEmail, password = userPassword)
             user.save()
             return JsonResponse({'message': 'User registered, please login'}, status=200)
         except: 
@@ -90,6 +95,21 @@ def get_user_id(request):
         except:
             return JsonResponse({'error': 'User doesnt exist'}, status=400)
         
+def get_user_image(request):
+    user_email=request.GET.get('user_email', None)
+    user_id = request.GET.get('user_id', None)
+    
+    if (user_email==None) & (user_id==None):
+        return JsonResponse({'error': 'Please input ?user_email= or ?user_id= to the end of the url'}, status=401)
+    else:
+        if (user_id):
+            user = User.objects.get(id = user_id)
+            image = user.image
+        else:
+            user = User.objects.get(email= user_email)
+            image = user.image
+            
+    return JsonResponse({'Image': request.build_absolute_uri(image.url)}, status=200)    
         
 #VIEW FUNCTIONS FOR POSTS
 #####################################################################################################################        
