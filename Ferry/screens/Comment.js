@@ -1,15 +1,14 @@
-import { StyleSheet, Text, View, Button, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import CommentTile from '../components/CommentTile';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Comment({ route }) {
     const { user, post } = route.params;
     const [comments, setComments] = useState([]);
     const [userComment, setUserComment] = useState();
 
-    console.log("Heehee")
-    console.log(user)
     useEffect(() =>{
         getComments() 
         console.log("Check we get to this point - COMMENT VERSION") 
@@ -87,12 +86,8 @@ export default function Comment({ route }) {
     }
 
   return (
-    <View>
-      <Text>User is: {user}</Text>
-      <Text>Post is: {post}</Text>
-      <TextInput placeholder="User Comment" value={userComment} onChangeText={setUserComment}/>
-      <Button title="Create post" onPress={addComment}/>
-      <ScrollView  style={{ height: '80%' }}>
+    <View style={{ flex: 1 }}>
+      <ScrollView  style={{ flex: 1 }}>
         {comments.map((a,index) => (
           <CommentTile key={index}
           id={a.id}
@@ -103,10 +98,51 @@ export default function Comment({ route }) {
                likes={a.likes}
                  replies={a.replies}/>
         ))}
-      
-      <Button title="Register" onPress={getComments}/>
       </ScrollView>
-      <StatusBar style="auto" />
+      <View style={CommentStyle.commentContainer}> 
+        <TextInput
+          style={[CommentStyle.commentBox]}
+          multiline
+          autoCorrect={true}
+          numberOfLines={4}
+          maxLength={60}
+          placeholder="User Comment" 
+          value={userComment} 
+          onChangeText={setUserComment}/>
+          <TouchableOpacity>
+            <Ionicons name='arrow-forward-circle' size={50} color="#BDD7EE"/>
+          </TouchableOpacity>
+      </View>
+     
     </View>
   );
 }
+
+const CommentStyle = StyleSheet.create({
+  commentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+  },
+
+  commentBox: {
+    flex: 1,
+    backgroundColor: '#eee',
+    marginRight: 10,
+    padding: 10,
+    borderRadius: 5,
+  },
+
+  commentButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'transparent',
+  }
+})
