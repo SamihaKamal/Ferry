@@ -12,32 +12,42 @@ class User(models.Model):
     def __str__(self) -> str:
         return self.name
     
+#TAGS
+class Tag(models.Model):
+    tag_text = models.CharField("tag name", max_length=100)
+
 
 #POSTS AND REVIEWS
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     review_body = models.TextField(("review text"))
     # Add images here
+    image = models.ImageField(blank=True)
+    date = models.DateField(("date"))
     likes_counter = models.IntegerField(("likes"))
     country_tag = models.CharField(("country tag"), max_length=50, null=False)
+    tags = models.ManyToManyField(Tag)
     
     
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     caption = models.TextField(("caption"))
     # Add images here
+    image = models.ImageField(blank=True)
+    date = models.DateField(("date"), null=True)
     likes_counter = models.IntegerField(("likes"))
-    country_tag = models.CharField(("country tag"), max_length=50, null=True)
+    country_tag = models.CharField(("country tag"), max_length=50, null=True, blank=True)
+    tags = models.ManyToManyField(Tag)
 
 #COMMENTS
 class Comments(models.Model):
     users = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
-    reviews = models.ForeignKey(Review, on_delete=models.CASCADE, null=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
+    reviews = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, blank=True)
     comment_body = models.TextField(("comment text"))
-    date = models.DateField(("date"))
+    date = models.DateField(("date"), null=True)
     likes_counter = models.IntegerField(("likes"))
-    replying_to = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+    replying_to = models.ForeignKey('self', null=True, on_delete=models.CASCADE, blank=True)
     
 #LISTS
 class List(models.Model):
@@ -46,13 +56,9 @@ class List(models.Model):
     posts = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
     review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True)
     comments = models.ForeignKey(Comments, on_delete=models.CASCADE, null=True)   
+    tags = models.ManyToManyField(Tag)
         
-#TAGS
-class Tag(models.Model):
-    tag_text = models.CharField("tag name", max_length=100)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True)
-    lists = models.ForeignKey(List, on_delete=models.CASCADE, null=True)
+
     
 #CHAT AND MESSAGES
 class Chat(models.Model):

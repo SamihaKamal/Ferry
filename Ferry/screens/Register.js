@@ -19,7 +19,7 @@ export default function Register({ navigation }) {
         password: password,
         name: name,
       }
-      const request = await fetch('http://192.168.0.59:8000/api/register/',{
+      const request = await fetch('http://192.168.0.68:8000/api/register/',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -31,7 +31,7 @@ export default function Register({ navigation }) {
       
       
       if (response.message == "User registered, please login"){
-        const id_request = await fetch(`http://192.168.0.59:8000/api/get+user+with+email?user_email=${email}`)
+        const id_request = await fetch(`http://192.168.0.68:8000/api/get+user+with+email/?user_email=${email}`)
         const id_response = await id_request.json()
         navigation.navigate('MainPages', {user: id_response.user_id})
       }else{
@@ -46,6 +46,11 @@ export default function Register({ navigation }) {
     navigation.navigate('Login')
   }
 
+  const TEST = () => {
+    // Navigates to login page through App.js
+    navigation.navigate('MainPages', {user: 1, navigation: navigation})
+  }
+
   return (
     <View>
       <Text>Register here!!</Text>
@@ -55,6 +60,8 @@ export default function Register({ navigation }) {
       <Button title="Register" onPress={HandleRegister}/>
       <Text>Already have a login? Login here!</Text>
       <Button title="Login" onPress={SendToLogin} />
+
+      <Button title="Eekk" onPress={TEST} />
       <StatusBar style="auto" />
     </View>
   );
