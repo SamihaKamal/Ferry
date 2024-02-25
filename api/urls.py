@@ -33,5 +33,6 @@ urlpatterns = [
     path('api/get+user+comments/', get_comments_by_user),
     path('api/create+comments+for+post/', create_comment_on_post),
     path('api/create+reply+comments+for+post/', create_reply_comment_on_post),
+    path('api/create+chat/', create_chat)
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

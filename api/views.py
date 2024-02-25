@@ -443,3 +443,26 @@ def get_comments_by_user(request):
             return JsonResponse({'comments': comments_data}, json_dumps_params={'indent':5}, status=200)
         except Exception as e:
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
+        
+#VIEW FUNCTIONS FOR CHAT
+#####################################################################################################################  
+#SOMETHING TO KEEP IN MIND:
+# A USER CAN BE A USER TO A TO_USER SO WHEN I CHECK FOR CHATS MAKE SURE TO INCLUDE BOTH
+def create_chat(request):
+    if (request.method=='POST'):
+        data = json.loads(request.body)   
+        user_id = data.get('user_id','')
+        receiver_id = data.get('to_user_id','')
+        
+        user = User.objects.get(id=user_id)
+        reciever = User.objects.get(id=receiver_id)
+        try:
+            chat, created = Chat.objects.get_or_create(user=user, to_user=reciever) 
+            return JsonResponse({'message': 'new chat created'}, status=200) 
+        except Exception as e: 
+            return JsonResponse({'error': f'something went wrong: {e}'}, status=400)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
+            
+    
+             
