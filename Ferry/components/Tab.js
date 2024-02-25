@@ -36,7 +36,6 @@ const CustomAddPostButton = ({children, onPress}) => (
 
 function MyTabs({ route }) {
   const { user } = route.params;
-  console.log(user)
   return (
     <Tab.Navigator screenOptions={{
       tabBarShowLabel: false,

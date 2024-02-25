@@ -17,18 +17,12 @@ export default function Home({ route, navigation }) {
     getUserProfile()
 }, [])
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     return () => getPosts();
-  //   })
-  // );
   async function getUserProfile() {
     const request = await fetch(`http://192.168.0.68:8000/api/get+user+image/?user_id=${user}`)
     const response = await request.json()
-    console.log("Before if statement:", response.Image)
+    
     if (response){
       setUserImage(response.Image)
-      console.log(userImage)
     }
   }
 
@@ -61,8 +55,7 @@ export default function Home({ route, navigation }) {
   
   return (
     <View style={{ flex: 1 }}>
-      {console.log("after" , userImage)}
-
+    
       <SearchBar 
         placeholder='Type here....'
         onChangeText={updateSearch}

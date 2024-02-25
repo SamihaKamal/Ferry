@@ -96,6 +96,10 @@ def get_user_id(request):
             return JsonResponse({'error': 'User doesnt exist'}, status=400)
         
 def get_user_image(request):
+    '''
+        Takes in user id or email and sends back the users image.
+        
+    '''
     user_email=request.GET.get('user_email', None)
     user_id = request.GET.get('user_id', None)
     
@@ -112,6 +116,10 @@ def get_user_image(request):
     return JsonResponse({'Image': request.build_absolute_uri(image.url)}, status=200) 
 
 def get_user_data(request):
+    '''
+        Takes in user id and sends back everything regarding the user.
+        
+    '''
     user_id=request.GET.get('user_id', None)
     
     if (user_id==None):
@@ -146,11 +154,7 @@ def edit_user_image(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
 
-    
-    
-    
-   
-    
+
         
 #VIEW FUNCTIONS FOR POSTS
 #####################################################################################################################        
@@ -358,7 +362,6 @@ def create_comment_on_post(request):
             comment.save()
             return JsonResponse({'message': 'Comment saved'}, status=200)
         except Exception as e: 
-            print(e)
             return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
@@ -386,12 +389,15 @@ def create_reply_comment_on_post(request):
             comment.save()
             return JsonResponse({'message': 'Comment saved'}, status=200)
         except Exception as e: 
-            print(e)
             return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
   
 def get_posts_by_user(request):
+    '''
+        Takes in user id and returns every post made by that user.
+        
+    '''
     user_id=request.GET.get('user_id', None)
     
     if (user_id==None):
@@ -414,6 +420,10 @@ def get_posts_by_user(request):
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
         
 def get_comments_by_user(request):
+    '''
+        Takes in user id and returns every comment made by that user.
+        
+    '''
     user_id=request.GET.get('user_id', None)
     
     if (user_id==None):

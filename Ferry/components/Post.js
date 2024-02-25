@@ -10,8 +10,6 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
     }
 
     const sendToProfile = () => {
-        console.log("This is the current user:", user_id)
-        console.log("This is the post user:", post_user_id)
         navigation.navigate('Profile', {user: user_id, viewuser: post_user_id, navigation: navigation})
     }
 

@@ -13,7 +13,6 @@ export default function Profile({ route }) {
   const [ userReviews, setUserReviews] = useState([]);
   const [ editVisible, setEditVisible] = useState('none');
   const [ editChatVisible, setEditChatVisible] = useState('visible');
-  const [ modalVisible, setModalVisible] = useState(false);
   const [ index, setIndex ] = useState(0);
  
 
