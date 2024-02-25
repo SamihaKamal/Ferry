@@ -3,10 +3,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { Button } from '@rneui/base';
 
-function Post({id, name, user_id, caption, image, date, likes, country, tags, navigation}) {
+function Post({id, name, user_image, post_user_id, user_id, caption, image, date, likes, country, tags, navigation}) {
     const OpenComments = () => {
         //Navigates to register through App.js
         navigation.navigate('Comment', {post: id, user: user_id})
+    }
+
+    const sendToProfile = () => {
+        console.log("This is the current user:", user_id)
+        console.log("This is the post user:", post_user_id)
+        navigation.navigate('Profile', {user: user_id, viewuser: post_user_id, navigation: navigation})
     }
 
     const a = !country || country.trim() === '';
@@ -17,6 +23,12 @@ function Post({id, name, user_id, caption, image, date, likes, country, tags, na
             <View style={[postStyle.extra]}>
                 <View style={[postStyle.postTop]}>
                     {/* Title and profile picture */}
+                    <TouchableOpacity style={postStyle.TouchableOpacity} onPress={sendToProfile}>
+                        <Image 
+                            style={postStyle.Image}
+                            source={{ uri: user_image}}
+                        />
+                    </TouchableOpacity>
                     <Text style ={[postStyle.postText]}>{name}</Text> 
                 </View>
                 <Image 
@@ -58,6 +70,18 @@ const postStyle = StyleSheet.create({
         padding: 20,
         backgroundColor: '#D9D9D9',
         alignItems: 'center',
+    },
+
+    TouchableOpacity: {
+        marginBottom: 10,
+    },
+
+    Image: {
+        marginRight: 'auto',
+        width: 50,
+        height: 50,
+        aspectRatio: 1, // Maintain the aspect ratio to prevent distortion
+        borderRadius: 100,
     },
 
     InfoContainer: {
@@ -116,10 +140,11 @@ const postStyle = StyleSheet.create({
 
     postText: {
         marginLeft: 10,
-        fontSize: 20,  
+        fontSize: 30,  
     },
 
     postTop: {
+        flexDirection: 'row',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         backgroundColor: 'white',

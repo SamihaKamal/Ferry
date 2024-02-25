@@ -38,6 +38,7 @@ export default function Home({ route, navigation }) {
 
     const responseData = response.Posts.map((a) =>({
       id: a.id,
+      post_user_id: a.user.id,
       user: a.user.name,
       caption: a.caption,
       image: a.image,
@@ -55,11 +56,11 @@ export default function Home({ route, navigation }) {
   };
 
   function sendToProfile(){
-    navigation.navigate('Profile', {user: user, navigation: navigation})
+    navigation.navigate('Profile', {user: user, viewuser: user, navigation: navigation})
   }
   
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {console.log("after" , userImage)}
 
       <SearchBar 
@@ -84,12 +85,14 @@ export default function Home({ route, navigation }) {
       - Search bar
       - Posts */}
       <StatusBar style="auto" />
-      <ScrollView>
+      <ScrollView style={{ flex: 1 }}>
       
       {password.map((password, index ) => (
           <PostTile key={index}
            id={password.id}
             name={password.user}
+            user_image={userImage}
+            post_user_id={password.post_user_id}
             user_id={user}
              caption={password.caption}
               image={password.image}

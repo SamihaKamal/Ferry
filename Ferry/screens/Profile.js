@@ -1,15 +1,18 @@
 import { StyleSheet, Text, View, Image, Modal, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import PostTile from '../components/Post';
 import ProfileTabs from '../components/ProfileTabs';
 
 export default function Profile({ route }) {
-  const { user, navigation } = route.params;
+  const { user, viewuser, navigation } = route.params;
   const [ userData, setUserData ] = useState([]);
   const [ userPosts, setUserPosts] = useState([]);
   const [ userComments, setUserComments] = useState([]);
   const [ userReviews, setUserReviews] = useState([]);
+  const [ editVisible, setEditVisible] = useState('none');
+  const [ editChatVisible, setEditChatVisible] = useState('visible');
   const [ modalVisible, setModalVisible] = useState(false);
   const [ index, setIndex ] = useState(0);
  
@@ -20,14 +23,18 @@ export default function Profile({ route }) {
 
 
   async function getUserData(){
-    const request = await fetch(`http://192.168.0.68:8000/api/get+user/?user_id=${user}`)
+    if (user==viewuser){
+      setEditVisible('visible')
+      setEditChatVisible('none')
+    }
+    const request = await fetch(`http://192.168.0.68:8000/api/get+user/?user_id=${viewuser}`)
     const response = await request.json()
 
     if (response){
       setUserData(response.user)
     }
 
-    const postRequest = await fetch(`http://192.168.0.68:8000/api/get+user+posts/?user_id=${user}`)
+    const postRequest = await fetch(`http://192.168.0.68:8000/api/get+user+posts/?user_id=${viewuser}`)
     const postResponse = await postRequest.json()
     
     const postData = postResponse.posts.map((a) =>({
@@ -42,7 +49,7 @@ export default function Profile({ route }) {
     }));
     setUserPosts(postData)
 
-    const commentRequest = await fetch(`http://192.168.0.68:8000/api/get+user+comments/?user_id=${user}`)
+    const commentRequest = await fetch(`http://192.168.0.68:8000/api/get+user+comments/?user_id=${viewuser}`)
     const commentResponse = await commentRequest.json()
 
     const commentData = commentResponse.comments.map((a) =>({
@@ -56,11 +63,9 @@ export default function Profile({ route }) {
     setUserComments(commentData)
   }
 
-  async function editUserData(){
-
+  function sendToChat(){
+    navigation.navigate('Message', {user: user, recipent: viewuser, navigation: navigation})
   }
-
-
   return (
     <View style={ProfileStyle.container}>
       <View style={ProfileStyle.profileContainer}>
@@ -74,18 +79,25 @@ export default function Profile({ route }) {
           <Text style={ProfileStyle.username}>{userData.name}</Text>
           <Text>{userData.email}</Text>
         </View>
+        <TouchableOpacity style={{display: editChatVisible, marginLeft: 'auto', paddingRight: 10, backgroundColor: 'pink'}} onPress={sendToChat}>
+          <Ionicons name={'chatbubble'} size={30} color={'white'}/>
+        </TouchableOpacity>
+        <TouchableOpacity style={{display: editVisible, marginLeft: 'auto', paddingRight: 10, backgroundColor: 'pink'}}>
+          <Ionicons name={'settings'} size={30} color={'white'}/>
+        </TouchableOpacity>
+        
       </View>
-      <View style={{paddingBottom: 200,}}>
+      <View style={{flex: 1}}>
        <ProfileTabs tabs={['Posts','Reviews','Comments']}
        initalTab={0}
        onChange={setIndex}/>
        {index === 0 && (
-        <ScrollView>
+        <ScrollView style={{ flex: 1 }}>
           {userPosts.map((password, index ) => (
           <PostTile key={index}
            id={password.id}
             name={password.user}
-            user_id={user}
+            user_id={viewuser}
              caption={password.caption}
               image={password.image}
                date={password.date}
@@ -121,7 +133,7 @@ export default function Profile({ route }) {
 const ProfileStyle = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
 
   profileContainer: {
@@ -150,6 +162,7 @@ const ProfileStyle = StyleSheet.create({
   commentsContainer: {
     paddingHorizontal: 20,
     paddingTop: 10,
+    flex: 1
   },
   commentContainer: {
     marginBottom: 20,
