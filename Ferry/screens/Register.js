@@ -14,6 +14,7 @@ export default function Register({ navigation }) {
 
   async function HandleRegister() {
       // Navigates to main pages through App.js
+      
       const data = {
         email: email,
         password: password,
