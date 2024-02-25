@@ -55,7 +55,7 @@ export default function Home({ route, navigation }) {
   };
 
   function sendToProfile(){
-    navigation.navigate('Profile', {user: user})
+    navigation.navigate('Profile', {user: user, navigation: navigation})
   }
   
   return (
@@ -68,7 +68,7 @@ export default function Home({ route, navigation }) {
         value={search}
         platform='android'
       />
-      <View style={{flexDirection:'row', justifyContent: 'space-between', backgroundColor: 'pink'}}>
+      <View style={{flexDirection:'row', justifyContent: 'space-between', backgroundColor: 'white'}}>
         <Text style={homeStyle.welcomeText}>Welcome!</Text>
         <TouchableOpacity style={homeStyle.TouchableOpacity} onPress={sendToProfile}>
           <Image 

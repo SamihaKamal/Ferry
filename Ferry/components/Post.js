@@ -122,13 +122,15 @@ const postStyle = StyleSheet.create({
     postTop: {
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
-        backgroundColor: '#F2F2F2',
+        backgroundColor: 'white',
     },
 
     extra: {
         borderRadius: 10,
         padding: 10,
-        backgroundColor: '#F2F2F2', 
+        borderWidth: 1,
+        borderColor: '#ccc',
+        backgroundColor: 'white', 
     },
 
     postBox: {
@@ -136,7 +138,7 @@ const postStyle = StyleSheet.create({
         height: 'auto',
         padding: 10,
         paddingTop: 10,
-        backgroundColor: 'pink',
+        backgroundColor: 'white',
     }
 })
 

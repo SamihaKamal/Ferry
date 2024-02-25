@@ -25,9 +25,12 @@ urlpatterns = [
     path('api/register/', register),
     path('api/get+user+with+email/', get_user_id),
     path('api/get+user+image/', get_user_image),
+    path('api/get+user/', get_user_data),
     path('api/get+all+posts/', get_all_post),
+    path('api/get+user+posts/', get_posts_by_user),
     path('api/create_post/', create_post),
     path('api/get+comments+with+post/', get_comments_for_post),
+    path('api/get+user+comments/', get_comments_by_user),
     path('api/create+comments+for+post/', create_comment_on_post),
     path('api/create+reply+comments+for+post/', create_reply_comment_on_post),
     

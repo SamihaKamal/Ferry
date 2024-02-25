@@ -109,7 +109,48 @@ def get_user_image(request):
             user = User.objects.get(email= user_email)
             image = user.image
             
-    return JsonResponse({'Image': request.build_absolute_uri(image.url)}, status=200)    
+    return JsonResponse({'Image': request.build_absolute_uri(image.url)}, status=200) 
+
+def get_user_data(request):
+    user_id=request.GET.get('user_id', None)
+    
+    if (user_id==None):
+        return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
+    else:
+        try:
+            user = User.objects.get(id=user_id)
+            users_data = {
+                'id':user.id,
+                'name':user.name, 
+                'image': request.build_absolute_uri(user.image.url), 
+                'email':user.email, 
+                'password':user.password} 
+            return JsonResponse({'user': users_data}, json_dumps_params={'indent':5}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
+        
+#VIEW FUNCTIONS TO EDIT USER DATA
+#####################################################################################################################    
+
+def edit_user_image(request):
+    if (request.method=='POST'):  
+        user_id = request.POST.get('user_id', None)
+        user_image = request.FILES.get('user_image', None)     
+        try:
+            key = User.objects.get(id=user_id)
+            key.image = user_image 
+            key.save()
+            return JsonResponse({'message' : 'image changes successfully'}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({'message':'user does not exist'}, status = 400)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+
+    
+    
+    
+   
+    
         
 #VIEW FUNCTIONS FOR POSTS
 #####################################################################################################################        
@@ -350,3 +391,45 @@ def create_reply_comment_on_post(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
   
+def get_posts_by_user(request):
+    user_id=request.GET.get('user_id', None)
+    
+    if (user_id==None):
+        return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
+    else:
+        try:
+            user = User.objects.get(id=user_id)
+            posts = Post.objects.all().filter(user=user)
+            posts_data = [{
+                'id':posts.id,
+                'user':serialize_user(posts.user),
+                'image': request.build_absolute_uri(posts.image.url), 
+                'caption':posts.caption, 
+                'date':posts.date,
+                'likes':posts.likes_counter,
+                'country':posts.country_tag,
+                'tags': [tags.tag_text for tags in posts.tags.all()]} for posts in posts]
+            return JsonResponse({'posts': posts_data}, json_dumps_params={'indent':5}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
+        
+def get_comments_by_user(request):
+    user_id=request.GET.get('user_id', None)
+    
+    if (user_id==None):
+        return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
+    else:
+        try:
+            user = User.objects.get(id=user_id)
+            comments = Comments.objects.all().filter(users=user)
+            comments_data = [{
+                'id':comments.id,
+                'user':serialize_user(comments.users),
+                'posts':comments.post.id,
+                'reviews':check_review_is_null(comments.reviews),
+                'content':comments.comment_body,
+                'date':comments.date,
+                'likes':comments.likes_counter} for comments in comments]
+            return JsonResponse({'comments': comments_data}, json_dumps_params={'indent':5}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
