@@ -21,10 +21,11 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
             <View style={[postStyle.extra]}>
                 <View style={[postStyle.postTop]}>
                     {/* Title and profile picture */}
+                    {console.log(user_image)}
                     <TouchableOpacity style={postStyle.TouchableOpacity} onPress={sendToProfile}>
                         <Image 
                             style={postStyle.Image}
-                            source={{ uri: user_image}}
+                            source={{ uri: user_image }}
                         />
                     </TouchableOpacity>
                     <Text style ={[postStyle.postText]}>{name}</Text> 

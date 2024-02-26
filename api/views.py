@@ -157,12 +157,13 @@ def edit_user_image(request):
 
         
 #VIEW FUNCTIONS FOR POSTS
-#####################################################################################################################        
+#####################################################################################################################      
+
 def serialize_user(user):
     return {
         'id': user.id,
         'name': user.name,
-        'email': user.email
+        'email': user.email,
     }
 
 def get_all_post(request):
@@ -207,6 +208,7 @@ def get_all_post(request):
     posts_data = [{
         'id':posts.id,
         'user':serialize_user(posts.user),
+        'user_image': request.build_absolute_uri(posts.user.image.url),
         'image': request.build_absolute_uri(posts.image.url), 
         'caption':posts.caption, 
         'date':posts.date,
@@ -461,6 +463,43 @@ def create_chat(request):
             return JsonResponse({'message': 'new chat created'}, status=200) 
         except Exception as e: 
             return JsonResponse({'error': f'something went wrong: {e}'}, status=400)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+def get_user_chats(request):
+    if (request.method=='GET'):
+        user_id=request.GET.get('user_id', None)
+        
+        if (user_id==None):
+            return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
+        else:
+            try:
+                user = User.objects.get(id=user_id)
+                chats = Chat.objects.all().filter(user=user)
+                chats_data = [{
+                    'id': chats.id,
+                    'user': serialize_user(chats.user),
+                    'user_image':  request.build_absolute_uri(user.image.url),
+                    'to_user': serialize_user(chats.to_user),
+                    'to_user_image': request.build_absolute_uri(chats.to_user.image.url),} for chats in chats]
+                
+                to_user_chats = Chat.objects.all().filter(to_user=user)
+                to_user_chats_data = [{
+                    'id': chats.id,
+                    'user': serialize_user(chats.to_user),
+                    'user_image':  request.build_absolute_uri(chats.to_user.image.url),
+                    'to_user': serialize_user(chats.user),
+                    'to_user_image': request.build_absolute_uri(user.image.url),} for chats in to_user_chats]
+                
+                all_chats = []
+                if (chats_data != []):
+                    all_chats.append(chats_data)
+                if (to_user_chats_data != []):
+                    all_chats.append(to_user_chats_data)
+                
+                return JsonResponse({'chats': all_chats}, json_dumps_params={'indent':5}, status=200)
+            except Exception as e:
+                return JsonResponse({'error': f'Chat doesnt exist:  {e}'}, status=400)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
             
