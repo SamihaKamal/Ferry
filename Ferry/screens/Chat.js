@@ -27,7 +27,6 @@ export default function Chat({ route, navigation }) {
           to_user_image: a.to_user_image,
           to_user_name: a.to_user.name,
       }));
-      console.log("in to user");
       setChatData(chatsData);
     }
   }

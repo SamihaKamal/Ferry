@@ -42,7 +42,6 @@ export default function Home({ route, navigation }) {
       country: a.country,
       tags: a.tags,
     }));
-    console.log(responseData)
     setPassword(responseData)
   }
 
