@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
 from .models import *
-from datetime import date
+from datetime import date, datetime
 import os
 
 # Create your views here.
@@ -450,6 +450,14 @@ def get_comments_by_user(request):
 #####################################################################################################################  
 #SOMETHING TO KEEP IN MIND:
 # A USER CAN BE A USER TO A TO_USER SO WHEN I CHECK FOR CHATS MAKE SURE TO INCLUDE BOTH
+
+def serialize_chat(chat):
+    return {
+        'chat_id': chat.id,
+        'chat_user': serialize_user(chat.user),
+        'chat_to_user': serialize_user(chat.to_user)
+    }
+    
 def create_chat(request):
     if (request.method=='POST'):
         data = json.loads(request.body)   
@@ -458,9 +466,15 @@ def create_chat(request):
         
         user = User.objects.get(id=user_id)
         reciever = User.objects.get(id=receiver_id)
+        
+        all_chats = Chat.objects.all()
         try:
+            for a in all_chats:
+                if (a.to_user==user and a.user==reciever):
+                    return JsonResponse({'message':'chat exists'}, status=200)        
             chat, created = Chat.objects.get_or_create(user=user, to_user=reciever) 
-            return JsonResponse({'message': 'new chat created'}, status=200) 
+            print(chat.id)
+            return JsonResponse({'message': 'new chat created', 'chat': chat.id}, safe=False, status=200) 
         except Exception as e: 
             return JsonResponse({'error': f'something went wrong: {e}'}, status=400)
     else:
@@ -479,7 +493,7 @@ def get_user_chats(request):
                 chats_data = [{
                     'id': chats.id,
                     'user': serialize_user(chats.user),
-                    'user_image':  request.build_absolute_uri(user.image.url),
+                    'user_image':  request.build_absolute_uri(chats.user.image.url),
                     'to_user': serialize_user(chats.to_user),
                     'to_user_image': request.build_absolute_uri(chats.to_user.image.url),} for chats in chats]
                 
@@ -489,7 +503,7 @@ def get_user_chats(request):
                     'user': serialize_user(chats.to_user),
                     'user_image':  request.build_absolute_uri(chats.to_user.image.url),
                     'to_user': serialize_user(chats.user),
-                    'to_user_image': request.build_absolute_uri(user.image.url),} for chats in to_user_chats]
+                    'to_user_image': request.build_absolute_uri(chats.user.image.url),} for chats in to_user_chats]
                 
                 all_chats = []
                 if (chats_data != []):
@@ -502,6 +516,61 @@ def get_user_chats(request):
                 return JsonResponse({'error': f'Chat doesnt exist:  {e}'}, status=400)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
+    
+def get_messages_from_chat(request):
+    if (request.method=='GET'):
+        chat_id = request.GET.get('chat_id', None)
+        
+        if (chat_id == None):
+            return JsonResponse({'error': 'Please input ?chat_id= to the end of the url'}, status=401)
+        else:
+            try:
+                chat = Chat.objects.get(id=chat_id)
+                
+                Chat_messages = Message.objects.all().filter(chat=chat)
+                chat_data =[{
+                    'id': a.id,
+                    'chat': serialize_chat(a.chat),
+                    'content': a.comment_body,
+                    'sender': serialize_user(a.from_user),
+                    'receiver': serialize_user(a.to_user),
+                    'date': a.date
+                    } for a in Chat_messages]
+                return JsonResponse({'messages': chat_data}, json_dumps_params={'indent':5}, status=200)
+            except Exception as e:
+                return JsonResponse({'error': f'messages doesnt exist:  {e}'}, status=400)         
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+def create_message(request):
+    if (request.method=='POST'):
+        
+        data = json.loads(request.body)
+        user_id = data.get('user_id','')
+        receiver_id = data.get('to_user_id','')
+        chat_id = data.get('chat_id','')
+        content = data.get('content','')
+        date = datetime.now()
+        
+        print(date)
+        
+        sender = User.objects.get(id=user_id)
+        receiver =  User.objects.get(id=receiver_id)
+        chat = Chat.objects.get(id=chat_id)
+        
+        try:
+            new_message = Message(chat=chat, comment_body=content, from_user=sender, to_user=receiver, date=date)
+            new_message.save()
+            return JsonResponse({'message': 'message saved'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'Unable to save message: {e}'}, status=401)
+        
+        
+    else:
+      return JsonResponse({'error': 'Wrong request method'}, status=400)  
+    return
+    
+    
             
     
              

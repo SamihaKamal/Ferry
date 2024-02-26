@@ -31,21 +31,27 @@ export default function Chat({ route, navigation }) {
     }
   }
 
-  
-  function sendToMessages(toUserId){
-    navigation.navigate('Message', {user: user, recipent: toUserId, navigation: navigation})
+   
+  const sendToProfile = (toUserId) => {
+    navigation.navigate('Profile', {user: user, viewuser: toUserId, navigation: navigation})
+  }
+  const sendToMessages = (toUserId, chatId) => {
+    navigation.navigate('Message', {user: user, recipent: toUserId, chat: chatId, navigation: navigation})
   }
 
   return (
     <View>
       {chatData.map((a, index) => (
-        <TouchableOpacity key={index} onPress={() => sendToMessages(a.to_user_id)}>
+        <TouchableOpacity key={index} onPress={() => sendToMessages(a.to_user_id, a.id)}>
           <ListItem 
           bottomDivider>
-            <Image 
-              style={chatStyle.Image}
-              source={{ uri: a.to_user_image }}
-            />
+            <TouchableOpacity onPress={() => sendToProfile(a.to_user_id)}>
+              <Image 
+                style={chatStyle.Image}
+                source={{ uri: a.to_user_image }}
+              />
+            </TouchableOpacity>
+            
             <ListItem.Content>
               <ListItem.Title>{a.to_user_name}</ListItem.Title>
               <ListItem.Subtitle>President</ListItem.Subtitle>
