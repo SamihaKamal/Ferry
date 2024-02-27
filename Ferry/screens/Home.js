@@ -34,6 +34,7 @@ export default function Home({ route, navigation }) {
       id: a.id,
       post_user_id: a.user.id,
       user: a.user.name,
+      user_profile: a.user_image,
       caption: a.caption,
       image: a.image,
       date: a.date,
@@ -42,7 +43,10 @@ export default function Home({ route, navigation }) {
       tags: a.tags,
     }));
 
-    setPassword(responseData)
+    if (responseData){
+      setPassword(responseData)
+    }
+   
   }
 
   const updateSearch = (search) => {
@@ -70,7 +74,6 @@ export default function Home({ route, navigation }) {
             source={{ uri: userImage}}
           />
         </TouchableOpacity>
-        
       </View>
       {/* Theres different components within home:
       - Profile picture/profile menu
@@ -84,7 +87,7 @@ export default function Home({ route, navigation }) {
           <PostTile key={index}
            id={password.id}
             name={password.user}
-            user_image={userImage}
+            user_image={password.user_profile}
             post_user_id={password.post_user_id}
             user_id={user}
              caption={password.caption}
