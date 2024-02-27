@@ -62,8 +62,25 @@ export default function Profile({ route }) {
     setUserComments(commentData)
   }
 
-  function sendToChat(){
-    navigation.navigate('Message', {user: user, recipent: viewuser, navigation: navigation})
+  async function sendToChat(){
+    const data={
+      user_id: user,
+      to_user_id: viewuser
+    }
+    const request = await fetch('http://192.168.0.68:8000/api/create+chat/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+
+    const response = await request.json()
+    if(response){
+      const chat_id = response.chat
+      navigation.navigate('Message', {user: user, recipent: viewuser, chat: chat_id, navigation: navigation})
+    }
+    
   }
   return (
     <View style={ProfileStyle.container}>
@@ -109,7 +126,7 @@ export default function Profile({ route }) {
         )}
         {index === 1 && (
           <View>
-            {/* Render favorite posts */}
+            {/* Render reviews */}
           </View>
         )}
         {index === 2 && (

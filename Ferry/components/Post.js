@@ -24,7 +24,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                     <TouchableOpacity style={postStyle.TouchableOpacity} onPress={sendToProfile}>
                         <Image 
                             style={postStyle.Image}
-                            source={{ uri: user_image}}
+                            source={{ uri: user_image }}
                         />
                     </TouchableOpacity>
                     <Text style ={[postStyle.postText]}>{name}</Text> 
