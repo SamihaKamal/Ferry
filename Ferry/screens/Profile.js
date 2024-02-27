@@ -77,9 +77,7 @@ export default function Profile({ route }) {
 
     const response = await request.json()
     if(response){
-      console.log(response)
       const chat_id = response.chat
-      console.log(chat_id)
       navigation.navigate('Message', {user: user, recipent: viewuser, chat: chat_id, navigation: navigation})
     }
     
@@ -128,7 +126,7 @@ export default function Profile({ route }) {
         )}
         {index === 1 && (
           <View>
-            {/* Render favorite posts */}
+            {/* Render reviews */}
           </View>
         )}
         {index === 2 && (

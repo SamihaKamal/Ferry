@@ -10,30 +10,10 @@ export default function Message({ route }) {
   const scrollViewRef = useRef(null);
  
   useEffect(() =>{
-    // createChat()
     getMessages()
     scrollToBottom()
 }, [])
 
-  async function createChat(){
-    const data={
-      user_id: user,
-      to_user_id: recipent
-    }
-    const request = await fetch('http://192.168.0.68:8000/api/create+chat/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-
-    const response = request.json()
-
-    if(response){
-      chat = response.chat
-    }
-  }
 
   async function getMessages(){
     const request = await fetch(`http://192.168.0.68:8000/api/get+messages+from+chat/?chat_id=${chat}`)

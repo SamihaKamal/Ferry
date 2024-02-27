@@ -42,7 +42,11 @@ export default function Home({ route, navigation }) {
       country: a.country,
       tags: a.tags,
     }));
-    setPassword(responseData)
+
+    if (responseData){
+      setPassword(responseData)
+    }
+   
   }
 
   const updateSearch = (search) => {

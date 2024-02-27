@@ -448,8 +448,6 @@ def get_comments_by_user(request):
         
 #VIEW FUNCTIONS FOR CHAT
 #####################################################################################################################  
-#SOMETHING TO KEEP IN MIND:
-# A USER CAN BE A USER TO A TO_USER SO WHEN I CHECK FOR CHATS MAKE SURE TO INCLUDE BOTH
 
 def serialize_chat(chat):
     return {
@@ -459,6 +457,10 @@ def serialize_chat(chat):
     }
     
 def create_chat(request):
+    '''
+        Creates a new chat by checking if one already exists with the user and then creating one.
+        
+    '''
     if (request.method=='POST'):
         data = json.loads(request.body)   
         user_id = data.get('user_id','')
@@ -473,7 +475,6 @@ def create_chat(request):
                 if (a.to_user==user and a.user==reciever):
                     return JsonResponse({'message':'chat exists'}, status=200)        
             chat, created = Chat.objects.get_or_create(user=user, to_user=reciever) 
-            print(chat.id)
             return JsonResponse({'message': 'new chat created', 'chat': chat.id}, safe=False, status=200) 
         except Exception as e: 
             return JsonResponse({'error': f'something went wrong: {e}'}, status=400)
@@ -481,6 +482,10 @@ def create_chat(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def get_user_chats(request):
+    '''
+        Returns all chat.
+        
+    '''
     if (request.method=='GET'):
         user_id=request.GET.get('user_id', None)
         
@@ -518,6 +523,10 @@ def get_user_chats(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
     
 def get_messages_from_chat(request):
+    '''
+        Returns all messages made in a specific chat.
+        
+    '''
     if (request.method=='GET'):
         chat_id = request.GET.get('chat_id', None)
         
@@ -543,6 +552,10 @@ def get_messages_from_chat(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def create_message(request):
+    '''
+        Creates a new message.
+        
+    '''
     if (request.method=='POST'):
         
         data = json.loads(request.body)
@@ -551,8 +564,6 @@ def create_message(request):
         chat_id = data.get('chat_id','')
         content = data.get('content','')
         date = datetime.now()
-        
-        print(date)
         
         sender = User.objects.get(id=user_id)
         receiver =  User.objects.get(id=receiver_id)
@@ -568,7 +579,7 @@ def create_message(request):
         
     else:
       return JsonResponse({'error': 'Wrong request method'}, status=400)  
-    return
+
     
     
             
