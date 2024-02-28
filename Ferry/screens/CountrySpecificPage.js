@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import PostTile from '../components/Post';
@@ -11,6 +11,8 @@ export default function CountrySpecificPage({ route }) {
   const [ imageData, setImageData ] = useState([]);
   const [ index, setIndex ] = useState(0);
 
+  const window = useWindowDimensions().width;
+  const imageSize = window/3;
 
   useEffect(() =>{
     getCountry()
@@ -64,9 +66,9 @@ export default function CountrySpecificPage({ route }) {
 
   return (
     <View style={countryStyle.container}>
-      <Text>This a the following screen</Text>
       <View>
-        <Text>{countryData.name}</Text>
+        <Text style={{margin: 30,
+    fontSize: 30, textAlign: 'center' }}>{countryData.name}</Text>
       </View>
 
       <View style={{flex: 1}}>
@@ -98,13 +100,16 @@ export default function CountrySpecificPage({ route }) {
           </View>
         )}
         {index === 2 && (
-          <ScrollView>
-           {imageData.map((a, index) => (
-            <Image key={index}
-                style={countryStyle.Image}
-                source={{ uri: a.image}}
-            />
-           ))}
+          <ScrollView> 
+            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                {imageData.map((a, index) => (
+                <Image key={index}
+                    style={[countryStyle.Image, { width: imageSize }]}
+                    source={{ uri: a.image}}
+                />
+            ))}
+            </View>
+           
           </ScrollView>
         )}
       </View>
@@ -120,8 +125,8 @@ const countryStyle = StyleSheet.create({
     },
 
     Image: {           
-        width: 50,
-        height: 100,
-        aspectRatio: 1, // Maintain the aspect ratio to prevent distortion         
+        height: 150,
+        aspectRatio: 1, // Maintain the aspect ratio to prevent distortion      
+        margin: 2,   
     }
 })
