@@ -37,6 +37,7 @@ export default function CountrySpecificPage({ route }) {
         const postData = postresponse.posts.map((a) =>({
             id: a.id,
             user: a.user.name,
+            post_user_id: a.user.id,
             user_profile: a.user_image,
             caption: a.caption,
             image: a.image,
@@ -79,6 +80,7 @@ export default function CountrySpecificPage({ route }) {
            id={password.id}
             name={password.user}
             user_image={password.user_profile}
+            post_user_id={password.post_user_id}
             user_id={user}
              caption={password.caption}
               image={password.image}

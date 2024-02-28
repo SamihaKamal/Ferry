@@ -412,6 +412,7 @@ def get_posts_by_user(request):
                 'id':posts.id,
                 'user':serialize_user(posts.user),
                 'image': request.build_absolute_uri(posts.image.url), 
+                'user_image': request.build_absolute_uri(posts.user.image.url),
                 'caption':posts.caption, 
                 'date':posts.date,
                 'likes':posts.likes_counter,

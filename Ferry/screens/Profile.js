@@ -38,6 +38,7 @@ export default function Profile({ route }) {
     
     const postData = postResponse.posts.map((a) =>({
       id: a.id,
+      post_user_id: a.user.id,
       user: a.user.name,
       user_profile: a.user_image,
       caption: a.caption,
@@ -108,22 +109,24 @@ export default function Profile({ route }) {
        <ProfileTabs tabs={['Posts','Reviews','Comments']}
        initalTab={0}
        onChange={setIndex}/>
+  
        {index === 0 && (
         <ScrollView style={{ flex: 1 }}>
-          {userPosts.map((password, index ) => (
-          <PostTile key={index}
-           id={password.id}
-            name={password.user}
-            user_image={password.user_profile}
-            user_id={viewuser}
-             caption={password.caption}
-              image={password.image}
-               date={password.date}
-                likes={password.likes}
-                 country={password.country}
-                  tags={password.tags}
-                  navigation={navigation}/>
-        ))}
+           {userPosts.map((password, index ) => (
+            <PostTile key={index}
+            id={password.id}
+              name={password.user}
+              user_image={password.user_profile}
+              post_user_id={password.post_user_id}
+              user_id={user}
+              caption={password.caption}
+                image={password.image}
+                date={password.date}
+                  likes={password.likes}
+                  country={password.country}
+                    tags={password.tags}
+                    navigation={navigation}/>
+          ))}
         </ScrollView>
         )}
         {index === 1 && (
