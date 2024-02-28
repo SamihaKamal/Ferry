@@ -585,6 +585,22 @@ def create_message(request):
 #VIEW FUNCTIONS FOR COUNTRY PAGES
 #####################################################################################################################  
 def get_countries(request):
+    '''
+        Gets countrys and lays them out as:
+        countries: [
+            {
+                id:
+                name:
+                tag:
+            }
+            {
+                id:
+                name:
+                tag:
+            }
+        ]
+    
+    '''
     if (request.method == 'GET'):
         countries = Country.objects.all()
         countries_data = [{
@@ -596,6 +612,10 @@ def get_countries(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def get_country_from_id(request):
+    '''
+        Returns a country from a specific country id.
+
+    '''
     if (request.method == 'GET'):
         country_id = request.GET.get('country_id', None)
         
@@ -613,6 +633,10 @@ def get_country_from_id(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def get_posts_from_country(request):
+    '''
+        Returns post that have country tags that are the same.
+
+    '''
     if (request.method=='GET'):
         country_id = request.GET.get('country_id', None)
         
@@ -636,6 +660,10 @@ def get_posts_from_country(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def get_country_image(request):
+    '''
+        Returns images from posts that are have the specified country tag.
+    
+    '''
     if (request.method=='GET'):
         country_id = request.GET.get('country_id', None)
         
