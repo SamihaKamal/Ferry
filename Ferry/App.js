@@ -9,6 +9,7 @@ import Login from './screens/Login';
 import Message from './screens/Message';
 import Comment from './screens/Comment';
 import Profile from './screens/Profile';
+import CountrySpecificPage from './screens/CountrySpecificPage';
 
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
           <Stack.Screen name="Comment" component={Comment} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="Message" component={Message} />
+          <Stack.Screen name="CountrySpecificPage" component={CountrySpecificPage} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
