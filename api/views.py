@@ -412,6 +412,7 @@ def get_posts_by_user(request):
                 'id':posts.id,
                 'user':serialize_user(posts.user),
                 'image': request.build_absolute_uri(posts.image.url), 
+                'user_image': request.build_absolute_uri(posts.user.image.url),
                 'caption':posts.caption, 
                 'date':posts.date,
                 'likes':posts.likes_counter,
@@ -579,7 +580,105 @@ def create_message(request):
         
     else:
       return JsonResponse({'error': 'Wrong request method'}, status=400)  
+  
+  
+#VIEW FUNCTIONS FOR COUNTRY PAGES
+#####################################################################################################################  
+def get_countries(request):
+    '''
+        Gets countrys and lays them out as:
+        countries: [
+            {
+                id:
+                name:
+                tag:
+            }
+            {
+                id:
+                name:
+                tag:
+            }
+        ]
+    
+    '''
+    if (request.method == 'GET'):
+        countries = Country.objects.all()
+        countries_data = [{
+            'id': a.id,
+            'name': a.name,
+            'tag': a.country_tag} for a in countries]
+        return JsonResponse({'countries': countries_data}, json_dumps_params={'indent':5}, status=200)
+    else: 
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+def get_country_from_id(request):
+    '''
+        Returns a country from a specific country id.
 
+    '''
+    if (request.method == 'GET'):
+        country_id = request.GET.get('country_id', None)
+        
+        if (country_id == None):
+            return JsonResponse({'error': 'Please input ?country_id= to the end of the url'}, status=401)
+        else:
+            country = Country.objects.get(id=country_id)
+            country_data ={
+                'id': country.id,
+                'name': country.name,
+                'tag': country.country_tag,
+            }
+            return JsonResponse({'country': country_data}, json_dumps_params={'indent':5}, status=200)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+def get_posts_from_country(request):
+    '''
+        Returns post that have country tags that are the same.
+
+    '''
+    if (request.method=='GET'):
+        country_id = request.GET.get('country_id', None)
+        
+        if (country_id == None):
+            return JsonResponse({'error': 'Please input ?country_id= to the end of the url'}, status=401)
+        else:
+            country = Country.objects.get(id=country_id)
+            posts = Post.objects.all().filter(country_tag=country.country_tag)
+            posts_data = [{
+                'id':posts.id,
+                'user':serialize_user(posts.user),
+                'user_image': request.build_absolute_uri(posts.user.image.url),
+                'image': request.build_absolute_uri(posts.image.url), 
+                'caption':posts.caption, 
+                'date':posts.date,
+                'likes':posts.likes_counter,
+                'country':posts.country_tag,
+                'tags': [tags.tag_text for tags in posts.tags.all()]} for posts in posts]
+            return JsonResponse({'posts': posts_data}, json_dumps_params={'indent':5}, status=200)   
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+def get_country_image(request):
+    '''
+        Returns images from posts that are have the specified country tag.
+    
+    '''
+    if (request.method=='GET'):
+        country_id = request.GET.get('country_id', None)
+        
+        if (country_id == None):
+            return JsonResponse({'error': 'Please input ?country_id= to the end of the url'}, status=401)
+        else:
+            country = Country.objects.get(id=country_id)
+            posts = Post.objects.all().filter(country_tag=country.country_tag)
+            posts_data = [{
+                'id':posts.id,
+                'user':serialize_user(posts.user),
+                'image': request.build_absolute_uri(posts.image.url)} for posts in posts]
+            return JsonResponse({'posts': posts_data}, json_dumps_params={'indent':5}, status=200)   
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
     
     
             
