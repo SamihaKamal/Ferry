@@ -54,7 +54,6 @@ export default function Chat({ route, navigation }) {
             
             <ListItem.Content>
               <ListItem.Title>{a.to_user_name}</ListItem.Title>
-              <ListItem.Subtitle>President</ListItem.Subtitle>
             </ListItem.Content>
         </ListItem>
         </TouchableOpacity>

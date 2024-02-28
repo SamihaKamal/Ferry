@@ -39,6 +39,7 @@ export default function Profile({ route }) {
     const postData = postResponse.posts.map((a) =>({
       id: a.id,
       user: a.user.name,
+      user_profile: a.user_image,
       caption: a.caption,
       image: a.image,
       date: a.date,
@@ -113,6 +114,7 @@ export default function Profile({ route }) {
           <PostTile key={index}
            id={password.id}
             name={password.user}
+            user_image={password.user_profile}
             user_id={viewuser}
              caption={password.caption}
               image={password.image}

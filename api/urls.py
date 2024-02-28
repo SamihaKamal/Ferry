@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/get+user/', get_user_data),
     path('api/get+all+posts/', get_all_post),
     path('api/get+user+posts/', get_posts_by_user),
+    path('api/get+country+posts/', get_posts_from_country),
     path('api/create_post/', create_post),
     path('api/get+comments+with+post/', get_comments_for_post),
     path('api/get+user+comments/', get_comments_by_user),
@@ -37,4 +38,7 @@ urlpatterns = [
     path('api/get+user+chats/', get_user_chats),
     path('api/get+messages+from+chat/', get_messages_from_chat),
     path('api/create+message/', create_message),
+    path('api/get+countries/', get_countries),
+    path('api/get+country+from+id/', get_country_from_id),
+    path('api/get+country+image/', get_country_image),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
