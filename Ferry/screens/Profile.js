@@ -97,11 +97,11 @@ export default function Profile({ route }) {
           <Text style={ProfileStyle.username}>{userData.name}</Text>
           <Text>{userData.email}</Text>
         </View>
-        <TouchableOpacity style={{display: editChatVisible, marginLeft: 'auto', paddingRight: 10, backgroundColor: 'pink'}} onPress={sendToChat}>
+        <TouchableOpacity style={{display: editChatVisible, marginLeft: 'auto', backgroundColor: 'white'}} onPress={sendToChat}>
           <Ionicons name={'chatbubble'} size={30} color={'white'}/>
         </TouchableOpacity>
-        <TouchableOpacity style={{display: editVisible, marginLeft: 'auto', paddingRight: 10, backgroundColor: 'pink'}}>
-          <Ionicons name={'settings'} size={30} color={'white'}/>
+        <TouchableOpacity style={{display: editVisible, marginLeft: 'auto', backgroundColor: 'white'}}>
+          <Ionicons name={'settings'} size={30} color={'grey'}/>
         </TouchableOpacity>
         
       </View>
@@ -160,7 +160,7 @@ const ProfileStyle = StyleSheet.create({
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'pink', 
+    backgroundColor: 'white', 
   },
 
   TouchableOpacity: {
