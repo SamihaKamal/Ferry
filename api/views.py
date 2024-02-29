@@ -758,5 +758,23 @@ def save_post_to_list(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
    
+def save_comment_to_list(request):
+    if (request.method == 'POST'):
+        data = json.loads(request.body)
+        user_id = data.get('user_id', '')
+        list_id = data.get('list_id', '')
+        comment_id = data.get('comment_id', '')
+        
+        user = User.objects.get(id=user_id)
+        comment = Comments.objects.get(id=comment_id)
+        list = List.objects.get(id=list_id)
+        
+        try:
+            list.comments.add(comment)
+            return JsonResponse({'message': 'Post succesfully added to list!'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'Unable to save post to list: {e}'}, status=401)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
         
 

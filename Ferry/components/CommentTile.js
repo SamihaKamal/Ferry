@@ -1,13 +1,67 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import {
+    Button,
+    Dialog,
+    CheckBox,
+    ListItem,
+    Avatar,
+    } from '@rneui/themed';
 
 
 export default function CommentTile({ id, name, user_id, post_id, content, date, likes, replies, refreshComments }) {
     const [userComment, setUserComment] = useState('');
+    const [listReplyId, setListReplyId] = useState(null);
     const [showAddCommentBox, setShowAddCommentBox] = useState(false);
     const [showAddReplyCommentBox, setShowAddReplyCommentBox] = useState(false);
     const [replyID, setReplyID] = useState(null);
+    const [ visible, setVisible ] = useState(false);
+    const [ listData, setListData ] = useState([]);
+
+    useEffect(() =>{
+        getLists()
+    }, [])
+
+    async function getLists(){
+        const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user_id}`)
+        const response = await request.json()
+
+        const responseData = response.lists.map((a) => ({
+            id: a.id,
+            list_user_id: a.user.id,
+            name: a.name,
+        }))
+
+        setListData(responseData)
+    }
+
+    async function saveList(listId){
+        const data={
+            user_id: user_id,
+            list_id: listId,
+            comment_id: listReplyId,
+        }
+        const request = await fetch('http://192.168.0.68:8000/api/save+comment+to+list/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        toggleVisible()
+        alert("Post saved!")
+    }
+    
+    const toggleVisible = () => {
+        setVisible(!visible);
+        setListReplyId(id)
+    };
+
+    const toggleVisibleReply = (commentId) => {
+        setVisible(!visible)
+        setListReplyId(commentId)
+    };
 
     const toggleAddCommentBox = (comment_id) => {
         setShowAddCommentBox(!showAddCommentBox);
@@ -62,7 +116,7 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
                     <TouchableOpacity style={CTileStyle.button}>
                         <Ionicons name={'heart'} size={20} color="#F4B183" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={CTileStyle.button}>
+                    <TouchableOpacity style={CTileStyle.button} onPress={toggleVisible}>
                             <Ionicons name={'add-outline'} size={20} color="#A9D18E"/>
                     </TouchableOpacity>
                 </View>
@@ -95,7 +149,7 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
                         <TouchableOpacity style={CTileStyle.button}>
                             <Ionicons name={'heart'} size={20} color="#F4B183" />
                         </TouchableOpacity>
-                        <TouchableOpacity style={CTileStyle.button}>
+                        <TouchableOpacity style={CTileStyle.button} onPress={() => toggleVisibleReply(reply.id)}>
                             <Ionicons name={'add-outline'} size={20} color="#A9D18E"/>
                         </TouchableOpacity>
                     </View>
@@ -134,6 +188,22 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
                     )}
                 </View>
             ))}
+            <Dialog
+            isVisible={visible}
+            onBackdropPress={toggleVisible}>
+                <Dialog.Title title="Choose List"/>
+                {listData.map((a, index) => (
+                    <ListItem
+                    key={index}
+                    onPress={() => saveList(a.id)}>
+                        <ListItem.Content>
+                            <ListItem.Title>
+                                {a.name}
+                            </ListItem.Title>
+                        </ListItem.Content>
+                    </ListItem>
+                ))}
+            </Dialog>
         </View>
     );
 }
