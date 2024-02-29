@@ -62,6 +62,9 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
                     <TouchableOpacity style={CTileStyle.button}>
                         <Ionicons name={'heart'} size={20} color="#F4B183" />
                     </TouchableOpacity>
+                    <TouchableOpacity style={CTileStyle.button}>
+                            <Ionicons name={'add-outline'} size={20} color="#A9D18E"/>
+                    </TouchableOpacity>
                 </View>
                 {showAddCommentBox && replyID === id &&(
                     <View style={CTileStyle.addCommentContainer}>
@@ -91,6 +94,9 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
                         </TouchableOpacity>
                         <TouchableOpacity style={CTileStyle.button}>
                             <Ionicons name={'heart'} size={20} color="#F4B183" />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={CTileStyle.button}>
+                            <Ionicons name={'add-outline'} size={20} color="#A9D18E"/>
                         </TouchableOpacity>
                     </View>
                     {showAddReplyCommentBox && replyID === reply.id &&(

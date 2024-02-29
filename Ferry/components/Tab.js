@@ -4,7 +4,7 @@ import PostScreen from '../components/CreatePost';
 import HomeScreen from '../screens/Home';
 import ChatScreen from '../screens/Chat';
 import PagesScreen from '../screens/Pages';
-import FollowingScreen from '../screens/Following';
+import ListScreen from '../screens/Lists';
 import { View, TouchableOpacity } from 'react-native';
 
 const Tab = createBottomTabNavigator();
@@ -50,9 +50,9 @@ function MyTabs({ route }) {
 
         },
       }} />
-      <Tab.Screen name="Following" component={FollowingScreen} initialParams={{ user }}
+      <Tab.Screen name="Lists" component={ListScreen} initialParams={{ user }}
       options={{
-        title: 'Following',
+        title: 'Lists',
         tabBarIcon: ({ focused, color, size }) => {
           const iconColour = focused ? 'red' : 'grey';
           return <Ionicons name={focused ? 'bookmark' : 'bookmark-outline'} color={iconColour} size={size} />

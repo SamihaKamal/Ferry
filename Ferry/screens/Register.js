@@ -30,6 +30,7 @@ export default function Register({ navigation }) {
 
       const response = await request.json()
       
+      console.log(response)
       
       if (response.message == "User registered, please login"){
         const id_request = await fetch(`http://192.168.0.68:8000/api/get+user+with+email/?user_email=${email}`)

@@ -59,6 +59,7 @@ def login(request):
 def register(request):
     '''
         gets email, password and users name and then creates a new user with those details
+        On account creation a default list is created
         
     '''
 
@@ -72,9 +73,11 @@ def register(request):
         try:
             user = User(name = userName, image='default-user.png', email = userEmail, password = userPassword)
             user.save()
+            defaultList = List(name='Default', user=user)
+            defaultList.save()
             return JsonResponse({'message': 'User registered, please login'}, status=200)
-        except: 
-            return JsonResponse({'error': 'User already exists, please login instead'}, status=401)
+        except Exception as e: 
+            return JsonResponse({'error': f'User already exists, please login instead: {e}'}, status=401)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
@@ -262,6 +265,12 @@ def check_review_is_null(review):
         return 0
     else:
         return review.id
+    
+def check_post_is_null(post):
+    if (post == None):
+        return 0
+    else:
+        return post.id
     
 def get_comment_replies(comment):
     '''
@@ -680,7 +689,52 @@ def get_country_image(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
+               
+#VIEW FUNCTIONS FOR LISTS
+#####################################################################################################################     
+def serialize_post(posts):
+    print("posts error?")
+    return{
+        'id':posts.id,
+        'caption':posts.caption, 
+        'date':posts.date,
+        'likes':posts.likes_counter,
+        'country':posts.country_tag,
+        'tags': [tags.tag_text for tags in posts.tags.all()]
+    }
     
-            
+def serialize_comments(comments):
+    print("comments error?")
+    return{
+        'id':comments.id,
+        'posts':comments.post.id,
+        'reviews':check_review_is_null(comments.reviews),
+        'content':comments.comment_body,
+        'date':comments.date,
+        'likes':comments.likes_counter
+    }
     
-             
+def get_user_lists(request):
+    if (request.method=='GET'):
+        user_id = request.GET.get('user_id', None)
+        
+        if (user_id == None):
+            return JsonResponse({'error': 'Please input ?user_id= to the end of the url'})
+        else:
+            try:
+                user = User.objects.get(id = user_id)
+                user_lists = List.objects.all().filter(user=user)
+                print(user)
+                lists_data = [{
+                    'id': a.id,
+                    'name': a.name,
+                    'user': serialize_user(a.user),
+                    'user_image': request.build_absolute_uri(a.user.image.url),
+                    'posts': [check_post_is_null(posts) for posts in a.posts.all()],
+                    'comments': [comments.id for comments in a.comments.all()],
+                    'tags': [tags.tag_text for tags in a.tags.all()]} for a in user_lists]
+                return JsonResponse({'lists': lists_data}, json_dumps_params={'indent':5}, status=200)
+            except Exception as e:
+               return JsonResponse({'error': f'Unable to get posts: {e}'}, status=401) 
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)

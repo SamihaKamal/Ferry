@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-export default function Following({ route }) {
+export default function Lists({ route }) {
   const { user } = route.params;
   return (
     <View>
