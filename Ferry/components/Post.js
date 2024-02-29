@@ -34,8 +34,19 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
         setListData(responseData)
     }
 
-    async function saveList(){
-        console.log("I do nothing rn...")
+    async function saveList(listId){
+        const data={
+            user_id: user_id,
+            list_id: listId,
+            posts_id: id,
+        }
+        const request = await fetch('http://192.168.0.68:8000/api/save+post+to+list/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
         toggleVisible()
         alert("Post saved!")
     }
@@ -104,7 +115,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                 {listData.map((a, index) => (
                     <ListItem
                     key={index}
-                    onPress={saveList}>
+                    onPress={() => saveList(a.id)}>
                         <ListItem.Content>
                             <ListItem.Title>
                                 {a.name}
