@@ -44,4 +44,7 @@ urlpatterns = [
     path('api/get+user+lists/', get_user_lists),
     path('api/save+post+to+list/', save_post_to_list),
     path('api/save+comment+to+list/', save_comment_to_list),
+    path('api/get+list+post/', get_list_posts),
+    path('api/get+list+comment/', get_list_comments),
+    path('api/get+list/', get_list),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

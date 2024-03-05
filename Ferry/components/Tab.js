@@ -6,6 +6,7 @@ import ChatScreen from '../screens/Chat';
 import PagesScreen from '../screens/Pages';
 import ListScreen from '../screens/Lists';
 import { View, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +37,7 @@ const CustomAddPostButton = ({children, onPress}) => (
 
 function MyTabs({ route }) {
   const { user } = route.params;
+  const navigation = useNavigation();
   return (
     <Tab.Navigator screenOptions={{
       tabBarShowLabel: false,

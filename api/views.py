@@ -776,5 +776,76 @@ def save_comment_to_list(request):
             return JsonResponse({'error': f'Unable to save post to list: {e}'}, status=401)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+def get_list_posts(request):
+    if (request.method=='GET'):
+        list_id = request.GET.get('list_id', None)
+        
+        if (list_id == None):
+            return JsonResponse({'error': 'Please input ?list_id= to the end of the url'})
+        else:
+            try:
+                list = List.objects.get(id = list_id) 
+                list_posts = list.posts.all()
+                posts_data = [{
+                'id':posts.id,
+                'user':serialize_user(posts.user),
+                'user_image': request.build_absolute_uri(posts.user.image.url),
+                'image': request.build_absolute_uri(posts.image.url), 
+                'caption':posts.caption, 
+                'date':posts.date,
+                'likes':posts.likes_counter,
+                'country':posts.country_tag,
+                'tags': [tags.tag_text for tags in posts.tags.all()]} for posts in list_posts]
+                
+                return JsonResponse({'posts': posts_data}, json_dumps_params={'indent':5}, status=200)
+            except Exception as e:
+                return JsonResponse({'error': f'Unable to save post to list: {e}'}, status=401)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
+    
+def get_list_comments(request):
+    if (request.method=='GET'):
+        list_id = request.GET.get('list_id', None)
+        
+        if (list_id == None):
+            return JsonResponse({'error': 'Please input ?list_id= to the end of the url'})
+        else:
+            try:
+                list = List.objects.get(id = list_id) 
+                list_comments = list.comments.all()
+                comments_data = [{
+                'id':comments.id,
+                'user':serialize_user(comments.users),
+                'posts':comments.post.id,
+                'reviews':check_review_is_null(comments.reviews),
+                'content':comments.comment_body,
+                'date':comments.date,
+                'likes':comments.likes_counter} for comments in list_comments]
+                
+                return JsonResponse({'comments': comments_data}, json_dumps_params={'indent':5}, status=200)
+            except Exception as e:
+                return JsonResponse({'error': f'Unable to save post to list: {e}'}, status=401)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
+    
+def get_list(request):
+    if (request.method=='GET'):
+        list_id = request.GET.get('list_id', None)
+        
+        if (list_id == None):
+            return JsonResponse({'error': 'Please input ?list_id= to the end of the url'})
+        else:
+            list = List.objects.get(id=list_id)
+            list_data = {
+               'id': list_id,
+               'user': serialize_user(list.user),
+               'name': list.name
+            }
+            return JsonResponse({'list': list_data})
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
+    
+        
         
 
