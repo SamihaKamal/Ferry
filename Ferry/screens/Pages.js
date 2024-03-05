@@ -2,9 +2,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { ListItem, Avatar } from '@rneui/themed';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Pages({ route, navigation }) {
+export default function Pages({ route }) {
   const { user } = route.params;
+  const navigation = useNavigation();
   const [ country, setCountry ] = useState([])
 
   useEffect(() =>{

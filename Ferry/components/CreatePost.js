@@ -2,9 +2,11 @@ import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 export default function CreatePost({ route }) {
   const { user } = route.params;
+  const navigation = useNavigation();
   const [caption, setCaption] = useState();
   const [image, setImage] = useState();
   const [tag, setTag] = useState();

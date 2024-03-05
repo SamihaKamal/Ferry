@@ -1,9 +1,60 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { Button } from '@rneui/base';
+import {
+    Button,
+    Dialog,
+    CheckBox,
+    ListItem,
+    Avatar,
+    } from '@rneui/themed';
+import { useEffect, useState } from 'react';
+
+
 
 function Post({id, name, user_image, post_user_id, user_id, caption, image, date, likes, country, tags, navigation}) {
+    useEffect(() =>{
+        getLists()
+    }, [])
+  
+    
+    const [ visible, setVisible ] = useState(false);
+    const [ listData, setListData ] = useState([]);
+
+    async function getLists(){
+        const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user_id}`)
+        const response = await request.json()
+
+        const responseData = response.lists.map((a) => ({
+            id: a.id,
+            list_user_id: a.user.id,
+            name: a.name,
+        }))
+
+        setListData(responseData)
+    }
+
+    async function saveList(listId){
+        const data={
+            user_id: user_id,
+            list_id: listId,
+            posts_id: id,
+        }
+        const request = await fetch('http://192.168.0.68:8000/api/save+post+to+list/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        toggleVisible()
+        alert("Post saved!")
+    }
+    
+    const toggleVisible = () => {
+        setVisible(!visible);
+    };
+    
     const OpenComments = () => {
         //Navigates to register through App.js
         navigation.navigate('Comment', {post: id, user: user_id})
@@ -39,7 +90,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                         <TouchableOpacity style={postStyle.LikeButton}>
                             <Ionicons name={'heart'} size={30} color="#F4B183"/>
                         </TouchableOpacity>
-                        <TouchableOpacity style={postStyle.LikeButton}>
+                        <TouchableOpacity style={postStyle.LikeButton} onPress={toggleVisible}>
                             <Ionicons name={'add-outline'} size={30} color="#A9D18E"/>
                         </TouchableOpacity>
                     </View>
@@ -57,6 +108,22 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                 </TouchableOpacity>
                 
             </View>
+            <Dialog
+            isVisible={visible}
+            onBackdropPress={toggleVisible}>
+                <Dialog.Title title="Choose List"/>
+                {listData.map((a, index) => (
+                    <ListItem
+                    key={index}
+                    onPress={() => saveList(a.id)}>
+                        <ListItem.Content>
+                            <ListItem.Title>
+                                {a.name}
+                            </ListItem.Title>
+                        </ListItem.Content>
+                    </ListItem>
+                ))}
+            </Dialog>
         </View>
     );
     

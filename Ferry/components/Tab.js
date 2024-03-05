@@ -4,8 +4,9 @@ import PostScreen from '../components/CreatePost';
 import HomeScreen from '../screens/Home';
 import ChatScreen from '../screens/Chat';
 import PagesScreen from '../screens/Pages';
-import FollowingScreen from '../screens/Following';
+import ListScreen from '../screens/Lists';
 import { View, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +37,7 @@ const CustomAddPostButton = ({children, onPress}) => (
 
 function MyTabs({ route }) {
   const { user } = route.params;
+  const navigation = useNavigation();
   return (
     <Tab.Navigator screenOptions={{
       tabBarShowLabel: false,
@@ -50,9 +52,9 @@ function MyTabs({ route }) {
 
         },
       }} />
-      <Tab.Screen name="Following" component={FollowingScreen} initialParams={{ user }}
+      <Tab.Screen name="Lists" component={ListScreen} initialParams={{ user }}
       options={{
-        title: 'Following',
+        title: 'Lists',
         tabBarIcon: ({ focused, color, size }) => {
           const iconColour = focused ? 'red' : 'grey';
           return <Ionicons name={focused ? 'bookmark' : 'bookmark-outline'} color={iconColour} size={size} />
