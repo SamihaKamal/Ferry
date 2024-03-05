@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, FlatList, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SearchBar } from '@rneui/themed';
 import PostTile from '../components/Post';
+import { useNavigation } from '@react-navigation/native';
 import Fav from '../assets/favicon.png';
 import { useFocusEffect } from '@react-navigation/native';
 
-export default function Home({ route, navigation }) {
+export default function Home({ route}) {
   const { user } = route.params;
+  const navigation = useNavigation();
   const [password, setPassword] = useState([]);
   const [search, setSearch] = useState("");
   const [userImage, setUserImage] = useState(null);
@@ -81,24 +83,26 @@ export default function Home({ route, navigation }) {
       - Search bar
       - Posts */}
       <StatusBar style="auto" />
-      <ScrollView style={{ flex: 1 }}>
-      
-      {password.map((password, index ) => (
-          <PostTile key={index}
-           id={password.id}
-            name={password.user}
-            user_image={password.user_profile}
-            post_user_id={password.post_user_id}
+      <FlatList
+        data={password}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <PostTile
+            id={item.id}
+            name={item.user}
+            user_image={item.user_profile}
+            post_user_id={item.post_user_id}
             user_id={user}
-             caption={password.caption}
-              image={password.image}
-               date={password.date}
-                likes={password.likes}
-                 country={password.country}
-                  tags={password.tags}
-                  navigation={navigation}/>
-        ))}
-      </ScrollView>
+            caption={item.caption}
+            image={item.image}
+            date={item.date}
+            likes={item.likes}
+            country={item.country}
+            tags={item.tags}
+            navigation={navigation}
+          />
+        )}
+      />
      
       
     </View>

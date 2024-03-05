@@ -54,10 +54,10 @@ class Comments(models.Model):
 class List(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(("list name"), max_length=100)
-    posts = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True)
-    comments = models.ForeignKey(Comments, on_delete=models.CASCADE, null=True)   
-    tags = models.ManyToManyField(Tag)
+    posts = models.ManyToManyField(Post, blank=True)
+    review = models.ManyToManyField(Review, blank=True)
+    comments = models.ManyToManyField(Comments, blank=True)   
+    tags = models.ManyToManyField(Tag, blank=True)
         
 
     

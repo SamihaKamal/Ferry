@@ -2,9 +2,11 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { ListItem, Avatar } from '@rneui/themed';
 import { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Chat({ route, navigation }) {
+export default function Chat({ route }) {
   const { user } = route.params;
+  const navigation = useNavigation();
   const [ chatData, setChatData ] = useState([]);
   const [ userImage, setUserImage ] = useState();
 
