@@ -12,6 +12,7 @@ export default function Home({ route}) {
   const navigation = useNavigation();
   const [password, setPassword] = useState([]);
   const [search, setSearch] = useState("");
+  const [like, setLike] = useState(false);
   const [userImage, setUserImage] = useState(null);
 
   useEffect(() =>{
@@ -77,12 +78,7 @@ export default function Home({ route}) {
           />
         </TouchableOpacity>
       </View>
-      {/* Theres different components within home:
-      - Profile picture/profile menu
-      - Welcome back title
-      - Search bar
-      - Posts */}
-      <StatusBar style="auto" />
+    
       <FlatList
         data={password}
         keyExtractor={(item, index) => index.toString()}

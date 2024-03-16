@@ -207,7 +207,7 @@ def get_all_post(request):
             }
         ]
     '''
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('-id')
     posts_data = [{
         'id':posts.id,
         'user':serialize_user(posts.user),
@@ -455,6 +455,49 @@ def get_comments_by_user(request):
             return JsonResponse({'comments': comments_data}, json_dumps_params={'indent':5}, status=200)
         except Exception as e:
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
+        
+def like_post(request):
+    if (request.method=='POST'):
+        data = json.loads(request.body)
+        user_id = data.get('user_id', '')
+        post_id = data.get('post_id', '')
+        
+        user = User.objects.get(id=user_id)
+        post = Post.objects.get(id=post_id)
+        
+        postLike, created = PostLike.objects.get_or_create(user=user, post=post)
+        
+        # If there is a like already created, we delete it
+        if (created == False):
+            postLike.delete()
+         
+        return JsonResponse({'message': 'Liked or didnt Like, it is done'}, status=200)
+    else:
+       return JsonResponse({'error': 'Wrong request method'}, status=400) 
+
+def get_post_likes(request):
+    if (request.method=='GET'):
+        post_id=request.GET.get('post_id', None)
+    
+        if (post_id==None):
+            return JsonResponse({'error': 'Please input ?post_id= to the end of the url'}, status=401)
+        else:
+            try:
+                count = 0
+                post = Post.objects.get(id=post_id)
+                postLikes = PostLike.objects.all().filter(post=post)
+                postLikes_data = [{
+                    'id':a.id,
+                    'user':serialize_user(a.user)} for a in postLikes]
+                for a in postLikes:
+                    count = count + 1
+                
+                return JsonResponse({'postLikes': postLikes_data, 'number': count}, json_dumps_params={'indent':5}, status=200)
+            except Exception as e:
+                return JsonResponse({'error': f'Post doesnt exist {e}'}, status=400)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)    
+    
         
 #VIEW FUNCTIONS FOR CHAT
 #####################################################################################################################  

@@ -77,3 +77,9 @@ class Message(models.Model):
 class Country(models.Model):
     name = models.CharField(("country name"), max_length=50)
     country_tag = models.CharField(("country tag"), max_length=50, null=True)
+    
+#LIKES
+class PostLike(models.Model):
+     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True) 
+     
