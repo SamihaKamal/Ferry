@@ -137,7 +137,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                     ))}
                 </View>
                 <TouchableOpacity style={[postStyle.commentContainer]} onPress={OpenComments}>
-                    <Text>Click here to view comments</Text>
+                    <Text style={{color: 'white'}}>Click here to view comments</Text>
                 </TouchableOpacity>
                 
             </View>
@@ -166,8 +166,9 @@ const postStyle = StyleSheet.create({
     commentContainer: {
         width: 'auto',
         padding: 20,
-        backgroundColor: '#D9D9D9',
+        backgroundColor: '#3A4454',
         alignItems: 'center',
+        borderRadius: 10,
     },
 
     TouchableOpacity: {
@@ -221,14 +222,15 @@ const postStyle = StyleSheet.create({
     postCountry:{
         borderRadius: 40,
         padding: 10,
-        backgroundColor: 'pink',
+        color: 'white',
+        backgroundColor: '#53687E',
     },
 
     postTag: {
         borderRadius: 40,
         padding: 10,
         marginLeft: 4,
-        backgroundColor: '#BFBFBF',
+        backgroundColor: '#C2B2B4',
     },
 
     postCaption: {

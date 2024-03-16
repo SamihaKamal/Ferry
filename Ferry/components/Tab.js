@@ -28,7 +28,7 @@ const CustomAddPostButton = ({children, onPress}) => (
       width: 70,
       height: 70,
       borderRadius: 35,
-      backgroundColor: '#e32f45'
+      backgroundColor: '#6B4E71'
     }}>
       {children}
     </View>
@@ -48,7 +48,7 @@ function MyTabs({ route }) {
         title: 'Home',
         headerTitle: 'Ferry',
         tabBarIcon: ({ focused, color, size }) => {
-          const iconColour = focused ? 'red' : 'grey';
+          const iconColour = focused ? '#6B4E71' : 'grey';
           return <Ionicons name={focused ? 'ios-home' : 'ios-home-outline'} size={size} color={iconColour}/>
 
         },
@@ -57,7 +57,7 @@ function MyTabs({ route }) {
       options={{
         title: 'Lists',
         tabBarIcon: ({ focused, color, size }) => {
-          const iconColour = focused ? 'red' : 'grey';
+          const iconColour = focused ? '#6B4E71' : 'grey';
           return <Ionicons name={focused ? 'bookmark' : 'bookmark-outline'} color={iconColour} size={size} />
         }
       }}/>
@@ -75,7 +75,7 @@ function MyTabs({ route }) {
       options={{
         title: 'Pages',
         tabBarIcon: ({ focused, color, size }) => {
-          const iconColour = focused ? 'red' : 'grey';
+          const iconColour = focused ? '#6B4E71' : 'grey';
           return <Ionicons name={focused ? 'earth' : 'earth-outline'} color={iconColour} size={size} />
         }
       }}/>
@@ -83,7 +83,7 @@ function MyTabs({ route }) {
       options={{
         title: 'Chat',
         tabBarIcon: ({ focused, color, size }) => {
-          const iconColour = focused ? 'red' : 'grey';
+          const iconColour = focused ? '#6B4E71' : 'grey';
           return <Ionicons name={focused ? 'chatbubble' : 'chatbubble-outline'} color={iconColour} size={size} />
         }
       }}/>
