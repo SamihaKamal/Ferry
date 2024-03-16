@@ -46,6 +46,7 @@ function MyTabs({ route }) {
       <Tab.Screen name="Home" component={HomeScreen} initialParams={{ user }}
       options={{
         title: 'Home',
+        headerTitle: 'Ferry',
         tabBarIcon: ({ focused, color, size }) => {
           const iconColour = focused ? 'red' : 'grey';
           return <Ionicons name={focused ? 'ios-home' : 'ios-home-outline'} size={size} color={iconColour}/>

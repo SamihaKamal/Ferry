@@ -49,4 +49,5 @@ urlpatterns = [
     path('api/get+list/', get_list),
     path('api/like+post/', like_post),
     path('api/get+post+likes/', get_post_likes),
+    path('api/get+user+by+name/', get_user_by_name),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

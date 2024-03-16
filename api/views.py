@@ -139,6 +139,24 @@ def get_user_data(request):
             return JsonResponse({'user': users_data}, json_dumps_params={'indent':5}, status=200)
         except Exception as e:
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
+
+def get_user_by_name(request):
+    user_name=request.GET.get('user_name', None)
+    
+    if (user_name==None):
+        return JsonResponse({'error': 'Please input ?user_name= to the end of the url'}, status=401)
+    else:
+        try:
+            user = User.objects.get(name__iexact=user_name)
+            users_data = {
+                'id':user.id,
+                'name':user.name, 
+                'image': request.build_absolute_uri(user.image.url), 
+                'email':user.email, 
+                'password':user.password} 
+            return JsonResponse({'user': users_data}, json_dumps_params={'indent':5}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
         
 #VIEW FUNCTIONS TO EDIT USER DATA
 #####################################################################################################################    

@@ -3,10 +3,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import PostTile from '../components/Post';
+import { useNavigation } from '@react-navigation/native';
 import ProfileTabs from '../components/ProfileTabs';
 
 export default function Profile({ route }) {
-  const { user, viewuser, navigation } = route.params;
+  const { user, viewuser } = route.params;
+  const navigation = useNavigation();
   const [ userData, setUserData ] = useState([]);
   const [ userPosts, setUserPosts] = useState([]);
   const [ userComments, setUserComments] = useState([]);
