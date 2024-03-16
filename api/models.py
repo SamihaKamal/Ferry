@@ -20,7 +20,7 @@ class Tag(models.Model):
 
 #POSTS AND REVIEWS
 class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     review_body = models.TextField(("review text"))
     # Add images here
     image = models.ImageField(blank=True)
@@ -31,7 +31,7 @@ class Review(models.Model):
     
     
 class Post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     caption = models.TextField(("caption"))
     # Add images here
     image = models.ImageField(blank=True)
@@ -42,7 +42,7 @@ class Post(models.Model):
 
 #COMMENTS
 class Comments(models.Model):
-    users = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    users = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
     reviews = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, blank=True)
     comment_body = models.TextField(("comment text"))
@@ -52,7 +52,7 @@ class Comments(models.Model):
     
 #LISTS
 class List(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(("list name"), max_length=100)
     posts = models.ManyToManyField(Post, blank=True)
     review = models.ManyToManyField(Review, blank=True)
@@ -63,8 +63,8 @@ class List(models.Model):
     
 #CHAT AND MESSAGES
 class Chat(models.Model):
-    user = models.ForeignKey(User, related_name='from_user', on_delete=models.SET_NULL, null=True)
-    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE, null=True)
+    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE, null=True)
     
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.SET_NULL, null=True)
@@ -77,3 +77,9 @@ class Message(models.Model):
 class Country(models.Model):
     name = models.CharField(("country name"), max_length=50)
     country_tag = models.CharField(("country tag"), max_length=50, null=True)
+    
+#LIKES
+class PostLike(models.Model):
+     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True) 
+     

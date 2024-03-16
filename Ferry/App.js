@@ -19,11 +19,15 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Register'>
-          <Stack.Screen name="Register"component={Register} />
+          <Stack.Screen name="Register"component={Register} options={{
+            headerShown: false,
+          }}/>
           <Stack.Screen name="MainPages" component={MyTabs} options={{
             headerShown: false
           }}/>
-          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Login" component={Login} options={{
+            headerShown: false
+          }}/>
           <Stack.Screen name="Comment" component={Comment} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="Message" component={Message} />

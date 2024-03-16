@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
 import {
     Button,
     Dialog,
@@ -12,15 +11,17 @@ import { useEffect, useState } from 'react';
 
 
 
-function Post({id, name, user_image, post_user_id, user_id, caption, image, date, likes, country, tags, navigation}) {
-    useEffect(() =>{
-        getLists()
-    }, [])
-  
-    
+function Post({id, name, user_image, post_user_id, user_id, caption, image, date, likes, country, tags, navigation}) {   
     const [ visible, setVisible ] = useState(false);
     const [ listData, setListData ] = useState([]);
+    const [ postLikes, setPostLikes ] = useState([])
 
+    useEffect(() =>{
+        getLists()
+        getPostLikes()
+    }, [])
+
+  
     async function getLists(){
         const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user_id}`)
         const response = await request.json()
@@ -32,6 +33,35 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
         }))
 
         setListData(responseData)
+    }
+
+    async function getPostLikes(){
+        const request = await fetch(`http://192.168.0.68:8000/api/get+post+likes/?post_id=${id}`)
+        const response = await request.json()
+
+        setPostLikes(response.number)
+
+    }
+
+    async function likePost(){
+        // call a function like likePost that takes the user and post.
+        const data={
+            user_id: user_id,
+            post_id: id,
+        }
+
+        const request = await fetch('http://192.168.0.68:8000/api/like+post/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+
+        })
+
+        const response=await request.json()
+        getPostLikes()
+ 
     }
 
     async function saveList(listId){
@@ -86,8 +116,9 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                 />
                 <View style={postStyle.InfoContainer}>
                     <Text style={postStyle.date}>{date}</Text>
-                    <View style={[postStyle.Buttons]}>
-                        <TouchableOpacity style={postStyle.LikeButton}>
+                    <View style={[postStyle.Buttons]}>      
+                        <Text>{postLikes}</Text>
+                        <TouchableOpacity style={postStyle.LikeButton} onPress={likePost}>      
                             <Ionicons name={'heart'} size={30} color="#F4B183"/>
                         </TouchableOpacity>
                         <TouchableOpacity style={postStyle.LikeButton} onPress={toggleVisible}>
@@ -101,10 +132,12 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
               
                 <View style={[postStyle.postTagBackground]}>
                     {!a && (<Text style={[postStyle.postCountry]}>{country}</Text>)}    
-                    <Text style={[postStyle.postTag]}>{tags}</Text>
+                    {tags.map((a, index) => (
+                        <Text key={index} style={postStyle.postTag}>{a}</Text>
+                    ))}
                 </View>
                 <TouchableOpacity style={[postStyle.commentContainer]} onPress={OpenComments}>
-                    <Text>Click here to view comments</Text>
+                    <Text style={{color: 'white'}}>Click here to view comments</Text>
                 </TouchableOpacity>
                 
             </View>
@@ -133,8 +166,9 @@ const postStyle = StyleSheet.create({
     commentContainer: {
         width: 'auto',
         padding: 20,
-        backgroundColor: '#D9D9D9',
+        backgroundColor: '#3A4454',
         alignItems: 'center',
+        borderRadius: 10,
     },
 
     TouchableOpacity: {
@@ -188,13 +222,15 @@ const postStyle = StyleSheet.create({
     postCountry:{
         borderRadius: 40,
         padding: 10,
-        backgroundColor: 'pink',
+        color: 'white',
+        backgroundColor: '#53687E',
     },
 
     postTag: {
         borderRadius: 40,
         padding: 10,
-        backgroundColor: '#BFBFBF',
+        marginLeft: 4,
+        backgroundColor: '#C2B2B4',
     },
 
     postCaption: {
