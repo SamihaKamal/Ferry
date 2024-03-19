@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ListItem, Avatar } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 
+
 export default function Lists({ route }) {
   const { user } = route.params;
   const navigation = useNavigation();
