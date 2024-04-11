@@ -243,7 +243,20 @@ def get_all_post(request):
             'Posts': posts_data
         }, json_dumps_params={'indent':5})
         
-
+def get_country_tags(request):
+    if request.method == 'GET':
+        tags = Country.objects.all()
+        tags_data = [{
+            'id': a.id,
+            'name': a.name,
+            'tag': a.country_tag,
+        } for a in tags]
+        
+        return JsonResponse({'country': tags_data}, status=200)
+    else:
+       return JsonResponse({'error': 'Incorrect request method'}, status=400) 
+    
+    
 def create_post(request):
     '''
     
@@ -255,6 +268,7 @@ def create_post(request):
         # Get all the data
         user_id = request.POST.get('user_id', None)
         caption = request.POST.get('caption', None)
+        country_tag_id = request.POST.get('country_tag', None)
         tags_string = request.POST.get('tag')
         image = request.FILES.get('image', None)
         date_posted = date.today()
@@ -269,7 +283,11 @@ def create_post(request):
             tag, created = Tag.objects.get_or_create(tag_text=tag_text)
                         
         try:
-            post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0 )
+            if (country_tag_id != None):
+                country = Country.objects.get(id=country_tag_id)
+                post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0, country_tag = country)
+            else:
+                post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0 )
             post.save()
             post.tags.add(*Tag.objects.filter(tag_text__in=tags))
             return JsonResponse({'message': 'Post saved'}, status=200)
