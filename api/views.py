@@ -268,12 +268,14 @@ def create_post(request):
         # Get all the data
         user_id = request.POST.get('user_id', None)
         caption = request.POST.get('caption', None)
-        country_tag_id = request.POST.get('country_tag', None)
-        tags_string = request.POST.get('tag')
+        country_tag = request.POST.get('country_tag', None)
         image = request.FILES.get('image', None)
         date_posted = date.today()
 
-        tags = [tag.strip() for tag in tags_string.split(',')]
+        tags = []
+        for key, value in request.POST.items():
+            if key.startswith('tag_'):
+                tags.append(value)
         
         #Get user from the user id
         user = User.objects.get(id=user_id)
@@ -283,9 +285,9 @@ def create_post(request):
             tag, created = Tag.objects.get_or_create(tag_text=tag_text)
                         
         try:
-            if (country_tag_id != None):
-                country = Country.objects.get(id=country_tag_id)
-                post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0, country_tag = country)
+            if (country_tag != ''):
+                print('i AM here')
+                post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0, country_tag = country_tag)
             else:
                 post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0 )
             post.save()

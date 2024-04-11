@@ -14,7 +14,7 @@ export default function CreatePost({ route }) {
   const navigation = useNavigation();
   const [caption, setCaption] = useState('');
   const [country, setCountry] = useState([]);
-  const [displayCountry, setDisplayCountry] = useState([]);
+  const [displayCountry, setDisplayCountry] = useState('');
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [ visible, setVisible ] = useState(false);
   const [image, setImage] = useState(null);
@@ -61,17 +61,18 @@ export default function CreatePost({ route }) {
       Alert.alert("Unable to create post","Please add an image")
       return
     }  
+    
     const data = new FormData();
     data.append('user_id', user);
     data.append('caption', caption);
-    data.append('country_tag', selectedCountry)
+    data.append('country_tag', displayCountry)
     data.append('image', {
       uri: image,
       name: 'photo.jpg',
       type: 'image/jpg',
     })
-    currentTags.forEach((tag) => {
-      data.append('tag', tag)
+    currentTags.forEach((tag, index) => {
+      data.append(`tag_${index}`, tag)
     })
 
     const request = await fetch('http://192.168.0.68:8000/api/create_post/',{
@@ -84,7 +85,7 @@ export default function CreatePost({ route }) {
       setCurrentTags([])
       setCaption('')
       setImage(null)
-      navigation.navigate('MainPages', {user: user.user_id})
+      navigation.navigate('MainPages', {user: user})
     }
   }
 

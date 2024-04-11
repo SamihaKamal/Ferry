@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View, ScrollView, FlatList, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SearchBar, ListItem } from '@rneui/themed';
@@ -15,6 +15,14 @@ export default function Home({ route}) {
   const [users, setUsers ] = useState(null);
   const [userImage, setUserImage] = useState(null);
 
+ 
+  useFocusEffect(
+    useCallback(() => {
+      getPosts()
+    }, [])
+  );
+  
+  
   useEffect(() =>{
     getPosts() 
     getUserProfile()
