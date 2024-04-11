@@ -3,9 +3,11 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import PostTile from '../components/Post';
 import ProfileTabs from '../components/ProfileTabs';
+import { useNavigation } from '@react-navigation/native';
 
 export default function CountrySpecificPage({ route }) {
-  const { user, country, navigation } = route.params;
+  const { user, country } = route.params;
+  const navigation = useNavigation();
   const [ countryData, setCountryData ] = useState([]);
   const [ postData, setPostData ] = useState([]);
   const [ imageData, setImageData ] = useState([]);

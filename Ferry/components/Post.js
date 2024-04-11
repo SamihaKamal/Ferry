@@ -217,6 +217,8 @@ const postStyle = StyleSheet.create({
         flexDirection: 'row', // Align items horizontally
         alignItems: 'center', // Align items vertically
         padding: 5,
+        flexWrap: 'wrap',
+            
     },
 
     postCountry:{

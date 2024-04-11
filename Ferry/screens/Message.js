@@ -2,9 +2,11 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Message({ route }) {
-  const { user, recipent, chat, navigation } = route.params;
+  const { user, recipent, chat } = route.params;
+  const navigation = useNavigation()
   const [ messageData, setMessageData ] = useState([]);
   const [ userComment, setUserComment ] = useState('');
   const scrollViewRef = useRef(null);

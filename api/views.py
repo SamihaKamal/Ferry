@@ -243,7 +243,20 @@ def get_all_post(request):
             'Posts': posts_data
         }, json_dumps_params={'indent':5})
         
-
+def get_country_tags(request):
+    if request.method == 'GET':
+        tags = Country.objects.all()
+        tags_data = [{
+            'id': a.id,
+            'name': a.name,
+            'tag': a.country_tag,
+        } for a in tags]
+        
+        return JsonResponse({'country': tags_data}, status=200)
+    else:
+       return JsonResponse({'error': 'Incorrect request method'}, status=400) 
+    
+    
 def create_post(request):
     '''
     
@@ -255,11 +268,14 @@ def create_post(request):
         # Get all the data
         user_id = request.POST.get('user_id', None)
         caption = request.POST.get('caption', None)
-        tags_string = request.POST.get('tag')
+        country_tag = request.POST.get('country_tag', None)
         image = request.FILES.get('image', None)
         date_posted = date.today()
 
-        tags = [tag.strip() for tag in tags_string.split(',')]
+        tags = []
+        for key, value in request.POST.items():
+            if key.startswith('tag_'):
+                tags.append(value)
         
         #Get user from the user id
         user = User.objects.get(id=user_id)
@@ -269,7 +285,11 @@ def create_post(request):
             tag, created = Tag.objects.get_or_create(tag_text=tag_text)
                         
         try:
-            post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0 )
+            if (country_tag != ''):
+                print('i AM here')
+                post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0, country_tag = country_tag)
+            else:
+                post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0 )
             post.save()
             post.tags.add(*Tag.objects.filter(tag_text__in=tags))
             return JsonResponse({'message': 'Post saved'}, status=200)
