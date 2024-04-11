@@ -5,35 +5,66 @@ import HomeScreen from '../screens/Home';
 import ChatScreen from '../screens/Chat';
 import PagesScreen from '../screens/Pages';
 import ListScreen from '../screens/Lists';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Modal, Text, StyleSheet } from 'react-native';
+import { Button, Overlay, Icon } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 
 const Tab = createBottomTabNavigator();
 
 
-const CustomAddPostButton = ({children, onPress}) => (
-  <TouchableOpacity style={{
-    top: -20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#7f5Df0',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    
-  }}
-  onPress={onPress} >
-    <View style={{
-      width: 70,
-      height: 70,
-      borderRadius: 35,
-      backgroundColor: '#6B4E71'
-    }}>
-      {children}
+const CustomAddPostButton = ({children, onPress, user}) => { 
+  const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
+
+  const toggleOverlay = () => {
+    setModalVisible(!modalVisible);
+  };
+  
+  return(
+    <View>
+      <TouchableOpacity style={{
+          top: -20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          shadowColor: '#7f5Df0',
+          shadowOffset: {
+            width: 0,
+            height: 10,
+          },
+          
+        }}
+        onPress={toggleOverlay} >
+          <View style={{
+            width: 70,
+            height: 70,
+            borderRadius: 35,
+            backgroundColor: '#6B4E71'
+          }}>
+            {children}
+          </View>
+      </TouchableOpacity>
+      <Overlay isVisible={modalVisible} onBackdropPress={toggleOverlay}>
+        <TouchableOpacity onPress={() => {
+            
+            navigation.navigate('AddPost', {user: user}); // Pass the selected option to the onPress function
+            toggleOverlay();
+          }}>
+            <Text style={styles.optionText}>Post</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+            
+            navigation.navigate('AddReview', {user: user}); // Pass the selected option to the onPress function
+            toggleOverlay();
+          }}>
+            <Text style={styles.optionText}>Review</Text>
+        </TouchableOpacity>
+    </Overlay>
     </View>
-  </TouchableOpacity>
-);
+  
+
+  
+);}; 
 
 function MyTabs({ route }) {
   const { user } = route.params;
@@ -68,7 +99,7 @@ function MyTabs({ route }) {
           return <Ionicons name={'add'} color={iconColour} size={size} />
         },
         tabBarButton: (props) => (
-          <CustomAddPostButton {...props} />
+          <CustomAddPostButton {...props} user={user} />
         )
       }}/>
       <Tab.Screen name="Pages" component={PagesScreen} initialParams={{ user }}
@@ -90,5 +121,28 @@ function MyTabs({ route }) {
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  optionText: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
+});
 
 export default MyTabs;

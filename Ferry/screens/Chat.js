@@ -35,10 +35,10 @@ export default function Chat({ route }) {
 
    
   const sendToProfile = (toUserId) => {
-    navigation.navigate('Profile', {user: user, viewuser: toUserId, navigation: navigation})
+    navigation.navigate('Profile', {user: user, viewuser: toUserId})
   }
   const sendToMessages = (toUserId, chatId) => {
-    navigation.navigate('Message', {user: user, recipent: toUserId, chat: chatId, navigation: navigation})
+    navigation.navigate('Message', {user: user, recipent: toUserId, chat: chatId})
   }
 
   return (

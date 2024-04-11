@@ -9,6 +9,8 @@ import Login from './screens/Login';
 import Message from './screens/Message';
 import Comment from './screens/Comment';
 import Profile from './screens/Profile';
+import AddPost from './components/CreatePost';
+import AddReview from './components/CreateReview';
 import CountrySpecificPage from './screens/CountrySpecificPage';
 import SpecificLists from './screens/SpecificList';
 
@@ -33,6 +35,8 @@ export default function App() {
           <Stack.Screen name="Message" component={Message} />
           <Stack.Screen name="CountrySpecificPage" component={CountrySpecificPage} />
           <Stack.Screen name="SpecificLists" component={SpecificLists} />
+          <Stack.Screen name="AddPost" component={AddPost} />
+          <Stack.Screen name="AddReview" component={AddReview} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

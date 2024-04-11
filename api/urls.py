@@ -46,6 +46,7 @@ urlpatterns = [
     path('api/save+comment+to+list/', save_comment_to_list),
     path('api/get+list+post/', get_list_posts),
     path('api/get+list+comment/', get_list_comments),
+    path('api/get+country+tags/', get_country_tags),
     path('api/get+list/', get_list),
     path('api/like+post/', like_post),
     path('api/get+post+likes/', get_post_likes),
