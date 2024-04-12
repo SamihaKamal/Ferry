@@ -51,4 +51,7 @@ urlpatterns = [
     path('api/like+post/', like_post),
     path('api/get+post+likes/', get_post_likes),
     path('api/get+user+by+name/', get_user_by_name),
+    # Reviews URL
+    path('api/create+reviews/', create_review),
+    path('api/get+reviews/', get_all_reviews),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

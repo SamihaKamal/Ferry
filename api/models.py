@@ -21,6 +21,7 @@ class Tag(models.Model):
 #POSTS AND REVIEWS
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    review_title = models.TextField(("review title"))
     review_body = models.TextField(("review text"))
     # Add images here
     image = models.ImageField(blank=True)
