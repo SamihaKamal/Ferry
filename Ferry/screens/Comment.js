@@ -102,6 +102,7 @@ export default function Comment({ route }) {
            name={a.user}
            user_id={user}
            post_id={post}
+           review_id={review}
             content={a.content}
               date={a.date}
                likes={a.likes}

@@ -57,7 +57,7 @@ export default function ReviewText({ route }) {
     }
 
     async function getReviewLikes(){
-        const request = await fetch(`http://192.168.0.68:8000/api/get+likes/?id=${id}&user=${viewuser}`)
+        const request = await fetch(`http://192.168.0.68:8000/api/get+likes/?id=${id}&tag=r`)
         const response = await request.json()
 
         setReviewLikes(response.number)

@@ -10,7 +10,7 @@ import {
     } from '@rneui/themed';
 
 
-export default function CommentTile({ id, name, user_id, post_id, content, date, likes, replies, refreshComments }) {
+export default function CommentTile({ id, name, user_id, post_id, review_id, content, date, likes, replies, refreshComments }) {
     const [userComment, setUserComment] = useState('');
     const [listReplyId, setListReplyId] = useState(null);
     const [showAddCommentBox, setShowAddCommentBox] = useState(false);
@@ -78,10 +78,11 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
             comment_id: replyID,
             user_id: user_id,
             post_id: post_id,
+            review_id: review_id,
             comment_body: userComment,
         }
         try{
-            const request = await fetch('http://192.168.0.68:8000/api/create+reply+comments+for+post/', {
+            const request = await fetch('http://192.168.0.68:8000/api/create+reply+comments/', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -93,6 +94,12 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
             if (response){
                 setUserComment('');
                 refreshComments();
+                if (showAddCommentBox == true){
+                    toggleAddCommentBox()
+                }
+                if (showAddReplyCommentBox == true){
+                    toggleAddReplyCommentBox()
+                }
             }
             else{
                 console.log("Uh oh theres an error!")
@@ -178,6 +185,7 @@ export default function CommentTile({ id, name, user_id, post_id, content, date,
                                     name={nestedReply.user}
                                     user_id={user_id}
                                     post_id={post_id}
+                                    review_id={review_id}
                                     content={nestedReply.content}
                                     date={nestedReply.date}
                                     likes={nestedReply.likes}

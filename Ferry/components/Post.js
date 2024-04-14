@@ -36,7 +36,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
     }
 
     async function getPostLikes(){
-        const request = await fetch(`http://192.168.0.68:8000/api/get+likes/?id=${id}&user=${post_user_id}`)
+        const request = await fetch(`http://192.168.0.68:8000/api/get+likes/?id=${id}&tag=p`)
         const response = await request.json()
 
         setPostLikes(response.number)

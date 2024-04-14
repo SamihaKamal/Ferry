@@ -351,16 +351,16 @@ def like(request):
 def get_likes(request):
     if (request.method=='GET'):
         id=request.GET.get('id', None)
-        user_id = request.GET.get('user', None)
+        tag = request.GET.get('tag', None)
         
-        if (id==None) or (user_id == None):
-            return JsonResponse({'error': 'Please input ?id=[ID HERE]&user= to the end of the url'}, status=401)
+        if (id==None) or (tag == None):
+            return JsonResponse({'error': 'Please input ?id=[ID HERE]&tag= to the end of the url'}, status=401)
         else:
-            try:
+            if (tag == 'r'):
                 count = 0
-                user = User.objects.get(id=user_id)
+                
                 review = Review.objects.get(id=id)
-                reviewLikes = ReviewLike.objects.all().filter(review=review, user=user)
+                reviewLikes = ReviewLike.objects.all().filter(review=review)
                 reviewLikes_data = [{
                     'id':a.id,
                     'user':serialize_user(a.user)} for a in reviewLikes]
@@ -368,22 +368,20 @@ def get_likes(request):
                     count = count + 1
                     
                 return JsonResponse({'reviewLikes': reviewLikes_data, 'number': count}, json_dumps_params={'indent':5}, status=200)
-            except:
-                print("Review doesnt exist")
-                try:
-                    count = 0
-                    user = User.objects.get(id=user_id)
-                    post = Post.objects.get(id=id)
-                    postLikes = PostLike.objects.all().filter(post=post, user=user)
-                    postLikes_data = [{
-                        'id':a.id,
-                        'user':serialize_user(a.user)} for a in postLikes]
-                    for a in postLikes:
-                        count = count + 1
+            elif (tag == 'p'):
+                count = 0
+                post = Post.objects.get(id=id)
+                postLikes = PostLike.objects.all().filter(post=post)
+                postLikes_data = [{
+                    'id':a.id,
+                    'user':serialize_user(a.user)} for a in postLikes]
+                for a in postLikes:
+                    count = count + 1
                     
-                    return JsonResponse({'postLikes': postLikes_data, 'number': count}, json_dumps_params={'indent':5}, status=200)
-                except Exception as e:
-                    return JsonResponse({'error': f'Post doesnt exist {e}'}, status=400)
+                return JsonResponse({'postLikes': postLikes_data, 'number': count}, json_dumps_params={'indent':5}, status=200)
+            else:
+                print("error finding out whether its post or review")
+            
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)    
       
@@ -660,7 +658,7 @@ def create_comment(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
     
     
-def create_reply_comment_on_post(request):
+def create_reply_comment(request):
     '''
     
         Creating a reply comment but adding the reply comment id too.
@@ -671,18 +669,31 @@ def create_reply_comment_on_post(request):
         comment_id = data.get('comment_id', '')
         user_id = data.get('user_id', '')
         post_id = data.get('post_id', '')
+        review_id = data.get('review_id', '')
         comment_body = data.get('comment_body', '')
         comment_date = date.today()
 
         user = User.objects.get(id=user_id)
-        post = Post.objects.get(id=post_id)
         reply_to_comment = Comments.objects.get(id=comment_id)
-        try:
-            comment = Comments(users=user, post=post, comment_body=comment_body, date=comment_date, likes_counter=0, replying_to=reply_to_comment)
-            comment.save()
-            return JsonResponse({'message': 'Comment saved'}, status=200)
-        except Exception as e: 
-            return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+        
+        if (review_id == 0):
+            post = Post.objects.get(id=post_id)
+            try:
+                comment = Comments(users=user, post=post, comment_body=comment_body, date=comment_date, likes_counter=0, replying_to=reply_to_comment)
+                comment.save()
+                return JsonResponse({'message': 'Comment saved'}, status=200)
+            except Exception as e: 
+                return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+        elif (post_id == 0):
+            review = Review.objects.get(id=review_id)
+            try:
+                comment = Comments(users=user, reviews=review, comment_body=comment_body, date=comment_date, likes_counter=0, replying_to=reply_to_comment)
+                comment.save()
+                return JsonResponse({'message': 'Comment saved'}, status=200)
+            except Exception as e: 
+                return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+        else:
+            print("error categorising post or review") 
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
   
