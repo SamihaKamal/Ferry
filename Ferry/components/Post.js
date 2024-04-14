@@ -36,7 +36,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
     }
 
     async function getPostLikes(){
-        const request = await fetch(`http://192.168.0.68:8000/api/get+post+likes/?post_id=${id}`)
+        const request = await fetch(`http://192.168.0.68:8000/api/get+likes/?id=${id}&user=${post_user_id}`)
         const response = await request.json()
 
         setPostLikes(response.number)
@@ -48,9 +48,10 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
         const data={
             user_id: user_id,
             post_id: id,
+            review_id: '',
         }
 
-        const request = await fetch('http://192.168.0.68:8000/api/like+post/', {
+        const request = await fetch('http://192.168.0.68:8000/api/like/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -87,11 +88,11 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
     
     const OpenComments = () => {
         //Navigates to register through App.js
-        navigation.navigate('Comment', {post: id, user: user_id})
+        navigation.navigate('Comment', {post: id, user: user_id, review: 0})
     }
 
     const sendToProfile = () => {
-        navigation.navigate('Profile', {user: user_id, viewuser: post_user_id, navigation: navigation})
+        navigation.navigate('Profile', {user: user_id, viewuser: post_user_id})
     }
 
     const a = !country || country.trim() === '';

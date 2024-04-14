@@ -84,3 +84,7 @@ class PostLike(models.Model):
      user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
      post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True) 
      
+class ReviewLike(models.Model):
+     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+     review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, blank=True) 
+     

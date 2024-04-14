@@ -30,9 +30,8 @@ urlpatterns = [
     path('api/get+user+posts/', get_posts_by_user),
     path('api/get+country+posts/', get_posts_from_country),
     path('api/create_post/', create_post),
-    path('api/get+comments+with+post/', get_comments_for_post),
     path('api/get+user+comments/', get_comments_by_user),
-    path('api/create+comments+for+post/', create_comment_on_post),
+    
     path('api/create+reply+comments+for+post/', create_reply_comment_on_post),
     path('api/create+chat/', create_chat),
     path('api/get+user+chats/', get_user_chats),
@@ -48,10 +47,15 @@ urlpatterns = [
     path('api/get+list+comment/', get_list_comments),
     path('api/get+country+tags/', get_country_tags),
     path('api/get+list/', get_list),
-    path('api/like+post/', like_post),
-    path('api/get+post+likes/', get_post_likes),
+
     path('api/get+user+by+name/', get_user_by_name),
     # Reviews URL
     path('api/create+reviews/', create_review),
     path('api/get+reviews/', get_all_reviews),
+    # Like url
+    path('api/like/', like),
+    path('api/get+likes/', get_likes),
+    # Comments
+    path('api/get+comments/', get_comments),
+    path('api/create+comment/', create_comment),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

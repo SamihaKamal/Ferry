@@ -4,7 +4,7 @@ import CommentTile from '../components/CommentTile';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Comment({ route }) {
-    const { user, post } = route.params;
+    const { user, post, review, viewuser } = route.params;
     const [comments, setComments] = useState([]);
     const [userComment, setUserComment] = useState();
 
@@ -27,31 +27,52 @@ export default function Comment({ route }) {
         likes: a.likes,
         replies: mapReplies(a.replies)
       }))
-  }
+    }
   
     async function getComments(){
-      const request = await fetch(`http://192.168.0.68:8000/api/get+comments+with+post/?post_id=${post}`)
-      const response = await request.json()
-      const responseData = response.Comments.map((a) =>({
-        id: a.id,
-        user: a.user.name,
-        content: a.content,
-        date: a.date,
-        likes: a.likes,
-        replies: mapReplies(a.replies),
-      }));
+      if (review == 0){
+        const request = await fetch(`http://192.168.0.68:8000/api/get+comments/?id=${post}&tag=p`)
+        const response = await request.json()
+        const responseData = response.Comments.map((a) =>({
+          id: a.id,
+          user: a.user.name,
+          content: a.content,
+          date: a.date,
+          likes: a.likes,
+          replies: mapReplies(a.replies),
+        }));
 
-      setComments(responseData)    
+        setComments(responseData)
+      }
+      else if(post == 0){
+        const request = await fetch(`http://192.168.0.68:8000/api/get+comments/?id=${review}&tag=r`)
+        const response = await request.json()
+        const responseData = response.Comments.map((a) =>({
+          id: a.id,
+          user: a.user.name,
+          content: a.content,
+          date: a.date,
+          likes: a.likes,
+          replies: mapReplies(a.replies),
+        }));
+
+        setComments(responseData)
+      }
+      else{
+        console.log("error")
+      }
+          
     }
 
     async function addComment(){
       const data = {
         user_id: user,
         post_id: post,
+        review_id: review,
         comment_body: userComment,
       }
       try{
-        const request = await fetch('http://192.168.0.68:8000/api/create+comments+for+post/', {
+        const request = await fetch('http://192.168.0.68:8000/api/create+comment/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
