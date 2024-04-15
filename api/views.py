@@ -1047,22 +1047,28 @@ def get_user_lists(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
-def save_post_to_list(request):
+def save_to_list(request):
     if (request.method == 'POST'):
         data = json.loads(request.body)
         user_id = data.get('user_id', '')
         list_id = data.get('list_id', '')
         posts_id = data.get('posts_id', '')
+        review_id = data.get('review_id', '')
         
         user = User.objects.get(id=user_id)
-        post = Post.objects.get(id=posts_id)
         list = List.objects.get(id=list_id)
-        
-        try:
+        print(posts_id)
+        print(review_id)
+        if (posts_id == 0):
+            review = Review.objects.get(id=review_id)
+            list.review.add(review)
+            return JsonResponse({'message': 'Review succesfully added to list!'}, status=200)
+        elif (review_id == 0):
+            post = Post.objects.get(id=posts_id)
             list.posts.add(post)
             return JsonResponse({'message': 'Post succesfully added to list!'}, status=200)
-        except Exception as e:
-            return JsonResponse({'error': f'Unable to save post to list: {e}'}, status=401)
+        else:
+            return JsonResponse({'error': 'Issue trying to do something'}, status=200)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
    

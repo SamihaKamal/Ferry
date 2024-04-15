@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -69,9 +69,10 @@ export default function ReviewText({ route }) {
         const data={
             user_id: user,
             list_id: listId,
-            post_id: id,
+            posts_id: 0,
+            review_id: id,
         }
-        const request = await fetch('http://192.168.0.68:8000/api/save+post+to+list/', {
+        const request = await fetch('http://192.168.0.68:8000/api/save+to+list/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -94,6 +95,8 @@ export default function ReviewText({ route }) {
                     <Text style={ReviewTextStyle.title}>{title}</Text>
                 </View>
                 <Text style={ReviewTextStyle.text}>{text}</Text>
+                <Image style={ReviewTextStyle.image} 
+                source={{uri: image}}/>
             </ScrollView>
             {/* Info box */}
             <View style={ReviewTextStyle.infoContainer}>
@@ -139,6 +142,12 @@ const ReviewTextStyle = StyleSheet.create({
 
     text: {
         padding: 5,
+    },
+
+    image: {
+        margin: 5,
+        width: 'auto',
+        aspectRatio: 1,
     },
 
     infoContainer: {
