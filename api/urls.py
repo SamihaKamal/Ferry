@@ -30,10 +30,9 @@ urlpatterns = [
     path('api/get+user+posts/', get_posts_by_user),
     path('api/get+country+posts/', get_posts_from_country),
     path('api/create_post/', create_post),
-    path('api/get+comments+with+post/', get_comments_for_post),
     path('api/get+user+comments/', get_comments_by_user),
-    path('api/create+comments+for+post/', create_comment_on_post),
-    path('api/create+reply+comments+for+post/', create_reply_comment_on_post),
+    
+    
     path('api/create+chat/', create_chat),
     path('api/get+user+chats/', get_user_chats),
     path('api/get+messages+from+chat/', get_messages_from_chat),
@@ -42,13 +41,25 @@ urlpatterns = [
     path('api/get+country+from+id/', get_country_from_id),
     path('api/get+country+image/', get_country_image),
     path('api/get+user+lists/', get_user_lists),
-    path('api/save+post+to+list/', save_post_to_list),
+    
     path('api/save+comment+to+list/', save_comment_to_list),
     path('api/get+list+post/', get_list_posts),
     path('api/get+list+comment/', get_list_comments),
     path('api/get+country+tags/', get_country_tags),
     path('api/get+list/', get_list),
-    path('api/like+post/', like_post),
-    path('api/get+post+likes/', get_post_likes),
+
     path('api/get+user+by+name/', get_user_by_name),
+    # Reviews URL
+    path('api/create+reviews/', create_review),
+    path('api/get+reviews/', get_all_reviews),
+    path('api/get+user+reviews/', get_reviews_by_user),
+    # Like url
+    path('api/like/', like),
+    path('api/get+likes/', get_likes),
+    # Comments
+    path('api/get+comments/', get_comments),
+    path('api/create+comment/', create_comment),
+    path('api/create+reply+comments/', create_reply_comment),
+    # Lists
+    path('api/save+to+list/', save_to_list),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

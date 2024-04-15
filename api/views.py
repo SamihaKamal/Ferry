@@ -8,6 +8,46 @@ import os
 
 # Create your views here.
 
+#SERIALISE FUNCTIONS
+#####################################################################################################################
+def serialize_user(user):
+    return {
+        'id': user.id,
+        'name': user.name,
+        'email': user.email,
+    }
+    
+def serialize_chat(chat):
+    return {
+        'chat_id': chat.id,
+        'chat_user': serialize_user(chat.user),
+        'chat_to_user': serialize_user(chat.to_user)
+    }
+    
+def serialize_post(posts):
+    print("posts error?")
+    return{
+        'id':posts.id,
+        'caption':posts.caption, 
+        'date':posts.date,
+        'likes':posts.likes_counter,
+        'country':posts.country_tag,
+        'tags': [tags.tag_text for tags in posts.tags.all()]
+    }
+    
+def serialize_comments(comments):
+    print("comments error?")
+    return{
+        'id':comments.id,
+        'posts':comments.post.id,
+        'reviews':check_review_is_null(comments.reviews),
+        'content':comments.comment_body,
+        'date':comments.date,
+        'likes':comments.likes_counter
+    }
+    
+    
+
 
 #VIEW FUNCTIONS FOR GETTING USER DATA
 #####################################################################################################################
@@ -174,19 +214,208 @@ def edit_user_image(request):
             return JsonResponse({'message':'user does not exist'}, status = 400)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+#VIEW FUNCTIONS FOR REVIEWS
+#####################################################################################################################  
 
+def get_all_reviews(request):
+    '''
+        Gets all posts that exists in the form:
+        Reviews: [
+            {
+                id:
+                user:{
+                    id:
+                    name:
+                    email:
+                }
+                image:
+                review_title:
+                review_body:
+                date:
+                likes:
+                country:
+                tags: [
+                    "tag1", "tag2", etc.
+                ]
+            }
+            {
+                id:
+                user:{
+                    id:
+                    name:
+                    email:
+                }
+                image:
+                review_title:
+                review_body:
+                date:
+                likes:
+                country:
+                tags: [
+                    "tag1", "tag2", etc.
+                ]
+            }
+        ]
+    '''
+    reviews = Review.objects.all().order_by('-id')
+    reviews_data = [{
+        'id':a.id,
+        'user':serialize_user(a.user),
+        'user_image': request.build_absolute_uri(a.user.image.url),
+        'image': request.build_absolute_uri(a.image.url), 
+        'review_title':a.review_title,
+        'review_body':a.review_body, 
+        'date':a.date,
+        'likes':a.likes_counter,
+        'country':a.country_tag,
+        'tags': [tags.tag_text for tags in a.tags.all()]} for a in reviews]
+        
+    
+    if request.method == 'GET':
+        return JsonResponse({
+            'Reviews': reviews_data
+        }, json_dumps_params={'indent':5})
+        
+def create_review(request):
+    '''
+    
+        Creates a new review using user id, captions tags and images.
+        
+        
+    '''
+    if request.method == 'POST':
+        # Get all the data
+        user_id = request.POST.get('user_id', None)
+        text = request.POST.get('text', None)
+        title = request.POST.get('title', None)
+        country_tag = request.POST.get('country_tag', None)
+        image = request.FILES.get('image', None)
+        date_posted = date.today()
 
+        tags = []
+        for key, value in request.POST.items():
+            if key.startswith('tag_'):
+                tags.append(value)
+        
+        #Get user from the user id
+        user = User.objects.get(id=user_id)
+             
+        #Check tags, and see if they exist, if not create a new tag
+        for tag_text in tags:
+            tag, created = Tag.objects.get_or_create(tag_text=tag_text)
+                        
+        try:
+            review = Review(user = user, review_title= title, review_body = text, image = image, date= date_posted, likes_counter = 0, country_tag = country_tag)
+            review.save()
+            review.tags.add(*Tag.objects.filter(tag_text__in=tags))
+            return JsonResponse({'message': 'Review saved'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'Unable to save review: {e}'}, status=401)
+    else:
+        return JsonResponse({'error': 'Incorrect request method'}, status=400)
+    
+def get_reviews_by_user(request):
+    '''
+        Takes in user id and returns every review made by that user.
+        
+    '''
+    user_id=request.GET.get('user_id', None)
+    
+    if (user_id==None):
+        return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
+    else:
+        try:
+            user = User.objects.get(id=user_id)
+            reviews = Review.objects.all().filter(user=user)
+            reviews_data = [{
+                'id':a.id,
+                'user':serialize_user(a.user),
+                'user_image': request.build_absolute_uri(a.user.image.url),
+                'image': request.build_absolute_uri(a.image.url), 
+                'review_title':a.review_title,
+                'review_body':a.review_body, 
+                'date':a.date,
+                'likes':a.likes_counter,
+                'country':a.country_tag,
+                'tags': [tags.tag_text for tags in a.tags.all()]} for a in reviews]
+            return JsonResponse({'reviews': reviews_data}, json_dumps_params={'indent':5}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
+    
+def like(request):
+    if (request.method=='POST'):
+        data = json.loads(request.body)
+        user_id = data.get('user_id', '')
+        post_id = data.get('post_id', '')
+        review_id = data.get('review_id', '')
+        
+        user = User.objects.get(id=user_id)
+        
+        if (post_id == ''):
+            review = Review.objects.get(id = review_id)
+            
+            reviewLike, created = ReviewLike.objects.get_or_create(user=user, review=review)
+            
+            if (created == False):
+                reviewLike.delete()
+            
+            return JsonResponse({'message': 'Liked or didnt Like, it is done'}, status=200)   
+        elif (review_id == ''):
+            post = Post.objects.get(id=post_id)
+        
+            postLike, created = PostLike.objects.get_or_create(user=user, post=post)
+        
+            # If there is a like already created, we delete it
+            if (created == False):
+                postLike.delete()
+         
+            return JsonResponse({'message': 'Liked or didnt Like, it is done'}, status=200)
+        else:
+            return JsonResponse({'error': 'Issue finding out whether its a post or a review'}, status=400)
+    else:
+       return JsonResponse({'error': 'Wrong request method'}, status=400) 
+
+def get_likes(request):
+    if (request.method=='GET'):
+        id=request.GET.get('id', None)
+        tag = request.GET.get('tag', None)
+        
+        if (id==None) or (tag == None):
+            return JsonResponse({'error': 'Please input ?id=[ID HERE]&tag= to the end of the url'}, status=401)
+        else:
+            if (tag == 'r'):
+                count = 0
+                
+                review = Review.objects.get(id=id)
+                reviewLikes = ReviewLike.objects.all().filter(review=review)
+                reviewLikes_data = [{
+                    'id':a.id,
+                    'user':serialize_user(a.user)} for a in reviewLikes]
+                for a in reviewLikes:
+                    count = count + 1
+                    
+                return JsonResponse({'reviewLikes': reviewLikes_data, 'number': count}, json_dumps_params={'indent':5}, status=200)
+            elif (tag == 'p'):
+                count = 0
+                post = Post.objects.get(id=id)
+                postLikes = PostLike.objects.all().filter(post=post)
+                postLikes_data = [{
+                    'id':a.id,
+                    'user':serialize_user(a.user)} for a in postLikes]
+                for a in postLikes:
+                    count = count + 1
+                    
+                return JsonResponse({'postLikes': postLikes_data, 'number': count}, json_dumps_params={'indent':5}, status=200)
+            else:
+                print("error finding out whether its post or review")
+            
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)    
+      
         
 #VIEW FUNCTIONS FOR POSTS
 #####################################################################################################################      
-
-def serialize_user(user):
-    return {
-        'id': user.id,
-        'name': user.name,
-        'email': user.email,
-    }
-
 def get_all_post(request):
     '''
         Gets all posts that exists in the form:
@@ -333,7 +562,7 @@ def get_comment_replies(comment):
     return reply_comment_array
 
     
-def get_comments_for_post(request):
+def get_comments(request):
     '''
         Getting all comments from specified post in the form:
         Comments: [
@@ -369,29 +598,50 @@ def get_comments_for_post(request):
         ]
     
     '''
-    post_id = request.GET.get('post_id', None)
-    if (post_id == None):    
-        return JsonResponse({'error': 'Please input ?post_id= to the end of the url'}, status=401)
+    id = request.GET.get('id', None)
+    tag = request.GET.get('tag', None)
+    if (id == None) or (tag == None):    
+        return JsonResponse({'error': 'Please input ?id=[]&tag= to the end of the url'}, status=401)
     else:
-        try:
-            comments =  Comments.objects.all().filter(post = int(post_id), replying_to__isnull=True).order_by(f'-date')
-            comments_data = [{
-                'id':comments.id,
-                'user':serialize_user(comments.users),
-                'posts':comments.post.id,
-                'reviews':check_review_is_null(comments.reviews),
-                'content':comments.comment_body,
-                'date':comments.date,
-                'likes':comments.likes_counter,
-                'replies':get_comment_replies(comments)} for comments in comments]  
-        except Exception as e:
-            return JsonResponse({'error': f'Unable to get messages, {e}'}, status=400)
-     
+        comments_data = []
+        if (tag == 'p'):  
+            try:
+                post = Post.objects.get(id=id)
+                
+                comments =  Comments.objects.all().filter(post = int(id), replying_to__isnull=True).order_by(f'-date')
+                comments_data = [{
+                    'id':comments.id,
+                    'user':serialize_user(comments.users),
+                    'posts':comments.post.id,
+                    'reviews':check_review_is_null(comments.reviews),
+                    'content':comments.comment_body,
+                    'date':comments.date,
+                    'likes':comments.likes_counter,
+                    'replies':get_comment_replies(comments)} for comments in comments]  
+            except Exception as e:
+                return JsonResponse({'error': f'Cannot get post comments: {e}'}, status=400)
+        elif (tag == 'r'):
+            try:
+                review = Review.objects.get(id=id)
+                
+                comments =  Comments.objects.all().filter(reviews = int(id), replying_to__isnull=True).order_by(f'-date')
+                comments_data = [{
+                    'id':comments.id,
+                    'user':serialize_user(comments.users),
+                    'posts':check_post_is_null(comments.post),
+                    'reviews':comments.reviews.id,
+                    'content':comments.comment_body,
+                    'date':comments.date,
+                    'likes':comments.likes_counter,
+                    'replies':get_comment_replies(comments)} for comments in comments]
+            except Exception as e:
+                return JsonResponse({'error': f'Cannot get review comments: {e}'}, status=400)
+            
     return JsonResponse({
             'Comments': comments_data
         }, json_dumps_params={'indent':5})
     
-def create_comment_on_post(request):
+def create_comment(request):
     '''
         
         Creating a comment with userId, postId, body of comment and date.
@@ -401,22 +651,42 @@ def create_comment_on_post(request):
         data = json.loads(request.body)
         user_id = data.get('user_id', '')
         post_id = data.get('post_id', '')
+        review_id = data.get('review_id', '')
         comment_body = data.get('comment_body', '')
         comment_date = date.today()
+        
+        print(review_id)
+        print(post_id)
 
         user = User.objects.get(id=user_id)
-        post = Post.objects.get(id=post_id)
-        try:
-            comment = Comments(users=user, post=post, comment_body=comment_body, date=comment_date, likes_counter=0)
-            comment.save()
-            return JsonResponse({'message': 'Comment saved'}, status=200)
-        except Exception as e: 
-            return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+        if (review_id == 0):
+            print("reached posts")
+            post = Post.objects.get(id=post_id)
+            try:
+                comment = Comments(users=user, post=post, comment_body=comment_body, date=comment_date, likes_counter=0)
+                comment.save()
+                return JsonResponse({'message': 'Comment saved'}, status=200)
+            except Exception as e: 
+                return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+        elif (post_id == 0):
+            
+            review = Review.objects.get(id=review_id)
+            try:
+                
+                comment = Comments(users=user, reviews=review, comment_body=comment_body, date=comment_date, likes_counter=0)
+
+                comment.save()
+                return JsonResponse({'message': 'Comment saved'}, status=200)
+            except Exception as e: 
+                return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+        else:
+            print("error categorising post or review")
+        
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
     
     
-def create_reply_comment_on_post(request):
+def create_reply_comment(request):
     '''
     
         Creating a reply comment but adding the reply comment id too.
@@ -427,18 +697,31 @@ def create_reply_comment_on_post(request):
         comment_id = data.get('comment_id', '')
         user_id = data.get('user_id', '')
         post_id = data.get('post_id', '')
+        review_id = data.get('review_id', '')
         comment_body = data.get('comment_body', '')
         comment_date = date.today()
 
         user = User.objects.get(id=user_id)
-        post = Post.objects.get(id=post_id)
         reply_to_comment = Comments.objects.get(id=comment_id)
-        try:
-            comment = Comments(users=user, post=post, comment_body=comment_body, date=comment_date, likes_counter=0, replying_to=reply_to_comment)
-            comment.save()
-            return JsonResponse({'message': 'Comment saved'}, status=200)
-        except Exception as e: 
-            return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+        
+        if (review_id == 0):
+            post = Post.objects.get(id=post_id)
+            try:
+                comment = Comments(users=user, post=post, comment_body=comment_body, date=comment_date, likes_counter=0, replying_to=reply_to_comment)
+                comment.save()
+                return JsonResponse({'message': 'Comment saved'}, status=200)
+            except Exception as e: 
+                return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+        elif (post_id == 0):
+            review = Review.objects.get(id=review_id)
+            try:
+                comment = Comments(users=user, reviews=review, comment_body=comment_body, date=comment_date, likes_counter=0, replying_to=reply_to_comment)
+                comment.save()
+                return JsonResponse({'message': 'Comment saved'}, status=200)
+            except Exception as e: 
+                return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
+        else:
+            print("error categorising post or review") 
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
   
@@ -480,73 +763,66 @@ def get_comments_by_user(request):
         return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
     else:
         try:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(id=int(user_id))
             comments = Comments.objects.all().filter(users=user)
             comments_data = [{
-                'id':comments.id,
-                'user':serialize_user(comments.users),
-                'posts':comments.post.id,
-                'reviews':check_review_is_null(comments.reviews),
-                'content':comments.comment_body,
-                'date':comments.date,
-                'likes':comments.likes_counter} for comments in comments]
+                'id':a.id,
+                'user':serialize_user(a.users),
+                'posts':check_post_is_null(a.post),
+                'reviews':check_review_is_null(a.reviews),
+                'content':a.comment_body,
+                'date':a.date,
+                'likes':a.likes_counter} for a in comments]
             return JsonResponse({'comments': comments_data}, json_dumps_params={'indent':5}, status=200)
         except Exception as e:
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
         
-def like_post(request):
-    if (request.method=='POST'):
-        data = json.loads(request.body)
-        user_id = data.get('user_id', '')
-        post_id = data.get('post_id', '')
+# def like_post(request):
+#     if (request.method=='POST'):
+#         data = json.loads(request.body)
+#         user_id = data.get('user_id', '')
+#         post_id = data.get('post_id', '')
         
-        user = User.objects.get(id=user_id)
-        post = Post.objects.get(id=post_id)
+#         user = User.objects.get(id=user_id)
+#         post = Post.objects.get(id=post_id)
         
-        postLike, created = PostLike.objects.get_or_create(user=user, post=post)
+#         postLike, created = PostLike.objects.get_or_create(user=user, post=post)
         
-        # If there is a like already created, we delete it
-        if (created == False):
-            postLike.delete()
+#         # If there is a like already created, we delete it
+#         if (created == False):
+#             postLike.delete()
          
-        return JsonResponse({'message': 'Liked or didnt Like, it is done'}, status=200)
-    else:
-       return JsonResponse({'error': 'Wrong request method'}, status=400) 
+#         return JsonResponse({'message': 'Liked or didnt Like, it is done'}, status=200)
+#     else:
+#        return JsonResponse({'error': 'Wrong request method'}, status=400) 
 
-def get_post_likes(request):
-    if (request.method=='GET'):
-        post_id=request.GET.get('post_id', None)
+# def get_post_likes(request):
+#     if (request.method=='GET'):
+#         post_id=request.GET.get('post_id', None)
     
-        if (post_id==None):
-            return JsonResponse({'error': 'Please input ?post_id= to the end of the url'}, status=401)
-        else:
-            try:
-                count = 0
-                post = Post.objects.get(id=post_id)
-                postLikes = PostLike.objects.all().filter(post=post)
-                postLikes_data = [{
-                    'id':a.id,
-                    'user':serialize_user(a.user)} for a in postLikes]
-                for a in postLikes:
-                    count = count + 1
+#         if (post_id==None):
+#             return JsonResponse({'error': 'Please input ?post_id= to the end of the url'}, status=401)
+#         else:
+#             try:
+#                 count = 0
+#                 post = Post.objects.get(id=post_id)
+#                 postLikes = PostLike.objects.all().filter(post=post)
+#                 postLikes_data = [{
+#                     'id':a.id,
+#                     'user':serialize_user(a.user)} for a in postLikes]
+#                 for a in postLikes:
+#                     count = count + 1
                 
-                return JsonResponse({'postLikes': postLikes_data, 'number': count}, json_dumps_params={'indent':5}, status=200)
-            except Exception as e:
-                return JsonResponse({'error': f'Post doesnt exist {e}'}, status=400)
-    else:
-        return JsonResponse({'error': 'Wrong request method'}, status=400)    
-    
-        
+#                 return JsonResponse({'postLikes': postLikes_data, 'number': count}, json_dumps_params={'indent':5}, status=200)
+#             except Exception as e:
+#                 return JsonResponse({'error': f'Post doesnt exist {e}'}, status=400)
+#     else:
+#         return JsonResponse({'error': 'Wrong request method'}, status=400)    
+      
 #VIEW FUNCTIONS FOR CHAT
 #####################################################################################################################  
 
-def serialize_chat(chat):
-    return {
-        'chat_id': chat.id,
-        'chat_user': serialize_user(chat.user),
-        'chat_to_user': serialize_user(chat.to_user)
-    }
-    
+
 def create_chat(request):
     '''
         Creates a new chat by checking if one already exists with the user and then creating one.
@@ -773,28 +1049,7 @@ def get_country_image(request):
                
 #VIEW FUNCTIONS FOR LISTS
 #####################################################################################################################     
-def serialize_post(posts):
-    print("posts error?")
-    return{
-        'id':posts.id,
-        'caption':posts.caption, 
-        'date':posts.date,
-        'likes':posts.likes_counter,
-        'country':posts.country_tag,
-        'tags': [tags.tag_text for tags in posts.tags.all()]
-    }
-    
-def serialize_comments(comments):
-    print("comments error?")
-    return{
-        'id':comments.id,
-        'posts':comments.post.id,
-        'reviews':check_review_is_null(comments.reviews),
-        'content':comments.comment_body,
-        'date':comments.date,
-        'likes':comments.likes_counter
-    }
-    
+
 def get_user_lists(request):
     if (request.method=='GET'):
         user_id = request.GET.get('user_id', None)
@@ -820,22 +1075,28 @@ def get_user_lists(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
-def save_post_to_list(request):
+def save_to_list(request):
     if (request.method == 'POST'):
         data = json.loads(request.body)
         user_id = data.get('user_id', '')
         list_id = data.get('list_id', '')
         posts_id = data.get('posts_id', '')
+        review_id = data.get('review_id', '')
         
         user = User.objects.get(id=user_id)
-        post = Post.objects.get(id=posts_id)
         list = List.objects.get(id=list_id)
-        
-        try:
+        print(posts_id)
+        print(review_id)
+        if (posts_id == 0):
+            review = Review.objects.get(id=review_id)
+            list.review.add(review)
+            return JsonResponse({'message': 'Review succesfully added to list!'}, status=200)
+        elif (review_id == 0):
+            post = Post.objects.get(id=posts_id)
             list.posts.add(post)
             return JsonResponse({'message': 'Post succesfully added to list!'}, status=200)
-        except Exception as e:
-            return JsonResponse({'error': f'Unable to save post to list: {e}'}, status=401)
+        else:
+            return JsonResponse({'error': 'Issue trying to do something'}, status=200)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
    
