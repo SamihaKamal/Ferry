@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View, ScrollView, FlatList, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { SearchBar, ListItem } from '@rneui/themed';
+import { SearchBar, ListItem, Tab, TabView} from '@rneui/themed';
 import ReviewTile from '../components/Review';
 import PostTile from '../components/Post';
 import { useNavigation } from '@react-navigation/native';
@@ -14,18 +14,22 @@ export default function Home({ route}) {
   const [post, setPost] = useState([]);
   const [search, setSearch] = useState("");
   const [users, setUsers ] = useState(null);
+  const [review, setReview] = useState([]); 
   const [userImage, setUserImage] = useState(null);
+  const [index, setIndex] = useState(0);
+
 
  
   useFocusEffect(
     useCallback(() => {
-      // getPosts()
+      getPosts()
+      getReviews()
     }, [])
   );
   
   
   useEffect(() =>{
-    // getPosts() 
+    getPosts()
     getReviews()
     getUserProfile()
     searchUser()
@@ -56,10 +60,11 @@ export default function Home({ route}) {
       likes: a.likes,
       country: a.country,
       tags: a.tags,
+      class: 'r',
     }))
 
     if (responseData){
-      setPost(responseData)
+      setReview(responseData)
     }
     
   }
@@ -79,6 +84,7 @@ export default function Home({ route}) {
       likes: a.likes,
       country: a.country,
       tags: a.tags,
+      class: 'p'
     }));
 
     if (responseData){
@@ -86,6 +92,7 @@ export default function Home({ route}) {
     }
    
   }
+
 
   async function searchUser(){
     if (search == ''){
@@ -152,52 +159,74 @@ export default function Home({ route}) {
         </TouchableOpacity>
       </View>
 
-      <FlatList 
-        data={post}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <ReviewTile
-            review_id={item.id}
-            user_id = {user}
-            review_user_id={item.review_user_id}
-            review_user_name={item.review_user_name}
-            review_user_image={item.review_user_profile}
-            country={item.country}
-            image={item.image}
-            review_title={item.title}
-            text={item.text}
-            date={item.date}
-            likes_counter={item.likes}
-            tags={item.tags}
-            navigation={navigation}
-          />
-        )}
-      />
+      <Tab
+        value={index}
+        onChange={(e) => setIndex(e)}
+        indicatorStyle={{
+          backgroundColor: '#6B4E71',
+          height: 3,
+        }}
+        variant='default'
+      >
+        <Tab.Item
+          title="Reviews"
+          titleStyle={{ color: "#6B4E71", fontSize: 12 }}
+        />
+        <Tab.Item
+          title="Posts"
+          titleStyle={{ color: "#6B4E71", fontSize: 12 }}
+        />
+      </Tab>
 
-      {/* VIEW POSTS + REVIEWS */}
-      {/* <FlatList
-        data={post}
-        virtualized={true}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <PostTile
-            id={item.id}
-            name={item.user}
-            user_image={item.user_profile}
-            post_user_id={item.post_user_id}
-            user_id={user}
-            caption={item.caption}
-            image={item.image}
-            date={item.date}
-            likes={item.likes}
-            country={item.country}
-            tags={item.tags}
-            navigation={navigation}
+      <TabView value={index} onChange={setIndex} animationType="spring">
+        <TabView.Item style={{ width: '100%' }}>
+          <FlatList 
+            data={review}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <ReviewTile
+                review_id={item.id}
+                user_id = {user}
+                review_user_id={item.review_user_id}
+                review_user_name={item.review_user_name}
+                review_user_image={item.review_user_profile}
+                country={item.country}
+                image={item.image}
+                review_title={item.title}
+                text={item.text}
+                date={item.date}
+                likes_counter={item.likes}
+                tags={item.tags}
+                navigation={navigation}
+              />
+            )}
           />
-        )}
-        
-      /> */}
-     
+        </TabView.Item>
+        <TabView.Item style={{ width: '100%' }}>
+          <FlatList
+            data={post}
+            virtualized={true}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <PostTile
+                id={item.id}
+                name={item.user}
+                user_image={item.user_profile}
+                post_user_id={item.post_user_id}
+                user_id={user}
+                caption={item.caption}
+                image={item.image}
+                date={item.date}
+                likes={item.likes}
+                country={item.country}
+                tags={item.tags}
+                navigation={navigation}
+              />
+            )}
+          />
+        </TabView.Item>
+      </TabView>
+
       
     </View>
   );
