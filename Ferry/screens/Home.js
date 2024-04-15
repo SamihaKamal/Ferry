@@ -113,7 +113,7 @@ export default function Home({ route}) {
   };
 
   function sendToProfile(user_id){
-    navigation.navigate('Profile', {user: user, viewuser: user_id, navigation: navigation})
+    navigation.navigate('Profile', {user: user, viewuser: user_id})
   }
   
   return (

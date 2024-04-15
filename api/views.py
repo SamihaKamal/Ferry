@@ -315,6 +315,34 @@ def create_review(request):
     else:
         return JsonResponse({'error': 'Incorrect request method'}, status=400)
     
+def get_reviews_by_user(request):
+    '''
+        Takes in user id and returns every review made by that user.
+        
+    '''
+    user_id=request.GET.get('user_id', None)
+    
+    if (user_id==None):
+        return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
+    else:
+        try:
+            user = User.objects.get(id=user_id)
+            reviews = Review.objects.all().filter(user=user)
+            reviews_data = [{
+                'id':a.id,
+                'user':serialize_user(a.user),
+                'user_image': request.build_absolute_uri(a.user.image.url),
+                'image': request.build_absolute_uri(a.image.url), 
+                'review_title':a.review_title,
+                'review_body':a.review_body, 
+                'date':a.date,
+                'likes':a.likes_counter,
+                'country':a.country_tag,
+                'tags': [tags.tag_text for tags in a.tags.all()]} for a in reviews]
+            return JsonResponse({'reviews': reviews_data}, json_dumps_params={'indent':5}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
+    
 def like(request):
     if (request.method=='POST'):
         data = json.loads(request.body)
@@ -735,16 +763,16 @@ def get_comments_by_user(request):
         return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
     else:
         try:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(id=int(user_id))
             comments = Comments.objects.all().filter(users=user)
             comments_data = [{
-                'id':comments.id,
-                'user':serialize_user(comments.users),
-                'posts':comments.post.id,
-                'reviews':check_review_is_null(comments.reviews),
-                'content':comments.comment_body,
-                'date':comments.date,
-                'likes':comments.likes_counter} for comments in comments]
+                'id':a.id,
+                'user':serialize_user(a.users),
+                'posts':check_post_is_null(a.post),
+                'reviews':check_review_is_null(a.reviews),
+                'content':a.comment_body,
+                'date':a.date,
+                'likes':a.likes_counter} for a in comments]
             return JsonResponse({'comments': comments_data}, json_dumps_params={'indent':5}, status=200)
         except Exception as e:
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)

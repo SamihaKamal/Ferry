@@ -3,8 +3,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import PostTile from '../components/Post';
+import ReviewTile from '../components/Review';
 import { useNavigation } from '@react-navigation/native';
 import ProfileTabs from '../components/ProfileTabs';
+import {
+  Dialog,
+  CheckBox,
+  ListItem,
+  Avatar,
+  } from '@rneui/themed';
 
 export default function Profile({ route }) {
   const { user, viewuser } = route.params;
@@ -16,11 +23,29 @@ export default function Profile({ route }) {
   const [ editVisible, setEditVisible] = useState('none');
   const [ editChatVisible, setEditChatVisible] = useState('visible');
   const [ index, setIndex ] = useState(0);
+  const [ visible, setVisible ] = useState(false);
+  const [ listData, setListData ] = useState([]);
+  const [ commentID, setCommentID ] = useState(0);
  
 
   useEffect(() =>{
     getUserData()
+    getLists()
 }, [])
+
+  async function getLists(){
+    const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user}`)
+    const response = await request.json()
+
+    const responseData = response.lists.map((a) => ({
+        id: a.id,
+        list_user_id: a.user.id,
+        name: a.name,
+    }))
+
+    setListData(responseData)
+  }
+
 
 
   async function getUserData(){
@@ -35,6 +60,7 @@ export default function Profile({ route }) {
       setUserData(response.user)
     }
 
+    // Getting posts
     const postRequest = await fetch(`http://192.168.0.68:8000/api/get+user+posts/?user_id=${viewuser}`)
     const postResponse = await postRequest.json()
     
@@ -52,9 +78,29 @@ export default function Profile({ route }) {
     }));
     setUserPosts(postData)
 
+    // Getting reviews
+
+    const reviewRequest = await fetch(`http://192.168.0.68:8000/api/get+user+reviews/?user_id=${viewuser}`)
+    const reviewResponse = await reviewRequest.json()
+
+    const reviewData = reviewResponse.reviews.map((a) => ({
+      id: a.id,
+      review_user_id: a.user.id,
+      review_user_name: a.user.name,
+      review_user_profile: a.user_image,
+      image: a.image,
+      title: a.review_title,
+      text: a.review_body,
+      date: a.date,
+      likes: a.likes,
+      country: a.country,
+      tags: a.tags,
+    }))
+
+    setUserReviews(reviewData)
+
     const commentRequest = await fetch(`http://192.168.0.68:8000/api/get+user+comments/?user_id=${viewuser}`)
     const commentResponse = await commentRequest.json()
-
     const commentData = commentResponse.comments.map((a) =>({
       id: a.id,
       user: a.user.name,
@@ -86,6 +132,33 @@ export default function Profile({ route }) {
     }
     
   }
+
+  const toggleVisible = (id) => {
+    setCommentID(id)
+    setVisible(!visible);
+  };
+
+  async function saveList(listId){
+    const data={
+        user_id: user,
+        list_id: listId,
+        comment_id: commentID,
+    }
+    const request = await fetch('http://192.168.0.68:8000/api/save+comment+to+list/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    toggleVisible(0)
+    alert("Post saved!")
+}
+
+  const likeComment = () => {
+    console.log("Clicked")
+  }
+
   return (
     <View style={ProfileStyle.container}>
       <View style={ProfileStyle.profileContainer}>
@@ -132,9 +205,25 @@ export default function Profile({ route }) {
         </ScrollView>
         )}
         {index === 1 && (
-          <View>
-            {/* Render reviews */}
-          </View>
+          <ScrollView>
+            {userReviews.map((item, index ) => (
+            <ReviewTile key={index}
+              review_id={item.id}
+              user_id = {user}
+              review_user_id={item.review_user_id}
+              review_user_name={item.review_user_name}
+              review_user_image={item.review_user_profile}
+              country={item.country}
+              image={item.image}
+              review_title={item.title}
+              text={item.text}
+              date={item.date}
+              likes_counter={item.likes}
+              tags={item.tags}
+              navigation={navigation}
+            />
+          ))}
+          </ScrollView>
         )}
         {index === 2 && (
           <ScrollView style={ProfileStyle.commentsContainer}>
@@ -142,12 +231,35 @@ export default function Profile({ route }) {
               <View key={index} style={ProfileStyle.commentContainer}>
                 <Text style={ProfileStyle.commentUser}>{comment.user}</Text>
                 <Text style={ProfileStyle.commentContent}>{comment.content}</Text>
-                <Text style={ProfileStyle.commentDate}>{comment.date}</Text>
+                <View style={ProfileStyle.infoContainer}>
+                  <Text style={ProfileStyle.commentDate}>{comment.date}</Text>
+                  <View style={[ProfileStyle.buttons]}>      
+                      <TouchableOpacity style={ProfileStyle.smallButton} onPress={() => toggleVisible(comment.id)}>
+                          <Ionicons name={'add-outline'} size={30} color="#A9D18E"/>
+                      </TouchableOpacity>
+                  </View>
+                </View>
               </View>
             ))}
           </ScrollView>
         )}
       </View>
+      <Dialog
+            isVisible={visible}
+            onBackdropPress={() => toggleVisible(0)}>
+                <Dialog.Title title="Choose List"/>
+                {listData.map((a, index) => (
+                    <ListItem
+                    key={index}
+                    onPress={() => saveList(a.id)}>
+                        <ListItem.Content>
+                            <ListItem.Title>
+                                {a.name}
+                            </ListItem.Title>
+                        </ListItem.Content>
+                    </ListItem>
+                ))}
+            </Dialog>
       <StatusBar style="auto" />
     </View>
   );
@@ -203,5 +315,25 @@ const ProfileStyle = StyleSheet.create({
   commentDate: {
     color: '#888',
     marginTop: 5,
+  },
+
+  infoContainer: {
+    flexDirection: 'row', // Align items horizontally
+    alignItems: 'center', // Align items vertically
+    justifyContent: 'space-between',
+    marginTop: 'auto',
+    position: 'relative',
+  },
+
+  buttons: {
+      flexDirection: 'row', // Align items horizontally
+      alignItems: 'center', // Align items vertically
+      justifyContent: 'flex-end',
+      padding: 5,
+  },
+
+  smallButton: {
+      float: 'left',
+      display: 'inline-block',
   },
 })
