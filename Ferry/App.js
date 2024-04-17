@@ -10,6 +10,8 @@ import Message from './screens/Message';
 import Comment from './screens/Comment';
 import Profile from './screens/Profile';
 import AddPost from './components/CreatePost';
+import ListExtention from './screens/ListExtention';
+import ListDetail from './screens/ListDetail';
 import ReviewText from './components/ReviewText'
 import AddReview from './components/CreateReview';
 import CountrySpecificPage from './screens/CountrySpecificPage';
@@ -39,6 +41,8 @@ export default function App() {
           <Stack.Screen name="AddPost" component={AddPost} />
           <Stack.Screen name="AddReview" component={AddReview} />
           <Stack.Screen name="ReviewText" component={ReviewText} />
+          <Stack.Screen name="ListExtention" component={ListExtention} />
+          <Stack.Screen name="ListDetail" component={ListDetail} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

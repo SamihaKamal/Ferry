@@ -63,4 +63,5 @@ urlpatterns = [
     # Lists
     path('api/save+to+list/', save_to_list),
     path('api/get+list+review/', get_list_reviews),
+    path('api/get+item+by+id/', get_item_by_id),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

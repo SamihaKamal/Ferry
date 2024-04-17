@@ -776,6 +776,84 @@ def get_comments_by_user(request):
             return JsonResponse({'comments': comments_data}, json_dumps_params={'indent':5}, status=200)
         except Exception as e:
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
+
+def get_item_by_id(request):
+    if (request.method == 'GET'):
+        id = request.GET.get('id', None)
+        flag = request.GET.get('flag', None)
+        
+        if (id==None) or (flag==None):
+            return JsonResponse({'error': 'Please input ?id=[]&flag= to the end of the url'}, status = 400)
+        else:
+            if (flag == 'r'):
+                review = Review.objects.get(id = id)
+                review_data = {
+                    'id': review.id,
+                    'user':serialize_user(review.user),
+                    'user_image': request.build_absolute_uri(review.user.image.url),
+                    'image': request.build_absolute_uri(review.image.url), 
+                    'review_title':review.review_title,
+                    'review_body':review.review_body, 
+                    'date':review.date,
+                    'likes':review.likes_counter,
+                    'country':review.country_tag,
+                    'tags': [tags.tag_text for tags in review.tags.all()]
+                }
+                
+                return JsonResponse({'review': review_data}, status=200)
+            elif (flag == 'p'):
+                post = Post.objects.get(id = id)
+                post_data = {
+                    'id':post.id,
+                    'user':serialize_user(post.user),
+                    'user_image': request.build_absolute_uri(post.user.image.url),
+                    'image': request.build_absolute_uri(post.image.url), 
+                    'caption':post.caption, 
+                    'date':post.date,
+                    'likes':post.likes_counter,
+                    'country':post.country_tag,
+                    'tags': [tags.tag_text for tags in post.tags.all()]
+                }
+                
+                return JsonResponse({'post': post_data}, status=200)
+            elif (flag == 'c'):
+                comment = Comments.objects.get(id = id)
+                if (comment.post != None):
+                    post = comment.post
+                    post_data = {
+                    'id':post.id,
+                    'user':serialize_user(post.user),
+                    'user_image': request.build_absolute_uri(post.user.image.url),
+                    'image': request.build_absolute_uri(post.image.url), 
+                    'caption':post.caption, 
+                    'date':post.date,
+                    'likes':post.likes_counter,
+                    'country':post.country_tag,
+                    'flag': 'p',
+                    'tags': [tags.tag_text for tags in post.tags.all()]
+                    }
+                    return JsonResponse({'post': post_data}, status=200)
+                else:
+                    review = comment.reviews 
+                    review_data = {
+                        'id': review.id,
+                        'user':serialize_user(review.user),
+                        'user_image': request.build_absolute_uri(review.user.image.url),
+                        'image': request.build_absolute_uri(review.image.url), 
+                        'review_title':review.review_title,
+                        'review_body':review.review_body, 
+                        'date':review.date,
+                        'likes':review.likes_counter,
+                        'country':review.country_tag,
+                        'flag': 'r',
+                        'tags': [tags.tag_text for tags in review.tags.all()]
+                    }
+                    
+                    return JsonResponse({'review': review_data}, status=200)   
+            else:
+                return JsonResponse({'error': 'unable to discern flag'}, status=400)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
       
 #VIEW FUNCTIONS FOR CHAT
 #####################################################################################################################  
@@ -1146,6 +1224,7 @@ def get_list_comments(request):
                 'id':comments.id,
                 'user':serialize_user(comments.users),
                 'posts':check_post_is_null(comments.post),
+                'user_image':request.build_absolute_uri(comments.users.image.url),
                 'reviews':check_review_is_null(comments.reviews),
                 'content':comments.comment_body,
                 'date':comments.date,

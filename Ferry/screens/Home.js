@@ -242,7 +242,7 @@ const homeStyle = StyleSheet.create({
     marginLeft: 'auto',
     width: 70,
     height: 70,
-    aspectRatio: 1, // Maintain the aspect ratio to prevent distortion
+    aspectRatio: 1, 
     borderRadius: 100,
   },
 
@@ -250,7 +250,7 @@ const homeStyle = StyleSheet.create({
     marginLeft: 'auto',
     width: 40,
     height: 40,
-    aspectRatio: 1, // Maintain the aspect ratio to prevent distortion
+    aspectRatio: 1, 
     borderRadius: 100,
   },
 
