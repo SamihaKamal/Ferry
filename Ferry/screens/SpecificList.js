@@ -6,12 +6,14 @@ import {  Card, Button, Icon } from '@rneui/themed';
 export default function SpecificLists({ route }) {
   const { user, list } = route.params;
   const [ postData, setPostData ] = useState([]);
+  const [ reviewData, setReviewData ] = useState([]);
   const [ commentData, setCommentData ] = useState([]);
   const [ listData, setListData ] = useState([]);
 
   useEffect(() =>{
     getListData()
     getPosts()
+    getReviews()
     getComments()
   }, [])
 
@@ -51,6 +53,29 @@ export default function SpecificLists({ route }) {
     }
   }
 
+  async function getReviews() {
+    const request = await fetch(`http://192.168.0.68:8000/api/get+list+review/?list_id=${list}`)
+    const response = await request.json();
+
+    if (response){
+      const responseData = response.reviews.map((a) => ({
+        id: a.id,
+        review_user_id: a.user.id,
+        review_user_name: a.user.name,
+        review_user_profile: a.user_image,
+        image: a.image,
+        title: a.review_title,
+        text: a.review_body,
+        date: a.date,
+        likes: a.likes,
+        country: a.country,
+        tags: a.tags,
+      }));
+
+      setReviewData(responseData)
+    }
+  }
+
   async function getComments(){
     const request = await fetch(`http://192.168.0.68:8000/api/get+list+comment/?list_id=${list}`)
     const response = await request.json()
@@ -82,6 +107,16 @@ export default function SpecificLists({ route }) {
               source={{ uri: a.image}}
             />
             <Text>{a.caption}</Text>
+          </Card>
+        ))}
+      </ScrollView>
+      <Text>Reviews:</Text>
+      <ScrollView>
+        {reviewData.map((a, index) => (
+          <Card key={index} containerStyle={{width: 200}}>
+            <Card.Title>{a.review_user_name}</Card.Title>
+            <Card.Divider />
+            <Text>{a.title}</Text>
           </Card>
         ))}
       </ScrollView>

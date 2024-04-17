@@ -62,4 +62,5 @@ urlpatterns = [
     path('api/create+reply+comments/', create_reply_comment),
     # Lists
     path('api/save+to+list/', save_to_list),
+    path('api/get+list+review/', get_list_reviews),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
