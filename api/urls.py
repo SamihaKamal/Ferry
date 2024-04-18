@@ -68,4 +68,7 @@ urlpatterns = [
     path('api/delete+list/', delete_list),
     # Country
     path('api/get+country+reviews/', get_reviews_from_country),
+    # Profile
+    path('api/edit+user+image/', edit_user_image),
+    path('api/edit+user+name/', edit_user_name),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

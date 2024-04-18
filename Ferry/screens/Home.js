@@ -23,6 +23,7 @@ export default function Home({ route}) {
   useFocusEffect(
     useCallback(() => {
       getPosts()
+      getUserProfile()
       getReviews()
     }, [])
   );

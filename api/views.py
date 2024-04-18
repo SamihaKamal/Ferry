@@ -213,6 +213,20 @@ def edit_user_image(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
+def edit_user_name(request):
+    if (request.method=='POST'):  
+        user_id = request.POST.get('user_id', None)
+        user_name = request.POST.get('user_name', None)     
+        try:
+            key = User.objects.get(id=user_id)
+            key.name = user_name 
+            key.save()
+            return JsonResponse({'message' : 'name changes successfully'}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({'message':'user does not exist'}, status = 400)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
 #VIEW FUNCTIONS FOR REVIEWS
 #####################################################################################################################  
 
