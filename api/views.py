@@ -1056,6 +1056,30 @@ def get_posts_from_country(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
+def get_reviews_from_country(request):
+    if (request.method=='GET'):
+        country_id = request.GET.get('country_id', None)
+        
+        if (country_id == None):
+            return JsonResponse({'error': 'Please input ?country_id= to the end of the url'}, status=401)
+        else:
+            country = Country.objects.get(id=country_id)
+            reviews = Review.objects.all().filter(country_tag=country.country_tag)
+            reviews_data = [{
+                'id':a.id,
+                'user':serialize_user(a.user),
+                'user_image': request.build_absolute_uri(a.user.image.url),
+                'image': request.build_absolute_uri(a.image.url), 
+                'review_title':a.review_title,
+                'review_body':a.review_body, 
+                'date':a.date,
+                'likes':a.likes_counter,
+                'country':a.country_tag,
+                'tags': [tags.tag_text for tags in a.tags.all()]} for a in reviews]
+            return JsonResponse({'reviews': reviews_data}, json_dumps_params={'indent':5}, status=200)   
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
 def get_country_image(request):
     '''
         Returns images from posts that are have the specified country tag.
