@@ -27,12 +27,6 @@ const CustomAddPostButton = ({children, onPress, user}) => {
           top: -20,
           justifyContent: 'center',
           alignItems: 'center',
-          shadowColor: '#7f5Df0',
-          shadowOffset: {
-            width: 0,
-            height: 10,
-          },
-          
         }}
         onPress={toggleOverlay} >
           <View style={{

@@ -28,8 +28,10 @@ export default function SpecificLists({ route }) {
           id: response.list.id,
           list_user_id: response.list.user.id,
           name: response.list.name,
+          tags: response.list.tags,
       }
-
+      
+      console.log(responseData)
       setListData(responseData)
   }
 
@@ -113,10 +115,17 @@ export default function SpecificLists({ route }) {
   return (
     <ScrollView style={{flex: 1}}>
       <Text style={{ fontSize: 50, alignSelf: 'center' }}>{listData.name}</Text>
+
+      <View style={[ListStyle.postTagBackground]}>
+          {listData && listData.id && (listData.tags.map((a, index) => (
+          <Text key={index} style={ListStyle.postTag}>{a}</Text>
+        )))}
+      </View>
+
       <View style={{flexDirection: 'row'}}>
         <Text style={ ListStyle.titleText }>Posts:</Text>
         <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 10,}} onPress={() => seeMore(0)}>
-          <Text style={{ color: 'grey'}}>see more...</Text>
+          {/* <Text style={{ color: 'grey'}}>see more...</Text> */}
         </TouchableOpacity>
       </View>
       <ScrollView style={{flexDirection: 'row'}} horizontal={true}>
@@ -147,7 +156,7 @@ export default function SpecificLists({ route }) {
       <View style={{flexDirection: 'row'}}>
         <Text style={ ListStyle.titleText }>Reviews:</Text>
         <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 10,}} onPress={() => seeMore(1)}>
-          <Text style={{ color: 'grey'}}>see more...</Text>
+          {/* <Text style={{ color: 'grey'}}>see more...</Text> */}
         </TouchableOpacity>
       </View>
       
@@ -175,7 +184,7 @@ export default function SpecificLists({ route }) {
       <View style={{flexDirection: 'row'}}>
         <Text style={ ListStyle.titleText }>Comments:</Text>
         <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 10,}} onPress={() => seeMore(2)}>
-          <Text style={{ color: 'grey'}}>see more...</Text>
+          {/* <Text style={{ color: 'grey'}}>see more...</Text> */}
         </TouchableOpacity>
       </View>
 
@@ -215,5 +224,20 @@ const ListStyle = StyleSheet.create({
   titleText: {
     marginLeft: 20,
     fontSize: 20,
-  }
+  },
+
+  postTagBackground: {
+    flexDirection: 'row', // Align items horizontally
+    alignItems: 'center', // Align items vertically
+    padding: 5,
+    flexWrap: 'wrap',
+        
+  },
+
+  postTag: {
+    borderRadius: 40,
+    padding: 10,
+    marginLeft: 4,
+    backgroundColor: '#C2B2B4',
+  },
 })

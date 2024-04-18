@@ -9,6 +9,7 @@ import Login from './screens/Login';
 import Message from './screens/Message';
 import Comment from './screens/Comment';
 import Profile from './screens/Profile';
+import CreateList from './components/CreateList';
 import AddPost from './components/CreatePost';
 import ListExtention from './screens/ListExtention';
 import ListDetail from './screens/ListDetail';
@@ -43,6 +44,7 @@ export default function App() {
           <Stack.Screen name="ReviewText" component={ReviewText} />
           <Stack.Screen name="ListExtention" component={ListExtention} />
           <Stack.Screen name="ListDetail" component={ListDetail} />
+          <Stack.Screen name="CreateList" component={CreateList} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

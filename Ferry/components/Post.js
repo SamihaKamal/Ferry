@@ -72,7 +72,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
             posts_id: id,
             review_id: 0,
         }
-        const request = await fetch('http://192.168.0.68:8000/api/save+post+to+list/', {
+        const request = await fetch('http://192.168.0.68:8000/api/save+to+list/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

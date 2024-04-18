@@ -1247,12 +1247,41 @@ def get_list(request):
             list_data = {
                'id': list_id,
                'user': serialize_user(list.user),
-               'name': list.name
+               'name': list.name,
+               'tags': [tags.tag_text for tags in list.tags.all()]
             }
             return JsonResponse({'list': list_data})
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
     
+def create_list(request):
+    if (request.method == 'POST'):
+        
+        user_id = request.POST.get('user_id', None)
+        name = request.POST.get('name', None)   
+        
+        tags = []
+        for key, value in request.POST.items():
+            if key.startswith('tag_'):
+                tags.append(value)
+        
+        #Get user from the user id
+        user = User.objects.get(id=user_id)
+             
+        #Check tags, and see if they exist, if not create a new tag
+        for tag_text in tags:
+            tag, created = Tag.objects.get_or_create(tag_text=tag_text)
+                        
+        try:
+            list = List(user = user, name = name)
+            list.save()
+            list.tags.add(*Tag.objects.filter(tag_text__in=tags))
+            return JsonResponse({'message': 'List created'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'Unable to create list {e}'}, status=401)
+        
+    else: 
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
         
         
 

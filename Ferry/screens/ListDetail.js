@@ -28,6 +28,7 @@ export default function ListDetail({ route }) {
     }
     else if (flag == 'p'){
         a = request.post
+        console.log(a)
         setItemData(serialisePost(a))
     }
     else{
@@ -58,6 +59,7 @@ export default function ListDetail({ route }) {
         country: data.country,
         tags: data.tags, 
     }
+    console.log(a)
     return a
   }
 
@@ -75,13 +77,13 @@ export default function ListDetail({ route }) {
         country: data.country,
         tags: data.tags,
     }
-
+    console.log(a)
     return a
   }
 
   return (
     <View>
-        {flag === 'r' || commentFlag === 'r' && itemData && itemData.id && (
+        {(flag === 'r' || commentFlag === 'r') && itemData && itemData.id && (
              <ReviewTile
                 review_id={itemData.id}
                 user_id = {user}
@@ -98,7 +100,7 @@ export default function ListDetail({ route }) {
                 navigation={navigation}
            />
         )}
-        {flag === 'p' || commentFlag === 'p' && itemData && itemData.id && (
+        {(flag === 'p' || commentFlag === 'p') && itemData && itemData.id && (
             <PostTile
                 id={itemData.id}
                 name={itemData.user}
