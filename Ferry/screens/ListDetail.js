@@ -18,7 +18,7 @@ export default function ListDetail({ route }) {
 }, [])
     
   async function getData(){
-    console.log(id, flag)
+ 
     const response = await fetch(`http://192.168.0.68:8000/api/get+item+by+id/?id=${id}&flag=${flag}`)
     const request = await response.json()
     
@@ -28,7 +28,6 @@ export default function ListDetail({ route }) {
     }
     else if (flag == 'p'){
         a = request.post
-        console.log(a)
         setItemData(serialisePost(a))
     }
     else{
@@ -59,7 +58,7 @@ export default function ListDetail({ route }) {
         country: data.country,
         tags: data.tags, 
     }
-    console.log(a)
+
     return a
   }
 
@@ -77,7 +76,7 @@ export default function ListDetail({ route }) {
         country: data.country,
         tags: data.tags,
     }
-    console.log(a)
+   
     return a
   }
 

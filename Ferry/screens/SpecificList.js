@@ -31,7 +31,6 @@ export default function SpecificLists({ route }) {
           tags: response.list.tags,
       }
       
-      console.log(responseData)
       setListData(responseData)
   }
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
@@ -44,6 +44,28 @@ export default function Lists({ route }) {
     navigation.navigate('CreateList', {user: user})
   }
 
+  async function deleteList(id, name){
+    Alert.alert('Delete list', `Do you want to delete the list ${name}?`, [
+      {
+        text: 'Cancel',
+        onPress: () => {return},
+        style: 'cancel',
+      },
+      {text: 'Yes', onPress: async () => {
+        const request = await fetch(`http://192.168.0.68:8000/api/delete+list/?list_id=${id}`, {
+        method: 'DELETE'
+      })
+      const response = await request.json()
+
+      if (response){
+        getLists()
+      }
+        }
+    },
+    ]);
+    
+  }
+
   return (
     <View style={{flex : 1}}>
       <ScrollView style={{flex: 1}}>
@@ -55,6 +77,9 @@ export default function Lists({ route }) {
             <ListItem.Content>
               <ListItem.Title>{a.name}</ListItem.Title>
             </ListItem.Content>
+            <TouchableOpacity onPress={() => deleteList(a.id, a.name)}>
+              <Ionicons name={'trash-bin-outline'} size={20} />
+            </TouchableOpacity> 
         </ListItem>
         </TouchableOpacity>
       ))}

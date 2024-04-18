@@ -25,7 +25,6 @@ def serialize_chat(chat):
     }
     
 def serialize_post(posts):
-    print("posts error?")
     return{
         'id':posts.id,
         'caption':posts.caption, 
@@ -36,7 +35,6 @@ def serialize_post(posts):
     }
     
 def serialize_comments(comments):
-    print("comments error?")
     return{
         'id':comments.id,
         'posts':comments.post.id,
@@ -408,7 +406,7 @@ def get_likes(request):
                     
                 return JsonResponse({'postLikes': postLikes_data, 'number': count}, json_dumps_params={'indent':5}, status=200)
             else:
-                print("error finding out whether its post or review")
+                return JsonResponse({'error': 'Error categorising'}, status=401)
             
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)    
@@ -515,7 +513,7 @@ def create_post(request):
                         
         try:
             if (country_tag != ''):
-                print('i AM here')
+
                 post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0, country_tag = country_tag)
             else:
                 post = Post(user = user, caption = caption, image = image, date= date_posted, likes_counter = 0 )
@@ -654,13 +652,10 @@ def create_comment(request):
         review_id = data.get('review_id', '')
         comment_body = data.get('comment_body', '')
         comment_date = date.today()
-        
-        print(review_id)
-        print(post_id)
-
+    
         user = User.objects.get(id=user_id)
         if (review_id == 0):
-            print("reached posts")
+
             post = Post.objects.get(id=post_id)
             try:
                 comment = Comments(users=user, post=post, comment_body=comment_body, date=comment_date, likes_counter=0)
@@ -680,7 +675,7 @@ def create_comment(request):
             except Exception as e: 
                 return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
         else:
-            print("error categorising post or review")
+            return JsonResponse({'error': 'Error categorising'}, status=401)
         
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
@@ -721,7 +716,7 @@ def create_reply_comment(request):
             except Exception as e: 
                 return JsonResponse({'error': f'Error creating comment {e}'}, status=401)
         else:
-            print("error categorising post or review") 
+            return JsonResponse({'error': 'Error categorising '}, status=401)
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
   
@@ -1096,7 +1091,7 @@ def get_user_lists(request):
             try:
                 user = User.objects.get(id = user_id)
                 user_lists = List.objects.all().filter(user=user)
-                print(user)
+            
                 lists_data = [{
                     'id': a.id,
                     'name': a.name,
@@ -1121,8 +1116,7 @@ def save_to_list(request):
         
         user = User.objects.get(id=user_id)
         list = List.objects.get(id=list_id)
-        print(posts_id)
-        print(review_id)
+
         if (posts_id == 0):
             review = Review.objects.get(id=review_id)
             list.review.add(review)
@@ -1281,6 +1275,18 @@ def create_list(request):
             return JsonResponse({'error': f'Unable to create list {e}'}, status=401)
         
     else: 
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+def delete_list(request):
+    if (request.method == 'DELETE'):
+        list_id = request.GET.get('list_id', None)
+        if (list_id == None):
+            return JsonResponse({'error': 'Please input ?list_id= to the end of the url'})
+        else:
+            list = List.objects.get(id=list_id)
+            list.delete()
+            return JsonResponse({'message': 'list deleted'}, status=200)
+    else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
         
         
