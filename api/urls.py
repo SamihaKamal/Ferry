@@ -53,6 +53,7 @@ urlpatterns = [
     path('api/create+reviews/', create_review),
     path('api/get+reviews/', get_all_reviews),
     path('api/get+user+reviews/', get_reviews_by_user),
+    path('api/delete+review/', delete_review),
     # Like url
     path('api/like/', like),
     path('api/get+likes/', get_likes),

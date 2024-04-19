@@ -289,6 +289,18 @@ def get_all_reviews(request):
             'Reviews': reviews_data
         }, json_dumps_params={'indent':5})
         
+def delete_review(request):
+    if (request.method == 'DELETE'):
+        id = request.GET.get('id', None)
+        if (id == None):
+            return JsonResponse({'error': 'Please input ?id= to the end of the url'})
+        else:
+            review = Review.objects.get(id=id)
+            review.delete()
+            return JsonResponse({'message': 'post deleted'}, status=200)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
+        
 def create_review(request):
     '''
     
