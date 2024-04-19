@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
     Button,
@@ -11,9 +11,18 @@ import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 function Review({review_id, user_id, review_user_id, review_user_name, review_user_image, country, image, review_title, text, date, likes_counter, tags, navigation }){
-    const [ visible, setVisible ] = useState(false);
-    const [ listData, setListData ] = useState([]);
-    const [ reviewLikes, setReviewLikes ] = useState([])
+    const [ deleteVisible, setDeleteVisible ] = useState('none');
+    
+
+    useEffect(() =>{
+        checkDelete()
+    }, [])
+
+    const checkDelete = () => {
+        if (user_id == review_user_id){
+            setDeleteVisible('visible')
+        }
+    }
 
     const OpenComments = () => {
         //Navigates to register through App.js
@@ -26,6 +35,27 @@ function Review({review_id, user_id, review_user_id, review_user_name, review_us
 
     const OpenReviewText = () => {
         navigation.navigate('ReviewText', {user: user_id, viewuser: review_user_id, id: review_id, image: image, date: date, title: review_title, text: text })
+    }
+
+    async function deleteReview(){
+        Alert.alert('Delete Review', `Do you want to delete this review?`, [
+            {
+              text: 'Cancel',
+              onPress: () => {return},
+              style: 'cancel',
+            },
+            {text: 'Yes', onPress: async () => {
+                const request = await fetch(`http://192.168.0.68:8000/api/delete+review/?id=${review_id}`, {
+                    method: 'DELETE'
+                })
+                const response = await request.json()
+        
+                if (response){
+                    Alert.alert("Review deleted", "Please refresh page to see changes")
+                }
+              }
+            },
+        ]);
     }
 
     
@@ -41,6 +71,9 @@ function Review({review_id, user_id, review_user_id, review_user_name, review_us
                         />
                     </TouchableOpacity>
                     <Text style ={[ReviewStyle.reviewUserName]}>{review_user_name}</Text> 
+                    <TouchableOpacity style={{ display: deleteVisible, marginLeft: 'auto'}} onPress={deleteReview}>
+                        <Ionicons name={'trash-bin-outline'} size={20} />
+                    </TouchableOpacity>
                 </View>
                 {/* Touchable opacity that redirects user to a seperate page with the review */}
                 <TouchableOpacity style={[ReviewStyle.reviewContainer]} onPress={OpenReviewText}>

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
     Button,
@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 
 function Post({id, name, user_image, post_user_id, user_id, caption, image, date, likes, country, tags, navigation}) {   
     const [ visible, setVisible ] = useState(false);
+    const [ deleteVisible, setDeleteVisible ] = useState('none');
     const [ listData, setListData ] = useState([]);
     const [ postLikes, setPostLikes ] = useState([])
 
@@ -23,6 +24,9 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
 
   
     async function getLists(){
+        if (post_user_id == user_id){
+            setDeleteVisible('visible')
+        }
         const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user_id}`)
         const response = await request.json()
 
@@ -96,6 +100,26 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
         navigation.navigate('Profile', {user: user_id, viewuser: post_user_id})
     }
 
+    async function deletePost(){
+        Alert.alert('Delete Post', `Do you want to delete this post?`, [
+            {
+              text: 'Cancel',
+              onPress: () => {return},
+              style: 'cancel',
+            },
+            {text: 'Yes', onPress: async () => {
+                const request = await fetch(`http://192.168.0.68:8000/api/delete+post/?id=${id}`, {
+                    method: 'DELETE'
+                })
+                const response = await request.json()
+        
+                if (response){
+                    Alert.alert("Post deleted", "Please refresh page to see changes")
+                }
+              }
+            },
+        ]);
+    }
     const a = !country || country.trim() === '';
     return (
         // Where all the posts are located
@@ -111,6 +135,9 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                         />
                     </TouchableOpacity>
                     <Text style ={[postStyle.postText]}>{name}</Text> 
+                    <TouchableOpacity style={{ display: deleteVisible, marginLeft: 'auto'}} onPress={deletePost}>
+                        <Ionicons name={'trash-bin-outline'} size={20} />
+                    </TouchableOpacity>
                 </View>
                 <Image 
                     style={postStyle.postImage}
