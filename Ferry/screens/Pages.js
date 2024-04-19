@@ -31,7 +31,7 @@ export default function Pages({ route }) {
   }
 
   const sendToCountryPage = (countryID) => {
-    navigation.navigate('CountrySpecificPage', {user: user, country: countryID, navigation: navigation})
+    navigation.navigate('CountrySpecificPage', {user: user, country: countryID })
   }
 
   return (

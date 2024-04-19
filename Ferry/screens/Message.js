@@ -125,12 +125,12 @@ const messageStyle = StyleSheet.create({
   },
 
   messageFromUser: {
-    backgroundColor: 'pink',
+    backgroundColor: '#F5DDDD',
     borderRadius: 10,
   },
 
   messageToUser: {
-    backgroundColor: '#e18e96',
+    backgroundColor: '#C2B2B4',
     borderRadius: 10,
   },
 

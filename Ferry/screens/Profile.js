@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, Image, Modal, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, Modal, Button, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import PostTile from '../components/Post';
+import * as ImagePicker from 'expo-image-picker';
 import ReviewTile from '../components/Review';
 import { useNavigation } from '@react-navigation/native';
 import ProfileTabs from '../components/ProfileTabs';
@@ -23,6 +24,8 @@ export default function Profile({ route }) {
   const [ editVisible, setEditVisible] = useState('none');
   const [ editChatVisible, setEditChatVisible] = useState('visible');
   const [ index, setIndex ] = useState(0);
+  const [ newName, setNewName ] = useState('');
+  const [ editDialogVisible, setEditDialogVisible ] = useState(false);
   const [ visible, setVisible ] = useState(false);
   const [ listData, setListData ] = useState([]);
   const [ commentID, setCommentID ] = useState(0);
@@ -138,6 +141,10 @@ export default function Profile({ route }) {
     setVisible(!visible);
   };
 
+  const toggleEditVisible = () => {
+    setEditDialogVisible(!editDialogVisible)
+  }
+
   async function saveList(listId){
     const data={
         user_id: user,
@@ -155,14 +162,62 @@ export default function Profile({ route }) {
     alert("Post saved!")
 }
 
-  const likeComment = () => {
-    console.log("Clicked")
+  async function editProfile() {
+    if (newName == ''){
+      Alert.alert("Unable to edit name","Please enter a name")
+      toggleEditVisible()
+      return;
+    }
+    const data = new FormData();
+      data.append('user_id', user);
+      data.append('user_name', newName )
+     
+      const request = await fetch('http://192.168.0.68:8000/api/edit+user+name/',{
+        method: 'POST',
+        body: data,
+      })
+
+      const response = await request.json()
+      if (response){
+        setNewName('')
+        toggleEditVisible()
+        getUserData()
+      }
+    
+  }
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4,3],
+      quality: 1,
+    });
+
+    if (!result.canceled){
+      const data = new FormData();
+      data.append('user_id', user);
+      data.append('user_image', {
+        uri: result.assets[0].uri,
+        name: 'photo.jpg',
+        type: 'image/jpg',
+      })
+     
+      const request = await fetch('http://192.168.0.68:8000/api/edit+user+image/',{
+        method: 'POST',
+        body: data,
+      })
+      const response = await request.json()
+      if (response){
+        getUserData()
+      }
+    }
   }
 
   return (
     <View style={ProfileStyle.container}>
       <View style={ProfileStyle.profileContainer}>
-        <TouchableOpacity style={ProfileStyle.TouchableOpacity}>
+        <TouchableOpacity style={ProfileStyle.TouchableOpacity} onPress={pickImage}>
           <Image 
             style={ProfileStyle.Image}
             source={{ uri: userData.image}}
@@ -170,12 +225,11 @@ export default function Profile({ route }) {
         </TouchableOpacity>
         <View>
           <Text style={ProfileStyle.username}>{userData.name}</Text>
-          <Text>{userData.email}</Text>
         </View>
         <TouchableOpacity style={{display: editChatVisible, marginLeft: 'auto', backgroundColor: 'white'}} onPress={sendToChat}>
           <Ionicons name={'chatbubble'} size={30} color={'white'}/>
         </TouchableOpacity>
-        <TouchableOpacity style={{display: editVisible, marginLeft: 'auto', backgroundColor: 'white'}}>
+        <TouchableOpacity style={{display: editVisible, marginLeft: 'auto', backgroundColor: 'white'}} onPress={toggleEditVisible}>
           <Ionicons name={'settings'} size={30} color={'grey'}/>
         </TouchableOpacity>
         
@@ -259,7 +313,24 @@ export default function Profile({ route }) {
                         </ListItem.Content>
                     </ListItem>
                 ))}
-            </Dialog>
+        </Dialog>
+        <Dialog
+          isVisible={editDialogVisible}
+          onBackdropPress={toggleEditVisible}
+        >
+          <Dialog.Title title="Edit name"/>
+          <Text>To edit profile picture just click your picture on the profile screen</Text>
+          <TextInput placeholder="Enter name here" value={newName} onChangeText={setNewName} style={{borderWidth: 1,
+            width: 'auto',
+            marginTop: 5,
+            height: 50,
+            borderColor: '#ccc',
+            borderRadius: 5,}}/>
+            <Dialog.Actions>
+              <Dialog.Button title="Cancel" onPress={toggleEditVisible}/>
+              <Dialog.Button title="Ok" onPress={editProfile}/>
+            </Dialog.Actions>
+        </Dialog>
       <StatusBar style="auto" />
     </View>
   );

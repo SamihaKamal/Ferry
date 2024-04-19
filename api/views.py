@@ -213,6 +213,20 @@ def edit_user_image(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
+def edit_user_name(request):
+    if (request.method=='POST'):  
+        user_id = request.POST.get('user_id', None)
+        user_name = request.POST.get('user_name', None)     
+        try:
+            key = User.objects.get(id=user_id)
+            key.name = user_name 
+            key.save()
+            return JsonResponse({'message' : 'name changes successfully'}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({'message':'user does not exist'}, status = 400)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
 #VIEW FUNCTIONS FOR REVIEWS
 #####################################################################################################################  
 
@@ -274,6 +288,18 @@ def get_all_reviews(request):
         return JsonResponse({
             'Reviews': reviews_data
         }, json_dumps_params={'indent':5})
+        
+def delete_review(request):
+    if (request.method == 'DELETE'):
+        id = request.GET.get('id', None)
+        if (id == None):
+            return JsonResponse({'error': 'Please input ?id= to the end of the url'})
+        else:
+            review = Review.objects.get(id=id)
+            review.delete()
+            return JsonResponse({'message': 'post deleted'}, status=200)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
         
 def create_review(request):
     '''
@@ -482,6 +508,18 @@ def get_country_tags(request):
         return JsonResponse({'country': tags_data}, status=200)
     else:
        return JsonResponse({'error': 'Incorrect request method'}, status=400) 
+   
+def delete_post(request):
+    if (request.method == 'DELETE'):
+        id = request.GET.get('id', None)
+        if (id == None):
+            return JsonResponse({'error': 'Please input ?id= to the end of the url'})
+        else:
+            post = Post.objects.get(id=id)
+            post.delete()
+            return JsonResponse({'message': 'post deleted'}, status=200)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
     
     
 def create_post(request):
@@ -1053,6 +1091,30 @@ def get_posts_from_country(request):
                 'country':posts.country_tag,
                 'tags': [tags.tag_text for tags in posts.tags.all()]} for posts in posts]
             return JsonResponse({'posts': posts_data}, json_dumps_params={'indent':5}, status=200)   
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400)
+    
+def get_reviews_from_country(request):
+    if (request.method=='GET'):
+        country_id = request.GET.get('country_id', None)
+        
+        if (country_id == None):
+            return JsonResponse({'error': 'Please input ?country_id= to the end of the url'}, status=401)
+        else:
+            country = Country.objects.get(id=country_id)
+            reviews = Review.objects.all().filter(country_tag=country.country_tag)
+            reviews_data = [{
+                'id':a.id,
+                'user':serialize_user(a.user),
+                'user_image': request.build_absolute_uri(a.user.image.url),
+                'image': request.build_absolute_uri(a.image.url), 
+                'review_title':a.review_title,
+                'review_body':a.review_body, 
+                'date':a.date,
+                'likes':a.likes_counter,
+                'country':a.country_tag,
+                'tags': [tags.tag_text for tags in a.tags.all()]} for a in reviews]
+            return JsonResponse({'reviews': reviews_data}, json_dumps_params={'indent':5}, status=200)   
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     

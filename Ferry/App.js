@@ -9,6 +9,7 @@ import Login from './screens/Login';
 import Message from './screens/Message';
 import Comment from './screens/Comment';
 import Profile from './screens/Profile';
+import Home from './screens/Home';
 import CreateList from './components/CreateList';
 import AddPost from './components/CreatePost';
 import ListExtention from './screens/ListExtention';
@@ -35,6 +36,7 @@ export default function App() {
             headerShown: false
           }}/>
           <Stack.Screen name="Comment" component={Comment} />
+          <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="Message" component={Message} />
           <Stack.Screen name="CountrySpecificPage" component={CountrySpecificPage} />
