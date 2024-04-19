@@ -496,6 +496,18 @@ def get_country_tags(request):
         return JsonResponse({'country': tags_data}, status=200)
     else:
        return JsonResponse({'error': 'Incorrect request method'}, status=400) 
+   
+def delete_post(request):
+    if (request.method == 'DELETE'):
+        id = request.GET.get('id', None)
+        if (id == None):
+            return JsonResponse({'error': 'Please input ?id= to the end of the url'})
+        else:
+            post = Post.objects.get(id=id)
+            post.delete()
+            return JsonResponse({'message': 'post deleted'}, status=200)
+    else:
+        return JsonResponse({'error': 'Wrong request method'}, status=400) 
     
     
 def create_post(request):

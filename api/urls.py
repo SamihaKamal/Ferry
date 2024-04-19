@@ -60,6 +60,8 @@ urlpatterns = [
     path('api/get+comments/', get_comments),
     path('api/create+comment/', create_comment),
     path('api/create+reply+comments/', create_reply_comment),
+    # Posts
+    path('api/delete+post/', delete_post),
     # Lists
     path('api/save+to+list/', save_to_list),
     path('api/get+list+review/', get_list_reviews),
