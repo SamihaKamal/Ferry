@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { ListItem, Avatar } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
+import IPAddress from '../components/IPAddress';
 
 //Pages is the country pages.
 export default function Pages({ route }) {
@@ -16,7 +17,7 @@ export default function Pages({ route }) {
 
 
   async function getCountries(){
-    const request = await fetch('http://192.168.0.68:8000/api/get+countries/')
+    const request = await fetch(`http://${IPAddress()}/api/get+countries/`)
     const response = await request.json()
 
     if(response){

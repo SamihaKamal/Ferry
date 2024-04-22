@@ -8,6 +8,7 @@ import {
   Dialog,
   ListItem,
   } from '@rneui/themed';
+import IPAddress from './IPAddress';
 
 export default function CreateReview({ route }) {
   const { user } = route.params;
@@ -37,7 +38,7 @@ export default function CreateReview({ route }) {
   }
 
   async function getCountryTags() {
-    const request = await fetch(`http://192.168.0.68:8000/api/get+country+tags/`)
+    const request = await fetch(`http://${IPAddress()}/api/get+country+tags/`)
     const response = await request.json()
 
     const Data = response.country.map((a) =>({
@@ -78,7 +79,7 @@ export default function CreateReview({ route }) {
       data.append(`tag_${index}`, tag)
     })
 
-    const request = await fetch('http://192.168.0.68:8000/api/create+reviews/',{
+    const request = await fetch(`http://${IPAddress()}/api/create+reviews/`,{
       method: 'POST',
       body: data,
     })

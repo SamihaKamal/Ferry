@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import IPAddress from '../components/IPAddress';
 
 export default function Message({ route }) {
   const { user, recipent, chat } = route.params;
@@ -18,7 +19,7 @@ export default function Message({ route }) {
 
 
   async function getMessages(){
-    const request = await fetch(`http://192.168.0.68:8000/api/get+messages+from+chat/?chat_id=${chat}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+messages+from+chat/?chat_id=${chat}`)
     const response = await request.json()
 
     const responseData = response.messages.map((a) => ({
@@ -42,7 +43,7 @@ export default function Message({ route }) {
       'chat_id': chat,
       'content': userComment,
     }
-    const request = await fetch(`http://192.168.0.68:8000/api/create+message/`, {
+    const request = await fetch(`http://${IPAddress()}/api/create+message/`, {
       method: 'POST',
       headers: {
         'content-type' : 'application/json'
@@ -90,7 +91,7 @@ export default function Message({ route }) {
           autoCorrect={true}
           numberOfLines={4}
           maxLength={60}
-          placeholder="User Comment" 
+          placeholder="User message" 
           value={userComment} 
           onChangeText={setUserComment}/>
           <TouchableOpacity onPress={addMessage}>

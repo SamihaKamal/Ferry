@@ -13,6 +13,7 @@ import {
   ListItem,
   Avatar,
   } from '@rneui/themed';
+  import IPAddress from '../components/IPAddress';
 
 export default function Profile({ route }) {
   const { user, viewuser } = route.params;
@@ -37,7 +38,7 @@ export default function Profile({ route }) {
 }, [])
 
   async function getLists(){
-    const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+user+lists/?user_id=${user}`)
     const response = await request.json()
 
     const responseData = response.lists.map((a) => ({
@@ -54,7 +55,7 @@ export default function Profile({ route }) {
       setEditVisible('visible')
       setEditChatVisible('none')
     }
-    const request = await fetch(`http://192.168.0.68:8000/api/get+user/?user_id=${viewuser}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+user/?user_id=${viewuser}`)
     const response = await request.json()
 
     if (response){
@@ -62,7 +63,7 @@ export default function Profile({ route }) {
     }
 
     // Getting posts
-    const postRequest = await fetch(`http://192.168.0.68:8000/api/get+user+posts/?user_id=${viewuser}`)
+    const postRequest = await fetch(`http://${IPAddress()}/api/get+user+posts/?user_id=${viewuser}`)
     const postResponse = await postRequest.json()
     
     const postData = postResponse.posts.map((a) =>({
@@ -81,7 +82,7 @@ export default function Profile({ route }) {
 
     // Getting reviews
 
-    const reviewRequest = await fetch(`http://192.168.0.68:8000/api/get+user+reviews/?user_id=${viewuser}`)
+    const reviewRequest = await fetch(`http://${IPAddress()}/api/get+user+reviews/?user_id=${viewuser}`)
     const reviewResponse = await reviewRequest.json()
 
     const reviewData = reviewResponse.reviews.map((a) => ({
@@ -102,7 +103,7 @@ export default function Profile({ route }) {
 
     //Get comments of user
 
-    const commentRequest = await fetch(`http://192.168.0.68:8000/api/get+user+comments/?user_id=${viewuser}`)
+    const commentRequest = await fetch(`http://${IPAddress()}/api/get+user+comments/?user_id=${viewuser}`)
     const commentResponse = await commentRequest.json()
     const commentData = commentResponse.comments.map((a) =>({
       id: a.id,
@@ -120,7 +121,7 @@ export default function Profile({ route }) {
       user_id: user,
       to_user_id: viewuser
     }
-    const request = await fetch('http://192.168.0.68:8000/api/create+chat/', {
+    const request = await fetch(`http://${IPAddress()}/api/create+chat/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -131,7 +132,7 @@ export default function Profile({ route }) {
     const response = await request.json()
     if(response){
       const chat_id = response.chat
-      navigation.navigate('Message', {user: user, recipent: viewuser, chat: chat_id, navigation: navigation})
+      navigation.navigate('Message', {user: user, recipent: viewuser, chat: chat_id })
     }
     
   }
@@ -152,7 +153,7 @@ export default function Profile({ route }) {
         list_id: listId,
         comment_id: commentID,
     }
-    const request = await fetch('http://192.168.0.68:8000/api/save+comment+to+list/', {
+    const request = await fetch(`http://${IPAddress()}/api/save+comment+to+list/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -173,7 +174,7 @@ export default function Profile({ route }) {
       data.append('user_id', user);
       data.append('user_name', newName )
      
-      const request = await fetch('http://192.168.0.68:8000/api/edit+user+name/',{
+      const request = await fetch(`http://${IPAddress()}/api/edit+user+name/`,{
         method: 'POST',
         body: data,
       })
@@ -204,7 +205,7 @@ export default function Profile({ route }) {
         type: 'image/jpg',
       })
      
-      const request = await fetch('http://192.168.0.68:8000/api/edit+user+image/',{
+      const request = await fetch(`http://${IPAddress()}/api/edit+user+image/`,{
         method: 'POST',
         body: data,
       })

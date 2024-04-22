@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Button, ScrollView, TextInput, TouchableOpacity
 import React, { useState, useEffect } from 'react';
 import CommentTile from '../components/CommentTile';
 import { Ionicons } from '@expo/vector-icons';
+import IPAddress from '../components/IPAddress';
 
 export default function Comment({ route }) {
     const { user, post, review, viewuser } = route.params;
@@ -32,7 +33,7 @@ export default function Comment({ route }) {
     //If review = 0 means that its NOT a review your commenting on and vice versa.
     async function getComments(){
       if (review == 0){
-        const request = await fetch(`http://192.168.0.68:8000/api/get+comments/?id=${post}&tag=p`)
+        const request = await fetch(`http://${IPAddress()}/api/get+comments/?id=${post}&tag=p`)
         const response = await request.json()
         const responseData = response.Comments.map((a) =>({
           id: a.id,
@@ -46,7 +47,7 @@ export default function Comment({ route }) {
         setComments(responseData)
       }
       else if(post == 0){
-        const request = await fetch(`http://192.168.0.68:8000/api/get+comments/?id=${review}&tag=r`)
+        const request = await fetch(`http://${IPAddress()}/api/get+comments/?id=${review}&tag=r`)
         const response = await request.json()
         const responseData = response.Comments.map((a) =>({
           id: a.id,
@@ -77,7 +78,7 @@ export default function Comment({ route }) {
         comment_body: userComment,
       }
       try{
-        const request = await fetch('http://192.168.0.68:8000/api/create+comment/', {
+        const request = await fetch(`http://${IPAddress()}/api/create+comment/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

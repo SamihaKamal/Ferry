@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Button, ScrollView, TextInput, TouchableOpacity
 import React, { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Dialog, ListItem } from '@rneui/themed';
+import IPAddress from './IPAddress';
 
 export default function ReviewText({ route }) {
     const { user, viewuser, id, image, date, title, text } = route.params;
@@ -16,7 +17,7 @@ export default function ReviewText({ route }) {
 
   
     async function getLists(){
-        const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user}`)
+        const request = await fetch(`http://${IPAddress()}/api/get+user+lists/?user_id=${user}`)
         const response = await request.json()
 
         const responseData = response.lists.map((a) => ({
@@ -36,7 +37,7 @@ export default function ReviewText({ route }) {
             post_id: '',
         }
 
-        const request = await fetch('http://192.168.0.68:8000/api/like/', {
+        const request = await fetch(`http://${IPAddress()}/api/like/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -51,7 +52,7 @@ export default function ReviewText({ route }) {
     }
 
     async function getReviewLikes(){
-        const request = await fetch(`http://192.168.0.68:8000/api/get+likes/?id=${id}&tag=r`)
+        const request = await fetch(`http://${IPAddress()}/api/get+likes/?id=${id}&tag=r`)
         const response = await request.json()
 
         setReviewLikes(response.number)
@@ -66,7 +67,7 @@ export default function ReviewText({ route }) {
             posts_id: 0,
             review_id: id,
         }
-        const request = await fetch('http://192.168.0.68:8000/api/save+to+list/', {
+        const request = await fetch(`http://${IPAddress()}/api/save+to+list/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

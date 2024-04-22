@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import logo from '../assets/Logo.png'
-
+import IPAddress from '../components/IPAddress';
 
 export default function Register({ navigation }) {
   const [name, setName] = useState('');
@@ -19,7 +19,7 @@ export default function Register({ navigation }) {
           password: password,
           name: name,
         }
-        const request = await fetch('http://192.168.0.68:8000/api/register/',{
+        const request = await fetch(`http://${IPAddress()}/api/register/`,{
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -30,7 +30,7 @@ export default function Register({ navigation }) {
         const response = await request.json()
         
         if (response.message == "User registered, please login"){
-          const id_request = await fetch(`http://192.168.0.68:8000/api/get+user+with+email/?user_email=${email}`)
+          const id_request = await fetch(`http://${IPAddress()}/api/get+user+with+email/?user_email=${email}`)
           const id_response = await id_request.json()
           navigation.navigate('MainPages', {user: id_response.user_id})
           setName('')

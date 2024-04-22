@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'reac
 import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Dialog, ListItem } from '@rneui/themed';
-
+import IPAddress from './IPAddress';
 
 export default function CommentTile({ id, name, user_id, post_id, review_id, content, date, likes, replies, refreshComments }) {
     const [userComment, setUserComment] = useState('');
@@ -18,7 +18,7 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
     }, [])
 
     async function getLists(){
-        const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user_id}`)
+        const request = await fetch(`http://${IPAddress()}/api/get+user+lists/?user_id=${user_id}`)
         const response = await request.json()
 
         const responseData = response.lists.map((a) => ({
@@ -36,7 +36,7 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
             list_id: listId,
             comment_id: listReplyId,
         }
-        const request = await fetch('http://192.168.0.68:8000/api/save+comment+to+list/', {
+        const request = await fetch(`http://${IPAddress()}/api/save+comment+to+list/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -76,7 +76,7 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
             comment_body: userComment,
         }
         try{
-            const request = await fetch('http://192.168.0.68:8000/api/create+reply+comments/', {
+            const request = await fetch(`http://${IPAddress()}/api/create+reply+comments/`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import ReviewTile from '../components/Review';
 import PostTile from '../components/Post';
 import { useNavigation } from '@react-navigation/native';
-
+import IPAddress from '../components/IPAddress';
 
 export default function ListDetail({ route }) {
   const { user, flag, id } = route.params;
@@ -19,7 +19,7 @@ export default function ListDetail({ route }) {
 // Depending on waht the flag is a different set of information is recieved and displayed.
   async function getData(){
  
-    const response = await fetch(`http://192.168.0.68:8000/api/get+item+by+id/?id=${id}&flag=${flag}`)
+    const response = await fetch(`http://${IPAddress()}/api/get+item+by+id/?id=${id}&flag=${flag}`)
     const request = await response.json()
     
     if (flag == 'r'){

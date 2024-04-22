@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import {  Card, Button, Icon } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import ListDetail from './ListDetail';
+import IPAddress from '../components/IPAddress';
 
 export default function SpecificLists({ route }) {
   const { user, list } = route.params;
@@ -21,7 +22,7 @@ export default function SpecificLists({ route }) {
   }, [])
 
   async function getListData(){
-    const request = await fetch(`http://192.168.0.68:8000/api/get+list/?list_id=${list}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+list/?list_id=${list}`)
       const response = await request.json()
 
       const responseData = {
@@ -35,7 +36,7 @@ export default function SpecificLists({ route }) {
   }
 
   async function getPosts() {
-    const request = await fetch(`http://192.168.0.68:8000/api/get+list+post/?list_id=${list}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+list+post/?list_id=${list}`)
     const response = await request.json()
 
   
@@ -58,7 +59,7 @@ export default function SpecificLists({ route }) {
   }
 
   async function getReviews() {
-    const request = await fetch(`http://192.168.0.68:8000/api/get+list+review/?list_id=${list}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+list+review/?list_id=${list}`)
     const response = await request.json();
 
     if (response){
@@ -81,7 +82,7 @@ export default function SpecificLists({ route }) {
   }
 
   async function getComments(){
-    const request = await fetch(`http://192.168.0.68:8000/api/get+list+comment/?list_id=${list}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+list+comment/?list_id=${list}`)
     const response = await request.json()
 
     if (response){

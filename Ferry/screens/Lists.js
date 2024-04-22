@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { ListItem, SpeedDial } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
-
+import IPAddress from '../components/IPAddress';
 
 export default function Lists({ route }) {
   const { user } = route.params;
@@ -25,7 +25,7 @@ export default function Lists({ route }) {
   }, [])
 
   async function getLists(){
-      const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user}`)
+      const request = await fetch(`http://${IPAddress()}/api/get+user+lists/?user_id=${user}`)
       const response = await request.json()
 
       const responseData = response.lists.map((a) => ({
@@ -54,7 +54,7 @@ export default function Lists({ route }) {
         style: 'cancel',
       },
       {text: 'Yes', onPress: async () => {
-        const request = await fetch(`http://192.168.0.68:8000/api/delete+list/?list_id=${id}`, {
+        const request = await fetch(`http://${IPAddress()}/api/delete+list/?list_id=${id}`, {
         method: 'DELETE'
       })
       const response = await request.json()

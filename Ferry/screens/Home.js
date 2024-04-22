@@ -5,6 +5,7 @@ import ReviewTile from '../components/Review';
 import PostTile from '../components/Post';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
+import IPAddress from '../components/IPAddress';
 
 export default function Home({ route}) {
   const { user } = route.params;
@@ -33,7 +34,7 @@ export default function Home({ route}) {
 }, [search])
 
   async function getUserProfile() {
-    const request = await fetch(`http://192.168.0.68:8000/api/get+user+image/?user_id=${user}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+user+image/?user_id=${user}`)
     const response = await request.json()
     
     if (response){
@@ -42,7 +43,7 @@ export default function Home({ route}) {
   }
 
   async function getReviews() {
-    const request = await fetch(`http://192.168.0.68:8000/api/get+reviews/`)
+    const request = await fetch(`http://${IPAddress()}/api/get+reviews/`)
     const response = await request.json()
 
     const responseData = response.Reviews.map((a) => ({
@@ -67,7 +68,7 @@ export default function Home({ route}) {
   }
 
   async function getPosts() {
-    const request = await fetch('http://192.168.0.68:8000/api/get+all+posts/')
+    const request = await fetch(`http://${IPAddress()}/api/get+all+posts/`)
     const response = await request.json()
 
     const responseData = response.Posts.map((a) =>({
@@ -95,7 +96,7 @@ export default function Home({ route}) {
     if (search == ''){
       return
     }
-    const request = await fetch(`http://192.168.0.68:8000/api/get+user+by+name/?user_name=${search}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+user+by+name/?user_name=${search}`)
     const response = await request.json()
 
     if (response.user){

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import IPAddress from './IPAddress';
 
 export default function CreateList({ route }) {
   const { user } = route.params;
@@ -35,7 +36,7 @@ export default function CreateList({ route }) {
         data.append(`tag_${index}`, tag)
       })
   
-      const request = await fetch('http://192.168.0.68:8000/api/create+list/',{
+      const request = await fetch(`http://${IPAddress()}/api/create+list/`,{
         method: 'POST',
         body: data,
       })

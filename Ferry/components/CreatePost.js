@@ -8,6 +8,7 @@ import {
   Dialog,
   ListItem,
   } from '@rneui/themed';
+import IPAddress from './IPAddress';
 
 export default function CreatePost({ route }) {
   const { user } = route.params;
@@ -37,7 +38,7 @@ export default function CreatePost({ route }) {
   }
 
   async function getCountryTags() {
-    const request = await fetch(`http://192.168.0.68:8000/api/get+country+tags/`)
+    const request = await fetch(`http://${IPAddress()}/api/get+country+tags/`)
     const response = await request.json()
 
     const Data = response.country.map((a) =>({
@@ -71,7 +72,7 @@ export default function CreatePost({ route }) {
       data.append(`tag_${index}`, tag)
     })
 
-    const request = await fetch('http://192.168.0.68:8000/api/create_post/',{
+    const request = await fetch(`http://${IPAddress()}/api/create_post/`,{
       method: 'POST',
       body: data,
     })

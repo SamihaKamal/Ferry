@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
+import IPAddress from './IPAddress';
 
 function Review({review_id, user_id, review_user_id, review_user_name, review_user_image, country, image, review_title, text, date, likes_counter, tags, navigation }){
     const [ deleteVisible, setDeleteVisible ] = useState('none');
@@ -37,7 +38,7 @@ function Review({review_id, user_id, review_user_id, review_user_name, review_us
               style: 'cancel',
             },
             {text: 'Yes', onPress: async () => {
-                const request = await fetch(`http://192.168.0.68:8000/api/delete+review/?id=${review_id}`, {
+                const request = await fetch(`http://${IPAddress()}/api/delete+review/?id=${review_id}`, {
                     method: 'DELETE'
                 })
                 const response = await request.json()

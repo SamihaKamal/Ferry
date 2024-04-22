@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-na
 import { Ionicons } from '@expo/vector-icons';
 import { Dialog, ListItem } from '@rneui/themed';
 import { useEffect, useState } from 'react';
+import IPAddress from './IPAddress';
 
 function Post({id, name, user_image, post_user_id, user_id, caption, image, date, likes, country, tags, navigation}) {   
     const [ visible, setVisible ] = useState(false);
@@ -19,7 +20,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
         if (post_user_id == user_id){
             setDeleteVisible('visible')
         }
-        const request = await fetch(`http://192.168.0.68:8000/api/get+user+lists/?user_id=${user_id}`)
+        const request = await fetch(`http://${IPAddress()}/api/get+user+lists/?user_id=${user_id}`)
         const response = await request.json()
 
         const responseData = response.lists.map((a) => ({
@@ -32,7 +33,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
     }
 
     async function getPostLikes(){
-        const request = await fetch(`http://192.168.0.68:8000/api/get+likes/?id=${id}&tag=p`)
+        const request = await fetch(`http://${IPAddress()}/api/get+likes/?id=${id}&tag=p`)
         const response = await request.json()
 
         setPostLikes(response.number)
@@ -47,7 +48,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
             review_id: '',
         }
 
-        const request = await fetch('http://192.168.0.68:8000/api/like/', {
+        const request = await fetch(`http://${IPAddress()}/api/like/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -68,7 +69,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
             posts_id: id,
             review_id: 0,
         }
-        const request = await fetch('http://192.168.0.68:8000/api/save+to+list/', {
+        const request = await fetch(`http://${IPAddress()}/api/save+to+list/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -100,7 +101,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
               style: 'cancel',
             },
             {text: 'Yes', onPress: async () => {
-                const request = await fetch(`http://192.168.0.68:8000/api/delete+post/?id=${id}`, {
+                const request = await fetch(`http://${IPAddress()}/api/delete+post/?id=${id}`, {
                     method: 'DELETE'
                 })
                 const response = await request.json()

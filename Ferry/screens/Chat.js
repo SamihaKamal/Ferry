@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ListItem, Avatar } from '@rneui/themed';
 import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import IPAddress from '../components/IPAddress';
 
 export default function Chat({ route }) {
   const { user } = route.params;
@@ -15,7 +16,7 @@ export default function Chat({ route }) {
 }, [])
 
   async function getChats(){
-    const request = await fetch(`http://192.168.0.68:8000/api/get+user+chats/?user_id=${user}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+user+chats/?user_id=${user}`)
     const response = await request.json()
   
     if (response) {

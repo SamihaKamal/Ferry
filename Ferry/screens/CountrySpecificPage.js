@@ -6,6 +6,7 @@ import { Dialog } from '@rneui/themed';
 import ReviewTile from '../components/Review';
 import ProfileTabs from '../components/ProfileTabs';
 import { useNavigation } from '@react-navigation/native';
+import IPAddress from '../components/IPAddress';
 
 export default function CountrySpecificPage({ route }) {
   const { user, country } = route.params;
@@ -50,7 +51,7 @@ export default function CountrySpecificPage({ route }) {
   }
   async function getCountry(){
     //This part gets the country
-    const request = await fetch(`http://192.168.0.68:8000/api/get+country+from+id/?country_id=${country}`)
+    const request = await fetch(`http://${IPAddress()}/api/get+country+from+id/?country_id=${country}`)
     const response = await request.json()
 
     if (response){
@@ -64,7 +65,7 @@ export default function CountrySpecificPage({ route }) {
     }
 
     //Using the same method im getting all the country posts
-    const postrequest = await fetch(`http://192.168.0.68:8000/api/get+country+posts/?country_id=${country}`)
+    const postrequest = await fetch(`http://${IPAddress()}/api/get+country+posts/?country_id=${country}`)
     const postresponse = await postrequest.json()
 
     if(postresponse){
@@ -85,7 +86,7 @@ export default function CountrySpecificPage({ route }) {
 
 
   //Getting all the reviews from the country
-    const reviewrequest = await fetch(`http://192.168.0.68:8000/api/get+country+reviews/?country_id=${country}`)
+    const reviewrequest = await fetch(`http://${IPAddress()}/api/get+country+reviews/?country_id=${country}`)
     const reviewresponse = await reviewrequest.json()
 
     if (reviewresponse){
@@ -106,7 +107,7 @@ export default function CountrySpecificPage({ route }) {
     }
 
     //Getting all the images for the country
-    const imagerequest = await fetch(`http://192.168.0.68:8000/api/get+country+image/?country_id=${country}`)
+    const imagerequest = await fetch(`http://${IPAddress()}/api/get+country+image/?country_id=${country}`)
     const imageresponse = await imagerequest.json()
 
     if(imageresponse){
