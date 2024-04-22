@@ -19,9 +19,10 @@ Final year project Ferry uwu
   npm install
   ```
 
-- Open anaconda and create a new python environment
+- Open anaconda and create a new python environment before activating it
   ```
   conda create --name [Enter name here] python=3.10
+  conda activate [Enter name here]
   ```
 - cd into the repository and then install the libraries
   ```
