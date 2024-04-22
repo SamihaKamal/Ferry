@@ -44,6 +44,7 @@ export default function Chat({ route }) {
   return (
     <View>
       {chatData.map((a, index) => (
+        // This lists out all who you chat with, when you press you get either sent to their profile or the messages page.
         <TouchableOpacity key={index} onPress={() => sendToMessages(a.to_user_id, a.id)}>
           <ListItem 
           bottomDivider>
@@ -67,6 +68,7 @@ export default function Chat({ route }) {
   )
 };
 
+//Stylesheet for design
 const chatStyle = StyleSheet.create({
 
   TouchableOpacity: {
@@ -78,7 +80,7 @@ const chatStyle = StyleSheet.create({
     marginLeft: 'auto',
     width: 60,
     height: 60,
-    aspectRatio: 1, // Maintain the aspect ratio to prevent distortion
+    aspectRatio: 1,
     borderRadius: 100,
   },
 })

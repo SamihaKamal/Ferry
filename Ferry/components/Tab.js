@@ -10,9 +10,11 @@ import { Button, Overlay, Icon } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 
+//Create the tab navigator
 const Tab = createBottomTabNavigator();
 
-
+//This custom add post is just for the purple circle in the middle
+//When clicking you can choose between posts or reviews.
 const CustomAddPostButton = ({children, onPress, user}) => { 
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
@@ -68,6 +70,7 @@ function MyTabs({ route }) {
       tabBarShowLabel: false,
       
     }}>
+      {/* Each screen is to a different page */}
       <Tab.Screen name="Home" component={HomeScreen} initialParams={{ user }}
       options={{
         title: 'Home',
@@ -116,6 +119,7 @@ function MyTabs({ route }) {
   );
 }
 
+//Stylesheet for design
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',

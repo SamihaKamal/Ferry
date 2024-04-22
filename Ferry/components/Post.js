@@ -1,15 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import {
-    Button,
-    Dialog,
-    CheckBox,
-    ListItem,
-    Avatar,
-    } from '@rneui/themed';
+import { Dialog, ListItem } from '@rneui/themed';
 import { useEffect, useState } from 'react';
-
-
 
 function Post({id, name, user_image, post_user_id, user_id, caption, image, date, likes, country, tags, navigation}) {   
     const [ visible, setVisible ] = useState(false);
@@ -127,7 +119,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
             {/* Where each singular post is located */}
             <View style={[postStyle.extra]}>
                 <View style={[postStyle.postTop]}>
-                    {/* Title and profile picture */}
+                    {/* Title and profile picture + dustbin icon */}
                     <TouchableOpacity style={postStyle.TouchableOpacity} onPress={sendToProfile}>
                         <Image 
                             style={postStyle.Image}
@@ -143,6 +135,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                     style={postStyle.postImage}
                     source={{ uri: image}}
                 />
+                {/* Info container is where the dates and buttons like liking and saving to a list is */}
                 <View style={postStyle.InfoContainer}>
                     <Text style={postStyle.date}>{date}</Text>
                     <View style={[postStyle.Buttons]}>      
@@ -158,7 +151,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                 <View>
                     <Text style={[postStyle.postCaption]}>{caption}</Text>
                 </View>
-              
+                {/* Tag display */}
                 <View style={[postStyle.postTagBackground]}>
                     {!a && (<Text style={[postStyle.postCountry]}>{country}</Text>)}    
                     {tags.map((a, index) => (
@@ -170,6 +163,7 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
                 </TouchableOpacity>
                 
             </View>
+            {/* This is what you see when you click the + button, lets you save to a post */}
             <Dialog
             isVisible={visible}
             onBackdropPress={toggleVisible}>
@@ -191,6 +185,8 @@ function Post({id, name, user_image, post_user_id, user_id, caption, image, date
     
 }
 
+
+//Stylesheet for design
 const postStyle = StyleSheet.create({
     commentContainer: {
         width: 'auto',

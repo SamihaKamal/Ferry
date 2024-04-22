@@ -49,8 +49,6 @@ export default function Profile({ route }) {
     setListData(responseData)
   }
 
-
-
   async function getUserData(){
     if (user==viewuser){
       setEditVisible('visible')
@@ -102,6 +100,8 @@ export default function Profile({ route }) {
 
     setUserReviews(reviewData)
 
+    //Get comments of user
+
     const commentRequest = await fetch(`http://192.168.0.68:8000/api/get+user+comments/?user_id=${viewuser}`)
     const commentResponse = await commentRequest.json()
     const commentData = commentResponse.comments.map((a) =>({
@@ -141,6 +141,7 @@ export default function Profile({ route }) {
     setVisible(!visible);
   };
 
+  //Change if edit button should be visible
   const toggleEditVisible = () => {
     setEditDialogVisible(!editDialogVisible)
   }
@@ -217,6 +218,7 @@ export default function Profile({ route }) {
   return (
     <View style={ProfileStyle.container}>
       <View style={ProfileStyle.profileContainer}>
+        {/* This place is where the user image and title is, there is also the chat button OR the edit button. depends on the user id and the id of the profile user */}
         <TouchableOpacity style={ProfileStyle.TouchableOpacity} onPress={pickImage}>
           <Image 
             style={ProfileStyle.Image}
@@ -227,13 +229,14 @@ export default function Profile({ route }) {
           <Text style={ProfileStyle.username}>{userData.name}</Text>
         </View>
         <TouchableOpacity style={{display: editChatVisible, marginLeft: 'auto', backgroundColor: 'white'}} onPress={sendToChat}>
-          <Ionicons name={'chatbubble'} size={30} color={'white'}/>
+          <Ionicons name={'chatbubble'} size={30} color={'grey'}/>
         </TouchableOpacity>
         <TouchableOpacity style={{display: editVisible, marginLeft: 'auto', backgroundColor: 'white'}} onPress={toggleEditVisible}>
           <Ionicons name={'settings'} size={30} color={'grey'}/>
         </TouchableOpacity>
         
       </View>
+      {/* Displays all the posts reviews and comments using the post tabs, only made the post tabs because the one i tried using before didnt work for some reason */}
       <View style={{flex: 1}}>
        <ProfileTabs tabs={['Posts','Reviews','Comments']}
        initalTab={0}
@@ -298,6 +301,7 @@ export default function Profile({ route }) {
           </ScrollView>
         )}
       </View>
+      {/* Dialog shown when you click + to save something to a list */}
       <Dialog
             isVisible={visible}
             onBackdropPress={() => toggleVisible(0)}>
@@ -314,6 +318,7 @@ export default function Profile({ route }) {
                     </ListItem>
                 ))}
         </Dialog>
+        {/* This is the dialog to edit your name, (not picture thats done just by clicking the profile picture Touchable opacity) */}
         <Dialog
           isVisible={editDialogVisible}
           onBackdropPress={toggleEditVisible}
@@ -336,6 +341,7 @@ export default function Profile({ route }) {
   );
 }
 
+//Stylesheet
 const ProfileStyle = StyleSheet.create({
   container: {
     flex: 1,

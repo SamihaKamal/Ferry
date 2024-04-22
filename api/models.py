@@ -5,7 +5,6 @@ from django.db import models
 #USERS
 class User(models.Model):
     name = models.CharField("name", max_length=100)
-    #Add profile image here
     image = models.ImageField(blank=True)
     email = models.EmailField("email", unique=True)
     password = models.CharField("password", max_length=100)
@@ -23,7 +22,6 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     review_title = models.TextField(("review title"))
     review_body = models.TextField(("review text"))
-    # Add images here
     image = models.ImageField(blank=True)
     date = models.DateField(("date"))
     likes_counter = models.IntegerField(("likes"))
@@ -34,7 +32,6 @@ class Review(models.Model):
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     caption = models.TextField(("caption"))
-    # Add images here
     image = models.ImageField(blank=True)
     date = models.DateField(("date"), null=True)
     likes_counter = models.IntegerField(("likes"))
@@ -59,8 +56,6 @@ class List(models.Model):
     review = models.ManyToManyField(Review, blank=True)
     comments = models.ManyToManyField(Comments, blank=True)   
     tags = models.ManyToManyField(Tag, blank=True)
-        
-
     
 #CHAT AND MESSAGES
 class Chat(models.Model):

@@ -6,8 +6,6 @@ from .models import *
 from datetime import date, datetime
 import os
 
-# Create your views here.
-
 #SERIALISE FUNCTIONS
 #####################################################################################################################
 def serialize_user(user):
@@ -179,6 +177,10 @@ def get_user_data(request):
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
 
 def get_user_by_name(request):
+    '''
+        Returns the user by their name.
+        
+    '''
     user_name=request.GET.get('user_name', None)
     
     if (user_name==None):
@@ -200,6 +202,10 @@ def get_user_by_name(request):
 #####################################################################################################################    
 
 def edit_user_image(request):
+    '''
+        Edit the user image with their user id and the new image.
+        
+    '''
     if (request.method=='POST'):  
         user_id = request.POST.get('user_id', None)
         user_image = request.FILES.get('user_image', None)     
@@ -214,6 +220,10 @@ def edit_user_image(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def edit_user_name(request):
+    '''
+        Edit the user image with their user id and the new name.
+        
+    '''
     if (request.method=='POST'):  
         user_id = request.POST.get('user_id', None)
         user_name = request.POST.get('user_name', None)     
@@ -366,8 +376,15 @@ def get_reviews_by_user(request):
             return JsonResponse({'reviews': reviews_data}, json_dumps_params={'indent':5}, status=200)
         except Exception as e:
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
-    
+ 
+#VIEW FUNCTIONS FOR LIKES
+#####################################################################################################################    
 def like(request):
+    '''
+        If getting likes of a post then review id is 0 else the other way is true.
+        Depending which id is 0, the like is saved to the database.
+        
+    '''
     if (request.method=='POST'):
         data = json.loads(request.body)
         user_id = data.get('user_id', '')
@@ -401,6 +418,10 @@ def like(request):
        return JsonResponse({'error': 'Wrong request method'}, status=400) 
 
 def get_likes(request):
+    '''
+        Takes in an id and a tag, the tag tells us whether the likes should be from a post or a review,
+        
+    '''
     if (request.method=='GET'):
         id=request.GET.get('id', None)
         tag = request.GET.get('tag', None)
@@ -575,6 +596,35 @@ def check_post_is_null(post):
     else:
         return post.id
     
+def get_posts_by_user(request):
+    '''
+        Takes in user id and returns every post made by that user.
+        
+    '''
+    user_id=request.GET.get('user_id', None)
+    
+    if (user_id==None):
+        return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
+    else:
+        try:
+            user = User.objects.get(id=user_id)
+            posts = Post.objects.all().filter(user=user)
+            posts_data = [{
+                'id':posts.id,
+                'user':serialize_user(posts.user),
+                'image': request.build_absolute_uri(posts.image.url), 
+                'user_image': request.build_absolute_uri(posts.user.image.url),
+                'caption':posts.caption, 
+                'date':posts.date,
+                'likes':posts.likes_counter,
+                'country':posts.country_tag,
+                'tags': [tags.tag_text for tags in posts.tags.all()]} for posts in posts]
+            return JsonResponse({'posts': posts_data}, json_dumps_params={'indent':5}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
+    
+#VIEW FUNCTIONS FOR COMMENTS
+#####################################################################################################################      
 def get_comment_replies(comment):
     '''
     
@@ -758,32 +808,6 @@ def create_reply_comment(request):
     else:
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
   
-def get_posts_by_user(request):
-    '''
-        Takes in user id and returns every post made by that user.
-        
-    '''
-    user_id=request.GET.get('user_id', None)
-    
-    if (user_id==None):
-        return JsonResponse({'error': 'Please input ?user_id= to the end of the url'}, status=401)
-    else:
-        try:
-            user = User.objects.get(id=user_id)
-            posts = Post.objects.all().filter(user=user)
-            posts_data = [{
-                'id':posts.id,
-                'user':serialize_user(posts.user),
-                'image': request.build_absolute_uri(posts.image.url), 
-                'user_image': request.build_absolute_uri(posts.user.image.url),
-                'caption':posts.caption, 
-                'date':posts.date,
-                'likes':posts.likes_counter,
-                'country':posts.country_tag,
-                'tags': [tags.tag_text for tags in posts.tags.all()]} for posts in posts]
-            return JsonResponse({'posts': posts_data}, json_dumps_params={'indent':5}, status=200)
-        except Exception as e:
-            return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
         
 def get_comments_by_user(request):
     '''
@@ -811,6 +835,12 @@ def get_comments_by_user(request):
             return JsonResponse({'error': f'User doesnt exist {e}'}, status=400)
 
 def get_item_by_id(request):
+    '''
+    
+        Takes an id and a flag, and based off the flag it returns a post or review.
+        
+        
+    '''
     if (request.method == 'GET'):
         id = request.GET.get('id', None)
         flag = request.GET.get('flag', None)
@@ -1095,6 +1125,10 @@ def get_posts_from_country(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def get_reviews_from_country(request):
+    '''
+        Returns reviews that have a country tags that are the same.
+        
+    '''
     if (request.method=='GET'):
         country_id = request.GET.get('country_id', None)
         
@@ -1142,8 +1176,11 @@ def get_country_image(request):
                
 #VIEW FUNCTIONS FOR LISTS
 #####################################################################################################################     
-
 def get_user_lists(request):
+    '''
+        Takes a user id and then returns all the lists under that user.
+        
+    '''
     if (request.method=='GET'):
         user_id = request.GET.get('user_id', None)
         
@@ -1169,6 +1206,10 @@ def get_user_lists(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def save_to_list(request):
+    '''
+        Saves an item to a list using user id and the list id, it saves the post or review that does not have an id of 0.
+        
+    '''
     if (request.method == 'POST'):
         data = json.loads(request.body)
         user_id = data.get('user_id', '')
@@ -1193,6 +1234,10 @@ def save_to_list(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
    
 def save_comment_to_list(request):
+    '''
+        Saves a comment to the list using the user id, the list id and the id of the comment.
+        
+    '''
     if (request.method == 'POST'):
         data = json.loads(request.body)
         user_id = data.get('user_id', '')
@@ -1212,6 +1257,10 @@ def save_comment_to_list(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def get_list_posts(request):
+    '''
+        Returns all posts that are saved to a specific list.
+        
+    '''
     if (request.method=='GET'):
         list_id = request.GET.get('list_id', None)
         
@@ -1239,6 +1288,10 @@ def get_list_posts(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
     
 def get_list_reviews(request):
+    '''
+        Returns all reviews that are saved to a specific list.
+        
+    '''
     if (request.method == 'GET'):
         list_id = request.GET.get('list_id', None)
         if (list_id == None):
@@ -1267,6 +1320,10 @@ def get_list_reviews(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def get_list_comments(request):
+    '''
+        Returns all comments that are saved to a specific list.
+        
+    '''
     if (request.method=='GET'):
         list_id = request.GET.get('list_id', None)
         
@@ -1293,6 +1350,10 @@ def get_list_comments(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
     
 def get_list(request):
+    '''
+        Gets a list based of the id that is received.
+        
+    '''
     if (request.method=='GET'):
         list_id = request.GET.get('list_id', None)
         
@@ -1311,6 +1372,10 @@ def get_list(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400) 
     
 def create_list(request):
+    '''
+        Creates a list based off the user id and the name that was entered by the user.
+        
+    '''
     if (request.method == 'POST'):
         
         user_id = request.POST.get('user_id', None)
@@ -1340,6 +1405,10 @@ def create_list(request):
         return JsonResponse({'error': 'Wrong request method'}, status=400)
     
 def delete_list(request):
+    '''
+        Deletes a list based off the id.
+        
+    '''
     if (request.method == 'DELETE'):
         list_id = request.GET.get('list_id', None)
         if (list_id == None):

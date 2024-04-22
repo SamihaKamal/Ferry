@@ -1,48 +1,14 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
-import { ListItem, Avatar, Dialog } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
-
-
 
 export default function CreateList({ route }) {
   const { user } = route.params;
   const navigation = useNavigation();
   const [name, setName] = useState('');
-  const [country, setCountry] = useState([]);
-  const [displayCountry, setDisplayCountry] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [ visible, setVisible ] = useState(false);
   const [tag, setTag] = useState();
   const [currentTags, setCurrentTags] = useState([]);
 
-  useEffect(() =>{
-    getCountryTags()
-}, [])
-
-  const toggleVisible = () => {
-    setVisible(!visible);
-  };
-
-  const saveCountry = (countryid, countryname) => {
-    setSelectedCountry(countryid)
-    setDisplayCountry(countryname)
-    toggleVisible()
-  }
-
-  async function getCountryTags() {
-    const request = await fetch(`http://192.168.0.68:8000/api/get+country+tags/`)
-    const response = await request.json()
-
-    const Data = response.country.map((a) =>({
-      id: a.id,
-      name: a.name,
-      tag: a.tag,
-    }));
-
-    setCountry(Data)
-  }
 
   const addTag = () => {
     if (tag.trim()) { // Only add non-empty tags
@@ -52,10 +18,11 @@ export default function CreateList({ route }) {
   }
 
   const removeTag = (index) => {
-    setCurrentTags((prevTags) => prevTags.filter((_, i) => i !== index));
+    setCurrentTags((prevTags) => prevTags.filter((_, i) => i !== index)); //Remove the current tag by filtering through tags and skipping over the indexed tag.
   };
 
   async function createList(){
+    //Validation
     if (name == ''){
         Alert.alert("Unable to create list","Please enter a name")
         return
@@ -75,6 +42,7 @@ export default function CreateList({ route }) {
   
       const response = await request.json()
       if (response) {
+        //Reset the user inputs and send the user to the main home page.
         setCurrentTags([])
         setName('')
         navigation.navigate('MainPages', {user: user})
@@ -85,7 +53,6 @@ export default function CreateList({ route }) {
  
   return (
     <View style={ListStyle.container}>
-    
        <Text style={ListStyle.label}>Enter name:</Text>
        <TextInput placeholder="name" value={name} onChangeText={setName} style={ListStyle.captionInput} />
        <Text style={ListStyle.label}>Enter tags:</Text>
@@ -93,7 +60,7 @@ export default function CreateList({ route }) {
        <TouchableOpacity onPress={addTag} style={ListStyle.selectCountryButton}>
         <Text style={ListStyle.buttonText}>Add Tag</Text>
        </TouchableOpacity>
-
+        {/* Tag display */}
        <View style={ListStyle.tagsContainer}>
         {currentTags.map((tag, index) => (
           <TouchableOpacity key={index} style={ListStyle.postTag} onPress={() => removeTag(index)}>
@@ -101,7 +68,7 @@ export default function CreateList({ route }) {
           </TouchableOpacity>
         ))}
       </View>
-       
+      {/* Confirmation button */}
       <TouchableOpacity style={ListStyle.create} onPress={createList}>
         <Text style={{fontSize: 30, color: '#E4ECF9',}}>Create list</Text>
       </TouchableOpacity>
@@ -109,6 +76,7 @@ export default function CreateList({ route }) {
   );
 }
 
+//Stylesheet for design
 const ListStyle = StyleSheet.create({
     container: {
       flex: 1,

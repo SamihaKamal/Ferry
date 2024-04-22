@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Alert, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Alert, TouchableOpacity, Image } from 'react-native';
 import logo from '../assets/Logo.png'
 
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
 
   async function HandleLogin() {
     // Check if null:
@@ -24,9 +23,8 @@ export default function Login({ navigation }) {
         },
         body: JSON.stringify(userData)
       })
-    
       const data = await response.json()
-      
+  
       if (data.message == "User exists"){
         const id_request = await fetch(`http://192.168.0.68:8000/api/get+user+with+email/?user_email=${email}`)
         const id_response = await id_request.json()
@@ -65,6 +63,7 @@ export default function Login({ navigation }) {
   );
 }
 
+//Stylesheet
 const LoginStyle = StyleSheet.create({
 
   Box: {

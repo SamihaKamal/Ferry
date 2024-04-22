@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import CommentTile from '../components/CommentTile';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 export default function Comment({ route }) {
     const { user, post, review, viewuser } = route.params;
     const [comments, setComments] = useState([]);
-    const [userComment, setUserComment] = useState();
+    const [userComment, setUserComment] = useState('');
 
     useEffect(() =>{
         getComments() 
@@ -28,7 +28,8 @@ export default function Comment({ route }) {
         replies: mapReplies(a.replies)
       }))
     }
-  
+    
+    //If review = 0 means that its NOT a review your commenting on and vice versa.
     async function getComments(){
       if (review == 0){
         const request = await fetch(`http://192.168.0.68:8000/api/get+comments/?id=${post}&tag=p`)
@@ -65,6 +66,10 @@ export default function Comment({ route }) {
     }
 
     async function addComment(){
+      if (userComment == ''){
+        Alert.alert("Error creating comment","Please enter a message")
+        return
+      }
       const data = {
         user_id: user,
         post_id: post,
@@ -96,6 +101,7 @@ export default function Comment({ route }) {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView  style={{ flex: 1 }}>
+        {/* This just displays all the comments */}
         {comments.map((a,index) => (
           <CommentTile key={index}
           id={a.id}
@@ -110,6 +116,7 @@ export default function Comment({ route }) {
                  refreshComments={refreshComments}/>
         ))}
       </ScrollView>
+      {/* This displays the comment input box at the same time */}
       <View style={CommentStyle.commentContainer}> 
         <TextInput
           style={[CommentStyle.commentBox]}
@@ -129,6 +136,7 @@ export default function Comment({ route }) {
   );
 }
 
+//Stylesheet
 const CommentStyle = StyleSheet.create({
   commentContainer: {
     flexDirection: 'row',

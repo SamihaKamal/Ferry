@@ -20,7 +20,7 @@ import CountrySpecificPage from './screens/CountrySpecificPage';
 import SpecificLists from './screens/SpecificList';
 
 export default function App() {
-
+//This is all the screens that I need to navigate to, other screens can be accessed through the tab navigator
   const Stack = createNativeStackNavigator();
   return (
     <SafeAreaProvider>

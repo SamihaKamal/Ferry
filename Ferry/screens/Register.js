@@ -79,13 +79,14 @@ export default function Register({ navigation }) {
         <TouchableOpacity style={RegisterStyle.login} onPress={SendToLogin}>
           <Text style={{fontSize: 30, color: '#E4ECF9',}}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={RegisterStyle.login} onPress={Test}>
+        {/* <TouchableOpacity style={RegisterStyle.login} onPress={Test}>
           <Text style={{fontSize: 30, color: '#E4ECF9',}}>QUICKLOGIN</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
     </View>
   );
 }
 
+//Stylesheet
 const RegisterStyle = StyleSheet.create({
 
   Box: {

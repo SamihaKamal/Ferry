@@ -29,6 +29,7 @@ export default function CountrySpecificPage({ route }) {
     countryInfo()
 }, [])
 
+//This is a pretty inefficient way to display text, Right now i only have 4 country pages, but once i have more ill move this data to a proper database.
   const countryInfo = () => {
     if (country == 1){
       setName('England')
@@ -48,6 +49,7 @@ export default function CountrySpecificPage({ route }) {
     }
   }
   async function getCountry(){
+    //This part gets the country
     const request = await fetch(`http://192.168.0.68:8000/api/get+country+from+id/?country_id=${country}`)
     const response = await request.json()
 
@@ -61,6 +63,7 @@ export default function CountrySpecificPage({ route }) {
         setCountryData(responseData)
     }
 
+    //Using the same method im getting all the country posts
     const postrequest = await fetch(`http://192.168.0.68:8000/api/get+country+posts/?country_id=${country}`)
     const postresponse = await postrequest.json()
 
@@ -80,6 +83,8 @@ export default function CountrySpecificPage({ route }) {
         setPostData(postData)
     }
 
+
+  //Getting all the reviews from the country
     const reviewrequest = await fetch(`http://192.168.0.68:8000/api/get+country+reviews/?country_id=${country}`)
     const reviewresponse = await reviewrequest.json()
 
@@ -100,7 +105,7 @@ export default function CountrySpecificPage({ route }) {
       setReviewData(reviewData)
     }
 
-
+    //Getting all the images for the country
     const imagerequest = await fetch(`http://192.168.0.68:8000/api/get+country+image/?country_id=${country}`)
     const imageresponse = await imagerequest.json()
 
@@ -129,7 +134,7 @@ export default function CountrySpecificPage({ route }) {
         <Text style={{margin: 30,
       fontSize: 30, textAlign: 'center' }}>{countryData.name}</Text>
       </View>
-
+      {/* Using the same tabs as the profile page, one is for posts, the other is for review and the last is for imaages. */}
       <View style={{flex: 1}}>
        <ProfileTabs tabs={['Posts','Reviews','Images']}
        initalTab={0}
@@ -192,6 +197,7 @@ export default function CountrySpecificPage({ route }) {
           </ScrollView>
         )}
       </View>
+      {/* This button is the important information button */}
       <TouchableOpacity style={{
         position: 'absolute',
         bottom: 20,
@@ -208,6 +214,7 @@ export default function CountrySpecificPage({ route }) {
           <Text style={{color:'white', fontSize: 30}}>!</Text>
       </TouchableOpacity>
       <StatusBar style="auto" />
+      {/* This dialog is for the important travel information */}
       <Dialog
         isVisible={visible}
         onBackdropPress={toggleVisible}
@@ -215,17 +222,18 @@ export default function CountrySpecificPage({ route }) {
         <Dialog.Title title={name}/>
         <Text>{info}</Text>
       </Dialog>
+      {/* This dialog is for zooming into an image */}
       <Dialog
         isVisible={imageModel}
         onBackdropPress={toggleImageModel}
       >
-        <Image style={{width: 'auto', aspectRatio: 1}}
-        source={{uri: img}}/>
+      <Image style={{width: 'auto', aspectRatio: 1}} source={{uri: img}}/>
       </Dialog>
     </View>
   );
 }
 
+//Stylesheet
 const countryStyle = StyleSheet.create({
     container: {
         flex: 1,

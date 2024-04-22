@@ -50,18 +50,11 @@ export default function CreateReview({ route }) {
   }
 
   async function saveReview() {
-    if (text == ''){
-      Alert.alert("Unable to create review","Please enter some text")
+    if (text == '' || currentTags.length === 0 || image == null){
+      Alert.alert("Unable to create review","Missing information, please enter details")
       return
     }  
-    if (currentTags.length === 0){
-      Alert.alert("Unable to create review","Please enter atleast one tag")
-      return
-    }  
-    if (image == null){
-      Alert.alert("Unable to create review","Please add an image")
-      return
-    }
+  
     if (displayCountry == ''){
       Alert.alert("Unable to create review","Please add a country tag")
       return
@@ -108,9 +101,10 @@ export default function CreateReview({ route }) {
   }
   
   const removeTag = (index) => {
-    setCurrentTags((prevTags) => prevTags.filter((_, i) => i !== index));
+    setCurrentTags((prevTags) => prevTags.filter((_, i) => i !== index)); //Remove the current tag by filtering through tags and skipping over the indexed tag.
   };
 
+  //This is the code for the image picker, this was taken from expo image picker.
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -126,6 +120,7 @@ export default function CreateReview({ route }) {
 
   return (
     <ScrollView style={ReviewStyle.container}>
+      {/* Select country tag: Users much choose one for reviews */}
        <TouchableOpacity onPress={toggleVisible} style={ReviewStyle.selectCountryButton}>
         <Text style={ReviewStyle.buttonText}>Click to select country tag</Text>
        </TouchableOpacity>
@@ -157,7 +152,7 @@ export default function CreateReview({ route }) {
        <TouchableOpacity onPress={addTag} style={ReviewStyle.selectCountryButton}>
         <Text style={ReviewStyle.buttonText}>Add Tag</Text>
        </TouchableOpacity>
-
+        {/* Displaying tags */}
        <View style={ReviewStyle.tagsContainer}>
         {currentTags.map((tag, index) => (
           <TouchableOpacity key={index} style={ReviewStyle.postTag} onPress={() => removeTag(index)}>
@@ -165,7 +160,7 @@ export default function CreateReview({ route }) {
           </TouchableOpacity>
         ))}
       </View>
-
+        {/* Selecting an image */}
        <View style={ReviewStyle.imageContainer}>
         <TouchableOpacity onPress={pickImage} style={ReviewStyle.cameraIcon}>
           <Ionicons name={'camera-outline'} />
@@ -175,8 +170,7 @@ export default function CreateReview({ route }) {
         style={{ width: 200, height: 200, marginLeft: 'auto'}}
         source={{ uri: image }}/>
        </View>
-       
-      <StatusBar style="auto" />
+     
       <TouchableOpacity style={ReviewStyle.create} onPress={saveReview}>
         <Text style={{fontSize: 30, color: '#E4ECF9',}}>Create Review</Text>
       </TouchableOpacity>
@@ -184,6 +178,7 @@ export default function CreateReview({ route }) {
   );
 }
 
+//Stylesheet for design
 const ReviewStyle = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,13 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import {
-    Button,
-    Dialog,
-    CheckBox,
-    ListItem,
-    Avatar,
-    } from '@rneui/themed';
+import { Dialog, ListItem } from '@rneui/themed';
 
 
 export default function CommentTile({ id, name, user_id, post_id, review_id, content, date, likes, replies, refreshComments }) {
@@ -92,8 +86,10 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
            
             const response = await request.json()
             if (response){
+                //Set all the variables to empty so they 'refresh'
                 setUserComment('');
                 refreshComments();
+                //Close comment box if its opened.
                 if (showAddCommentBox == true){
                     toggleAddCommentBox()
                 }
@@ -117,6 +113,7 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
                 <Text>{content}</Text>
                 <Text style={[CTileStyle.date]}>{date}</Text>
                 <View style={CTileStyle.buttonsContainer}>
+                    {/* These are all the buttons, such as the reply and the like and save buttons. */}
                     <TouchableOpacity style={CTileStyle.button} onPress={() => toggleAddCommentBox(id)}>
                         <Ionicons name='arrow-redo' size={20} />
                     </TouchableOpacity>
@@ -127,6 +124,7 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
                             <Ionicons name={'add-outline'} size={20} color="#A9D18E"/>
                     </TouchableOpacity>
                 </View>
+                {/* If the showAddComments box is true and the replyId is equal to the comment id then you can see the comment container. */}
                 {showAddCommentBox && replyID === id &&(
                     <View style={CTileStyle.addCommentContainer}>
                         <TextInput
@@ -144,6 +142,7 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
                     </View>
                 )}
             </View>
+            {/* Maps all the replies so that all the replies are also visible. */}
             {replies.map((reply, index) => (
                 <View key={index} style={{ marginLeft: 20 }}>
                     <Text style={[CTileStyle.userName]}>{reply.user}</Text>
@@ -176,6 +175,7 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
                             </TouchableOpacity>
                         </View>
                     )}
+                    {/* If there is a reply to a comment and the length is more than 0 then we call the comment tile component again. */}
                     {reply.replies && reply.replies.length > 0 && (
                         <View style={{ marginLeft: 20 }}>
                             {reply.replies.map((nestedReply, nestedIndex) => (
@@ -196,6 +196,7 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
                     )}
                 </View>
             ))}
+            {/* This is the list dialog that pops up when the + is clicked. */}
             <Dialog
             isVisible={visible}
             onBackdropPress={toggleVisible}>
@@ -216,6 +217,7 @@ export default function CommentTile({ id, name, user_id, post_id, review_id, con
     );
 }
 
+//Stylesheet for design
 const CTileStyle = StyleSheet.create({
     addCommentContainer: {
         flexDirection: 'row',

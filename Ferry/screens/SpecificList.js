@@ -103,10 +103,12 @@ export default function SpecificLists({ route }) {
     navigation.navigate('Profile', {user: user, viewuser: viewuser})
   }
 
+  //This is meant to be the seemore function that I didnt ahve time to implement so it doenst do anything right now.
   const seeMore = (flag) => {
     navigation.navigate('ListExtention', {user: user, list: list, flag: flag})
   }
 
+  //Opens a post/review or a comments original post in more detail
   const openDetail = (flag, id) => {
     navigation.navigate('ListDetail', {user: user, id: id, flag: flag})
   }
@@ -123,10 +125,11 @@ export default function SpecificLists({ route }) {
 
       <View style={{flexDirection: 'row'}}>
         <Text style={ ListStyle.titleText }>Posts:</Text>
-        <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 10,}} onPress={() => seeMore(0)}>
-          {/* <Text style={{ color: 'grey'}}>see more...</Text> */}
-        </TouchableOpacity>
+        {/* <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 10,}} onPress={() => seeMore(0)}>
+          <Text style={{ color: 'grey'}}>see more...</Text>
+        </TouchableOpacity> */}
       </View>
+      {/* The next part is scroll views that are horizontal for posts, reviews and comments */}
       <ScrollView style={{flexDirection: 'row'}} horizontal={true}>
         {postData.map((a, index) => (
           <Card key={index} containerStyle={{width: 200, borderRadius: 10}}>
@@ -154,9 +157,9 @@ export default function SpecificLists({ route }) {
 
       <View style={{flexDirection: 'row'}}>
         <Text style={ ListStyle.titleText }>Reviews:</Text>
-        <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 10,}} onPress={() => seeMore(1)}>
-          {/* <Text style={{ color: 'grey'}}>see more...</Text> */}
-        </TouchableOpacity>
+        {/* <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 10,}} onPress={() => seeMore(1)}>
+          <Text style={{ color: 'grey'}}>see more...</Text>
+        </TouchableOpacity> */}
       </View>
       
       <ScrollView>
@@ -182,9 +185,9 @@ export default function SpecificLists({ route }) {
 
       <View style={{flexDirection: 'row'}}>
         <Text style={ ListStyle.titleText }>Comments:</Text>
-        <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 10,}} onPress={() => seeMore(2)}>
-          {/* <Text style={{ color: 'grey'}}>see more...</Text> */}
-        </TouchableOpacity>
+        {/* <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 10,}} onPress={() => seeMore(2)}>
+          <Text style={{ color: 'grey'}}>see more...</Text>
+        </TouchableOpacity> */}
       </View>
 
       <ScrollView style={{flexDirection: 'row'}} horizontal={true}>
@@ -211,6 +214,7 @@ export default function SpecificLists({ route }) {
   );
 }
 
+//Stylesheet
 const ListStyle = StyleSheet.create({
   SearchImage: {
     marginBottom: 4,

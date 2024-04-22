@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View, ScrollView, FlatList, Image, TouchableOpacity } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import { SearchBar, ListItem, Tab, TabView} from '@rneui/themed';
 import ReviewTile from '../components/Review';
 import PostTile from '../components/Post';
 import { useNavigation } from '@react-navigation/native';
-import Fav from '../assets/favicon.png';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function Home({ route}) {
@@ -18,8 +16,7 @@ export default function Home({ route}) {
   const [userImage, setUserImage] = useState(null);
   const [index, setIndex] = useState(0);
 
-
- 
+  //Unlike use effect, focus effect is when that screen is being focused on which makes it better for refreshing when I move from one tab to the other
   useFocusEffect(
     useCallback(() => {
       getPosts()
@@ -27,7 +24,6 @@ export default function Home({ route}) {
       getReviews()
     }, [])
   );
-  
   
   useEffect(() =>{
     getPosts()
@@ -159,7 +155,7 @@ export default function Home({ route}) {
           />
         </TouchableOpacity>
       </View>
-
+      {/* The split tabs in the home page for reviews and posts */}
       <Tab
         value={index}
         onChange={(e) => setIndex(e)}
@@ -233,6 +229,7 @@ export default function Home({ route}) {
   );
 }
 
+//Stylesheet
 const homeStyle = StyleSheet.create({
   TouchableOpacity: {
     marginLeft: 'auto',

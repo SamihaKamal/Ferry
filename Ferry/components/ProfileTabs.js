@@ -10,6 +10,7 @@ const ProfileTabs = ({ tabs, initalTab, onChange }) => {
     }
 
     return (
+        // Displays the tabs and the button to switch between tabs
         <View style={proTabStyle.tabContainer}>
             {tabs.map((tab, index) => (
                 <TouchableOpacity key={index} style={proTabStyle.tabButton} onPress={() => handleTabChange(index)}>

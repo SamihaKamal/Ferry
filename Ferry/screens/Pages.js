@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ListItem, Avatar } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 
+//Pages is the country pages.
 export default function Pages({ route }) {
   const { user } = route.params;
   const navigation = useNavigation();
@@ -36,6 +37,7 @@ export default function Pages({ route }) {
 
   return (
     <View>
+      {/* Lists out all the country pages in the database and redirecting to them */}
       {country.map((a, index) => (
         <TouchableOpacity key={index} onPress={() => sendToCountryPage(a.id)}>
           <ListItem 

@@ -59,6 +59,7 @@ export default function Message({ route }) {
 
   }
 
+  // This should have automatically made the page start at the most recent chat message at the Bottom
   const scrollToBottom = () => {
     if (scrollViewRef.current){
       scrollViewRef.current.scrollToEnd({animated: false})
@@ -68,6 +69,7 @@ export default function Message({ route }) {
 
   return (
     <View style={{ flex: 1 }}>
+      {/* This part displays all the messages sent between users */}
       <ScrollView style={{ flex: 1 }} ref={scrollViewRef} onLayout={scrollToBottom}>
         {messageData.map((a, index) => (
           <View key={index} style={[messageStyle.message, a.sender===user? messageStyle.messageFromUser : messageStyle.messageToUser]}>
@@ -80,7 +82,7 @@ export default function Message({ route }) {
           
         ))}
       </ScrollView>
-      
+    {/* The message input box, as you can tell I used the same design as the comments box */}
       <View style={messageStyle.commentContainer}> 
         <TextInput
           style={[messageStyle.commentBox]}
@@ -100,6 +102,7 @@ export default function Message({ route }) {
   )
 };
 
+//Stylesheet
 const messageStyle = StyleSheet.create({
   commentContainer: {
     flexDirection: 'row',

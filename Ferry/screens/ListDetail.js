@@ -3,7 +3,6 @@ import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
 import ReviewTile from '../components/Review';
 import PostTile from '../components/Post';
-import { ListItem, Avatar } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -17,6 +16,7 @@ export default function ListDetail({ route }) {
     getData()
 }, [])
     
+// Depending on waht the flag is a different set of information is recieved and displayed.
   async function getData(){
  
     const response = await fetch(`http://192.168.0.68:8000/api/get+item+by+id/?id=${id}&flag=${flag}`)
@@ -82,6 +82,7 @@ export default function ListDetail({ route }) {
 
   return (
     <View>
+      {/* If the flag is r then a review is shown whilst if its p a post is shown */}
         {(flag === 'r' || commentFlag === 'r') && itemData && itemData.id && (
              <ReviewTile
                 review_id={itemData.id}

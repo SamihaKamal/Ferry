@@ -1,12 +1,7 @@
 import { StyleSheet, Text, View, Button, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import {
-    Dialog,
-    CheckBox,
-    ListItem,
-    Avatar,
-    } from '@rneui/themed';
+import { Dialog, ListItem } from '@rneui/themed';
 
 export default function ReviewText({ route }) {
     const { user, viewuser, id, image, date, title, text } = route.params;
@@ -33,9 +28,8 @@ export default function ReviewText({ route }) {
         setListData(responseData)
     }
 
-    // CONVERT TO REVIEWS
     async function likeReview(){
-        // call a function like likePost that takes the user and post.
+
         const data={
             user_id: user,
             review_id: id,
@@ -91,6 +85,7 @@ export default function ReviewText({ route }) {
     return (   
         <View style={{flex: 1}}>
             <ScrollView style={{flex: 1}}>
+                {/* Where title and image is */}
                 <View style={ReviewTextStyle.titleContainer}>
                     <Text style={ReviewTextStyle.title}>{title}</Text>
                 </View>
@@ -98,7 +93,7 @@ export default function ReviewText({ route }) {
                 <Image style={ReviewTextStyle.image} 
                 source={{uri: image}}/>
             </ScrollView>
-            {/* Info box */}
+            {/* Info box  for all the important buttons*/}
             <View style={ReviewTextStyle.infoContainer}>
                 <Text style={ReviewTextStyle.date}>{date}</Text>
                 <View style={[ReviewTextStyle.buttons]}>      
@@ -111,6 +106,7 @@ export default function ReviewText({ route }) {
                     </TouchableOpacity>
                 </View>
             </View>
+            {/* Dialog for saving review to a list */}
             <Dialog
             isVisible={visible}
             onBackdropPress={toggleVisible}>
@@ -131,6 +127,7 @@ export default function ReviewText({ route }) {
     );
 }
 
+//Stylesheet for design
 const ReviewTextStyle = StyleSheet.create({
     titleContainer: {
         alignItems: 'center',

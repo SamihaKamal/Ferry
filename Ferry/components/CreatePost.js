@@ -29,6 +29,7 @@ export default function CreatePost({ route }) {
     setVisible(!visible);
   };
 
+  //This is for country tags, the tag that is selected and the country that is currently being displayed. The visible is for the dialog that lets you choose.
   const saveCountry = (countryid, countryname) => {
     setSelectedCountry(countryid)
     setDisplayCountry(countryname)
@@ -49,18 +50,12 @@ export default function CreatePost({ route }) {
   }
 
   async function savePost() {
-    if (caption == ''){
-      Alert.alert("Unable to create post","Please enter a caption")
+    //Validation checking
+    if (caption == '' || currentTags.length === 0 || image == null){
+      Alert.alert("Unable to create post","Missing information, please enter details")
       return
     }  
-    if (currentTags.length === 0){
-      Alert.alert("Unable to create post","Please enter atleast one tag")
-      return
-    }  
-    if (image == null){
-      Alert.alert("Unable to create post","Please add an image")
-      return
-    }  
+    
     
     const data = new FormData();
     data.append('user_id', user);
@@ -71,6 +66,7 @@ export default function CreatePost({ route }) {
       name: 'photo.jpg',
       type: 'image/jpg',
     })
+    //Append tags before sending them to the backend
     currentTags.forEach((tag, index) => {
       data.append(`tag_${index}`, tag)
     })
@@ -97,9 +93,10 @@ export default function CreatePost({ route }) {
   }
 
   const removeTag = (index) => {
-    setCurrentTags((prevTags) => prevTags.filter((_, i) => i !== index));
+    setCurrentTags((prevTags) => prevTags.filter((_, i) => i !== index)); //Remove the current tag by filtering through tags and skipping over the indexed tag.
   };
 
+  //This is the code for the image picker, this was taken from expo image picker.
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -115,6 +112,7 @@ export default function CreatePost({ route }) {
 
   return (
     <View style={PostStyle.container}>
+      {/* Selecting country tag */}
        <TouchableOpacity onPress={toggleVisible} style={PostStyle.selectCountryButton}>
         <Text style={PostStyle.buttonText}>Click to select country tag</Text>
        </TouchableOpacity>
@@ -137,6 +135,7 @@ export default function CreatePost({ route }) {
                     </ListItem>
                 ))}
             </Dialog>
+        {/* Text inputs and tags */}
        <Text style={PostStyle.label}>Enter caption:</Text>
        <TextInput placeholder="Caption" value={caption} onChangeText={setCaption} style={PostStyle.captionInput} />
        <Text style={PostStyle.label}>Enter tags:</Text>
@@ -144,7 +143,7 @@ export default function CreatePost({ route }) {
        <TouchableOpacity onPress={addTag} style={PostStyle.selectCountryButton}>
         <Text style={PostStyle.buttonText}>Add Tag</Text>
        </TouchableOpacity>
-
+     {/* Displaying tags  */}
        <View style={PostStyle.tagsContainer}>
         {currentTags.map((tag, index) => (
           <TouchableOpacity key={index} style={PostStyle.postTag} onPress={() => removeTag(index)}>
@@ -152,7 +151,7 @@ export default function CreatePost({ route }) {
           </TouchableOpacity>
         ))}
       </View>
-
+        {/* Selecting an image */}
        <View style={PostStyle.imageContainer}>
         <TouchableOpacity onPress={pickImage} style={PostStyle.cameraIcon}>
           <Ionicons name={'camera-outline'} />
@@ -163,7 +162,6 @@ export default function CreatePost({ route }) {
         source={{ uri: image }}/>
        </View>
        
-      <StatusBar style="auto" />
       <TouchableOpacity style={PostStyle.create} onPress={savePost}>
         <Text style={{fontSize: 30, color: '#E4ECF9',}}>Create post</Text>
       </TouchableOpacity>
@@ -171,6 +169,7 @@ export default function CreatePost({ route }) {
   );
 }
 
+//Stylesheet for design
 const PostStyle = StyleSheet.create({
   container: {
     flex: 1,

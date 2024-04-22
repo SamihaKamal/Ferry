@@ -1,23 +1,15 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import {
-    Button,
-    Dialog,
-    CheckBox,
-    ListItem,
-    Avatar,
-    } from '@rneui/themed';
 import { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
 
 function Review({review_id, user_id, review_user_id, review_user_name, review_user_image, country, image, review_title, text, date, likes_counter, tags, navigation }){
     const [ deleteVisible, setDeleteVisible ] = useState('none');
     
-
     useEffect(() =>{
         checkDelete()
     }, [])
 
+    //Can  only delete if the owner of the review is the user.
     const checkDelete = () => {
         if (user_id == review_user_id){
             setDeleteVisible('visible')
@@ -96,6 +88,7 @@ function Review({review_id, user_id, review_user_id, review_user_name, review_us
     );
 }
 
+//Stylesheet for design
 const ReviewStyle = StyleSheet.create({
     area: {
         width: 'auto',

@@ -13,6 +13,7 @@ export default function Lists({ route }) {
   const [ listData, setListData ] = useState([]);
   const [ open, setOpen ] = useState(false)
 
+  //Unlike use effect, focus effect is when that screen is being focused on which makes it better for refreshing when I move from one tab to the other
   useFocusEffect(
     useCallback(() => {
       getLists()
@@ -45,6 +46,7 @@ export default function Lists({ route }) {
   }
 
   async function deleteList(id, name){
+    //If cancel is clicked then we return to the normal page otherwise we delete.
     Alert.alert('Delete list', `Do you want to delete the list ${name}?`, [
       {
         text: 'Cancel',
@@ -69,7 +71,7 @@ export default function Lists({ route }) {
   return (
     <View style={{flex : 1}}>
       <ScrollView style={{flex: 1}}>
-      
+      {/* Display all the lists of the user */}
       {listData.map((a, index) => (
         <TouchableOpacity key={index} onPress={() => sendToList(a.id)}>
           <ListItem 
@@ -83,8 +85,8 @@ export default function Lists({ route }) {
         </ListItem>
         </TouchableOpacity>
       ))}
-      <StatusBar style="auto" />
     </ScrollView>
+    {/* This button is to add a new list */}
     <TouchableOpacity style={{width: 70,
             height: 70,
             borderRadius: 35,
