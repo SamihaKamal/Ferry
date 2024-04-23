@@ -4,7 +4,8 @@ Final year project Ferry uwu
 # What you need
 - Anaconda (miniconda3)
 - React Native
-- Expo
+- Expo Go (mobile phone application)
+  - Note: This application has only been tested on an android device, so there may be unexpected errors on an IOS device or on an emulator.
 - Node.js
 - VSCode
 
@@ -53,7 +54,7 @@ Ferry > Ferry > components > IPAddress.js
   cd Ferry
   npx expo start
   ```
-- Scan QR code in the expo app and wait for the android bundling to be complete
+- Scan QR code in the expo go app and wait for the android bundling to be complete
 
 
 
