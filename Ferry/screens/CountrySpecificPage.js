@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ScrollView, Image, useWindowDimensions, Touchab
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import PostTile from '../components/Post';
-import { Dialog } from '@rneui/themed';
+import { Dialog, Tab, TabView } from '@rneui/themed';
 import ReviewTile from '../components/Review';
 import ProfileTabs from '../components/ProfileTabs';
 import { useNavigation } from '@react-navigation/native';
@@ -137,66 +137,88 @@ export default function CountrySpecificPage({ route }) {
       </View>
       {/* Using the same tabs as the profile page, one is for posts, the other is for review and the last is for imaages. */}
       <View style={{flex: 1}}>
-       <ProfileTabs tabs={['Posts','Reviews','Images']}
-       initalTab={0}
-       onChange={setIndex}/>
-       {index === 0 && (
-        <ScrollView style={{ flex: 1 }}>
-         {postData.map((password, index ) => (
-          <PostTile key={index}
-           id={password.id}
-            name={password.user}
-            user_image={password.user_profile}
-            post_user_id={password.post_user_id}
-            user_id={user}
-             caption={password.caption}
-              image={password.image}
-               date={password.date}
-                likes={password.likes}
-                 country={password.country}
-                  tags={password.tags}
-                  navigation={navigation}/>
-        ))}
-        </ScrollView>
-        )}
-        {index === 1 && (
-          <ScrollView style={{flex: 1}}>
-            {reviewData.map((a, index) => (
-              <ReviewTile key={index}
-              review_id={a.id}
-              user_id = {user}
-              review_user_id={a.review_user_id}
-              review_user_name={a.review_user_name}
-              review_user_image={a.review_user_profile}
-              country={a.country}
-              image={a.image}
-              review_title={a.title}
-              text={a.text}
-              date={a.date}
-              likes_counter={a.likes}
-              tags={a.tags}
-              navigation={navigation}
+        <Tab
+            value={index}
+            onChange={(e) => setIndex(e)}
+            indicatorStyle={{
+              backgroundColor: '#6B4E71',
+              height: 3,
+            }}
+            variant='default'
+          >
+            <Tab.Item
+              title="Posts"
+              titleStyle={{ color: "#6B4E71", fontSize: 12 }}
             />
-            ))}
+            <Tab.Item
+              title="Reviews"
+              titleStyle={{ color: "#6B4E71", fontSize: 12 }}
+            />
+            <Tab.Item
+              title="Images"
+              titleStyle={{ color: "#6B4E71", fontSize: 12 }}
+            />
+          </Tab>
+
+          <TabView value={index} onChange={setIndex} animationType="spring">
+            <TabView.Item style={{ width: '100%' }}>
+            <ScrollView style={{ flex: 1 }}>
+              {postData.map((password, index ) => (
+                <PostTile key={index}
+                id={password.id}
+                  name={password.user}
+                  user_image={password.user_profile}
+                  post_user_id={password.post_user_id}
+                  user_id={user}
+                  caption={password.caption}
+                    image={password.image}
+                    date={password.date}
+                      likes={password.likes}
+                      country={password.country}
+                        tags={password.tags}
+                        navigation={navigation}/>
+              ))}
+              </ScrollView>
+            </TabView.Item>
+            <TabView.Item style={{ width: '100%' }}>
+              <ScrollView style={{flex: 1}}>
+              {reviewData.map((a, index) => (
+                <ReviewTile key={index}
+                review_id={a.id}
+                user_id = {user}
+                review_user_id={a.review_user_id}
+                review_user_name={a.review_user_name}
+                review_user_image={a.review_user_profile}
+                country={a.country}
+                image={a.image}
+                review_title={a.title}
+                text={a.text}
+                date={a.date}
+                likes_counter={a.likes}
+                tags={a.tags}
+                navigation={navigation}
+              />
+              ))}
+              
+            </ScrollView>
+            </TabView.Item>
+            <TabView.Item  style={{ width: '100%' }}>
+              <ScrollView> 
+              <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                  {imageData.map((a, index) => (
+                    <TouchableOpacity key={index} onPress={() => toggleImageModel(a.image)}>
+                      <Image 
+                        style={[countryStyle.Image, { width: imageSize }]}
+                        source={{ uri: a.image}}
+                    />
+                    </TouchableOpacity>
+                  
+              ))}
+              </View>
             
-          </ScrollView>
-        )}
-        {index === 2 && (
-          <ScrollView> 
-            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                {imageData.map((a, index) => (
-                  <TouchableOpacity key={index} onPress={() => toggleImageModel(a.image)}>
-                    <Image 
-                      style={[countryStyle.Image, { width: imageSize }]}
-                      source={{ uri: a.image}}
-                  />
-                  </TouchableOpacity>
-                
-            ))}
-            </View>
-           
-          </ScrollView>
-        )}
+            </ScrollView>
+            </TabView.Item>
+          </TabView>
       </View>
       {/* This button is the important information button */}
       <TouchableOpacity style={{

@@ -11,7 +11,7 @@ import {
   Dialog,
   CheckBox,
   ListItem,
-  Avatar,
+  Tab, TabView
   } from '@rneui/themed';
   import IPAddress from '../components/IPAddress';
 
@@ -237,70 +237,92 @@ export default function Profile({ route }) {
         </TouchableOpacity>
         
       </View>
-      {/* Displays all the posts reviews and comments using the post tabs, only made the post tabs because the one i tried using before didnt work for some reason */}
+      {/* Displays all the posts reviews and comments using the react native element tabs */}
       <View style={{flex: 1}}>
-       <ProfileTabs tabs={['Posts','Reviews','Comments']}
-       initalTab={0}
-       onChange={setIndex}/>
-  
-       {index === 0 && (
-        <ScrollView style={{ flex: 1 }}>
-           {userPosts.map((password, index ) => (
-            <PostTile key={index}
-            id={password.id}
-              name={password.user}
-              user_image={password.user_profile}
-              post_user_id={password.post_user_id}
-              user_id={user}
-              caption={password.caption}
-                image={password.image}
-                date={password.date}
-                  likes={password.likes}
-                  country={password.country}
-                    tags={password.tags}
-                    navigation={navigation}/>
-          ))}
-        </ScrollView>
-        )}
-        {index === 1 && (
-          <ScrollView>
-            {userReviews.map((item, index ) => (
-            <ReviewTile key={index}
-              review_id={item.id}
-              user_id = {user}
-              review_user_id={item.review_user_id}
-              review_user_name={item.review_user_name}
-              review_user_image={item.review_user_profile}
-              country={item.country}
-              image={item.image}
-              review_title={item.title}
-              text={item.text}
-              date={item.date}
-              likes_counter={item.likes}
-              tags={item.tags}
-              navigation={navigation}
-            />
-          ))}
-          </ScrollView>
-        )}
-        {index === 2 && (
-          <ScrollView style={ProfileStyle.commentsContainer}>
-            {userComments.map((comment, index) => (
-              <View key={index} style={ProfileStyle.commentContainer}>
-                <Text style={ProfileStyle.commentUser}>{comment.user}</Text>
-                <Text style={ProfileStyle.commentContent}>{comment.content}</Text>
-                <View style={ProfileStyle.infoContainer}>
-                  <Text style={ProfileStyle.commentDate}>{comment.date}</Text>
-                  <View style={[ProfileStyle.buttons]}>      
-                      <TouchableOpacity style={ProfileStyle.smallButton} onPress={() => toggleVisible(comment.id)}>
-                          <Ionicons name={'add-outline'} size={30} color="#A9D18E"/>
-                      </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
+        <Tab
+          value={index}
+          onChange={(e) => setIndex(e)}
+          indicatorStyle={{
+            backgroundColor: '#6B4E71',
+            height: 3,
+          }}
+          variant='default'
+        >
+          <Tab.Item
+            title="Reviews"
+            titleStyle={{ color: "#6B4E71", fontSize: 12 }}
+          />
+          <Tab.Item
+            title="Posts"
+            titleStyle={{ color: "#6B4E71", fontSize: 12 }}
+          />
+          <Tab.Item
+            title="Comments"
+            titleStyle={{ color: "#6B4E71", fontSize: 12 }}
+          />
+        </Tab>
+
+        <TabView value={index} onChange={setIndex} animationType="spring">
+          <TabView.Item style={{ width: '100%' }}>
+            <ScrollView>
+              {userReviews.map((item, index ) => (
+              <ReviewTile key={index}
+                review_id={item.id}
+                user_id = {user}
+                review_user_id={item.review_user_id}
+                review_user_name={item.review_user_name}
+                review_user_image={item.review_user_profile}
+                country={item.country}
+                image={item.image}
+                review_title={item.title}
+                text={item.text}
+                date={item.date}
+                likes_counter={item.likes}
+                tags={item.tags}
+                navigation={navigation}
+              />
             ))}
           </ScrollView>
-        )}
+          </TabView.Item>
+          <TabView.Item style={{ width: '100%' }}>
+            <ScrollView style={{ flex: 1 }}>
+              {userPosts.map((password, index ) => (
+                <PostTile key={index}
+                id={password.id}
+                  name={password.user}
+                  user_image={password.user_profile}
+                  post_user_id={password.post_user_id}
+                  user_id={user}
+                  caption={password.caption}
+                    image={password.image}
+                    date={password.date}
+                      likes={password.likes}
+                      country={password.country}
+                        tags={password.tags}
+                        navigation={navigation}/>
+              ))}
+            </ScrollView>
+          </TabView.Item>
+          <TabView.Item  style={{ width: '100%' }}>
+            <ScrollView style={ProfileStyle.commentsContainer}>
+              {userComments.map((comment, index) => (
+                <View key={index} style={ProfileStyle.commentContainer}>
+                  <Text style={ProfileStyle.commentUser}>{comment.user}</Text>
+                  <Text style={ProfileStyle.commentContent}>{comment.content}</Text>
+                  <View style={ProfileStyle.infoContainer}>
+                    <Text style={ProfileStyle.commentDate}>{comment.date}</Text>
+                    <View style={[ProfileStyle.buttons]}>      
+                        <TouchableOpacity style={ProfileStyle.smallButton} onPress={() => toggleVisible(comment.id)}>
+                            <Ionicons name={'add-outline'} size={30} color="#A9D18E"/>
+                        </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+                ))}
+            </ScrollView>
+          </TabView.Item>
+        </TabView>
+
       </View>
       {/* Dialog shown when you click + to save something to a list */}
       <Dialog
