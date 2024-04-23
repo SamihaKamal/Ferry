@@ -55,7 +55,7 @@ const CustomAddPostButton = ({children, onPress, user}) => {
           }}>
             <Text style={styles.optionText}>Review</Text>
         </TouchableOpacity>
-    </Overlay>
+      </Overlay>
     </View>
   
 
